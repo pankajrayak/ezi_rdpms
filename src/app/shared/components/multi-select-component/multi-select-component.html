@@ -1,0 +1,58 @@
+
+<div class="position-static w-100">
+  <input type="text" readonly 
+    [placeholder]="placeholder" 
+    [value]="getLabel()" 
+    [disabled]="disabled" 
+    (blur)="onBlur()" 
+    (focus)="onFocus()" 
+    data-bs-toggle="dropdown" 
+    data-bs-auto-close="outside" 
+    data-bs-offset="0,4"
+  >
+
+  <ul class="dropdown-menu dropdown-menu-end rounded-0 w-100 shadow border border-dark">
+    
+    @if(enableSearch){
+      <li class="border-bottom p-2">
+        <input type="text" class="form-control form-control-sm" 
+          placeholder="Search..." 
+          [value]="searchText()"
+          (input)="searchText.set($any($event.target).value)"
+        >
+      </li>
+    }
+    
+    @if(enableSelectAll){
+      <li class="border-bottom">
+        <label class="dropdown-header text-dark text-truncate px-2 py-1" [class.fw-medium]="isAllSelected()">
+          <input type="checkbox" class="me-2" 
+            id="selectAll" 
+            [checked]="isAllSelected()" 
+            [indeterminate]="isIndeterminate()" 
+            (change)="toggleAll($event)"
+          >
+          <i class="bi bi-check2 float-end text-primary" *ngIf="isAllSelected()"></i>Select All
+        </label>
+      </li>
+    }
+
+    <div class="overflow-auto" style="max-height: 250px;">
+      <li *ngFor="let opt of filteredOptions">
+        <label class="dropdown-header text-dark text-truncate px-2 py-1" [class.fw-medium]="isSelected(opt.value)">
+          <input type="checkbox" class="me-2" 
+            [id]="opt.label" 
+            [disabled]="opt.disabled" 
+            [class.d-none]="!showCheckbox"
+            [checked]="isSelected(opt.value)" 
+            (click)="toggle(opt.value); $event.stopPropagation()"
+          >
+          <i class="bi bi-check2 float-end text-primary" *ngIf="isSelected(opt.value)"></i>{{ opt.label }} 
+        </label>
+      </li>
+    </div>
+
+  </ul>
+
+  <div hidden class="d-none"><ng-content></ng-content></div>
+</div>

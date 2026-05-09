@@ -1,0 +1,9 @@
+.border-4 {
+  border-left-width: 4px !important;
+}
+
+/* Ensure the sticky header stays above table body content */
+/* thead.sticky-top {
+  top: 0;
+  z-index: 2;
+} */

@@ -1,0 +1,35 @@
+@media print {
+    html, body{
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* .d-flex, .flex-grow-1{
+        display: block !important;
+        height: auto !important;
+    } */
+
+    /* #print-section, #print-block{
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+    } */
+
+    .page-break-avoid {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .page-break-always {
+        page-break-before: always;
+        break-inside: always;
+    }
+
+    .page-break-auto {
+        page-break-inside: auto;
+        break-inside: auto;
+    }
+}

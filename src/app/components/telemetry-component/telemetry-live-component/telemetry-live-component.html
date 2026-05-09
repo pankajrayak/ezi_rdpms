@@ -1,0 +1,122 @@
+<div class="container-fluid p-3 bg-light">
+
+    <!-- Page Header -->
+    <page-header 
+        title="Telemetry Live Status" 
+        subtitle="Real-time health monitoring of data transmission units" 
+        icon="broadcast" 
+        [isLive]="true">
+    </page-header>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+                <div class="row g-2 align-items-baseline">
+          
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <label class="small fw-bold text-muted">ZONE</label>
+                        <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
+                            [class.is-invalid]="zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)"
+                            [class.is-valid]="!zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)">
+                            <option value="" disabled>Select</option>
+                            @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
+                        </select>
+                        @if(zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)){
+                            <div class="invalid-feedback small m-0">
+                                @if(zoneCtrl?.hasError('required')){ required field }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <label class="small fw-bold text-muted">DIVISION</label>
+                        <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
+                            [class.is-invalid]="divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)"
+                            [class.is-valid]="!divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)">
+                            <option value="" disabled>Select</option>
+                            @for (d of lists.divisions; track d) { <option [value]="d">{{d}}</option> }
+                        </select>
+                        @if(divisionCtrl?.invalid && (divisionCtrl?.touched || divisionCtrl?.dirty)){
+                            <div class="invalid-feedback small m-0">
+                                @if(divisionCtrl?.hasError('required')){ required field }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <label class="small fw-bold text-muted">STATION</label>
+                        <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
+                            [class.is-invalid]="stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)"
+                            [class.is-valid]="!stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)">
+                            <option value="" disabled>Select</option>
+                            @for (s of lists.stations; track s) { <option [value]="s">{{s}}</option> }
+                        </select>
+                        @if(stationCtrl?.invalid && (stationCtrl?.touched || stationCtrl?.dirty)){
+                            <div class="invalid-feedback small m-0">
+                                @if(stationCtrl?.hasError('required')){ required field }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <label class="small fw-bold text-muted">ASSET TYPE</label>
+                        <select class="form-select form-select-sm" formControlName="assetType"
+                            [class.is-invalid]="assetTypeCtrl?.errors && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)"
+                            [class.is-valid]="!assetTypeCtrl?.errors && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)">
+                            <option value="" disabled>Select</option>
+                            <option value="All">All</option>
+                            @for (ast of lists.assetTypes; track ast) { <option [value]="ast">{{ast}}</option> }
+                        </select>
+                        @if(assetTypeCtrl?.invalid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)){
+                            <div class="invalid-feedback small m-0">
+                                @if(assetTypeCtrl?.hasError('required')){ required field }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <label class="small fw-bold text-muted">ASSET NUMBER</label>
+                        <select class="form-select form-select-sm" formControlName="assetNumber"
+                            [class.is-invalid]="assetNumberCtrl?.errors && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)"
+                            [class.is-valid]="!assetNumberCtrl?.errors && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)">
+                            <option value="" disabled>Select</option>
+                            <option value="All">All</option>
+                            @for (ast of lists.assetNumbers; track ast) { <option [value]="ast">{{ast}}</option> }
+                        </select>
+                        @if(assetNumberCtrl?.invalid && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)){
+                            <div class="invalid-feedback small m-0">
+                                @if(assetNumberCtrl?.hasError('required')){ required field }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <label class="small fw-bold text-muted">VIEW</label>
+                        <select class="form-select form-select-sm" formControlName="view"
+                            [class.is-invalid]="viewCtrl?.errors && (viewCtrl?.touched || viewCtrl?.dirty)"
+                            [class.is-valid]="!viewCtrl?.errors && (viewCtrl?.touched || viewCtrl?.dirty)">
+                            <option value="" disabled>Select</option>
+                            <option value="All">All</option>
+                            @for (v of lists.views; track v) { <option [value]="v">{{v}}</option> }
+                        </select>
+                        @if(viewCtrl?.invalid && (viewCtrl?.touched || viewCtrl?.dirty)){
+                            <div class="invalid-feedback small m-0">
+                                @if(viewCtrl?.hasError('required')){ required field }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Button -->
+                    <div class="col">
+                        <label class="small invisible d-block">Search</label>
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" [disabled]="searchForm.disabled">
+                            @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
+                            @else { Search }
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

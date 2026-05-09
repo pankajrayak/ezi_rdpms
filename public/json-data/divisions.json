@@ -1,0 +1,5 @@
+{
+  "Central": ["Mumbai", "Nagpur", "Pune", "Bhusaval"],
+  "Western": ["Mumbai Central", "Ratlam", "Ahmedabad"],
+  "Northern": ["Delhi", "Ambala"]
+}

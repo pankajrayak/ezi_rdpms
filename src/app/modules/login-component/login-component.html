@@ -1,0 +1,84 @@
+<section class="login-container h-100 bg-dark d-flex align-items-center justify-content-center">
+  
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        
+        <!-- Branding Header -->
+        <div class="text-center mb-4 text-white">
+          <div class="display-6 fw-bold text-info"><i class="bi bi-cpu"></i> RDPMS</div>
+          <p class="small text-uppercase tracking-widest opacity-75">Predictive Maintenance Portal</p>
+        </div>
+
+        <!-- Glassmorphism Card -->
+        <div class="card bg-secondary bg-opacity-10 border-secondary shadow-lg text-white">
+          <div class="card-body p-4">
+            <h4 class="mb-4 text-center">System Authentication</h4>
+            
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <!-- Employee ID / Terminal ID -->
+              <div class="mb-3">
+                <label class="form-label text-info small fw-bold">User / Employee ID</label>
+                <div class="input-group border-bottom border-secondary bg-transparent">
+
+                  <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-badge"></i></span>
+                  <input type="text" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75" 
+                    formControlName="username" placeholder="EMP-XXXX" required>
+                </div>
+
+                @if(usernameCtrl?.invalid && (usernameCtrl?.touched || usernameCtrl?.dirty)){
+                  <div class="text-danger small m-0">
+                    @if(usernameCtrl?.hasError('required')){ required field }
+                  </div>
+                }
+              </div>
+
+              <!-- Password -->
+              <div class="mb-4">
+                <label class="form-label text-info small fw-bold">Secure Key</label>
+                <div class="input-group border-bottom border-secondary bg-transparent">
+
+                  <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-shield-lock"></i></span>
+                  <input type="text" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75"
+                    formControlName="password" placeholder="••••••••" required>
+                </div>
+
+                @if(passwordCtrl?.invalid && (passwordCtrl?.touched || passwordCtrl?.dirty)){
+                  <div class="text-danger small m-0">
+                    @if(passwordCtrl?.hasError('required')){ required field }
+                  </div>
+                }
+              </div>
+
+              <!-- Security Options -->
+              <div class="d-flex justify-content-end  mb-4 small">
+                <!-- <div class="form-check">
+                  <input class="form-check-input bg-dark border-secondary" type="checkbox" id="remember">
+                  <label class="form-check-label" for="remember">Keep Logged In</label>
+                </div> -->
+                <a href="#" class="text-info text-decoration-none">Reset Access</a>
+              </div>
+
+              <!-- Action Button -->
+              <div class="d-grid">
+                <button type="submit" class="btn btn-info fw-bold py-2 shadow-sm text-uppercase" [disabled]="loginForm.disabled">
+                  @if(loginForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
+                  @else { Initialize Session }
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- System Status Footer -->
+          <div class="card-footer border-secondary py-3 bg-black bg-opacity-25">
+            <div class="d-flex align-items-center justify-content-center text-success fw-bold">
+                <span class="spinner-grow spinner-grow-sm me-2"></span>
+                <small class="">Global Diagnostics Server Online</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

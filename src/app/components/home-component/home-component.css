@@ -1,0 +1,19 @@
+@media(min-width: 992px){
+  .top-card-row{
+    display: flex !important;
+    flex-wrap: nowrap !important;
+  }
+  .top-card-item{
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+.data-card{
+  transition: transform 0.2s;
+}
+.data-card:hover {
+  transform: translateY(-5px);
+}
+.chart-content {
+  border: 2px dashed #dee2e6;
+}

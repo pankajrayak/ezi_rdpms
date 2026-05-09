@@ -1,0 +1,11 @@
+{
+  "Mumbai": ["CSMT", "Dadar", "Thane", "Kalyan", "Kurla", "Vashi", "Panvel", "Byculla"],
+  "Nagpur": ["Nagpur Jn", "Ajni", "Wardha", "Itwari", "Kalmeshwar", "Sevagram"],
+  "Pune": ["Pune Jn", "Shivajinagar", "Lonavala", "Hadapsar", "Chinchwad", "Talegaon"],
+  "Bhusaval": ["Bhusaval Jn", "Jalgaon", "Nasik Road", "Manmad", "Khandwa"],
+  "Mumbai Central": ["BCT", "Borivali", "Andheri", "Vasai Road", "Virar", "Palghar"],
+  "Ratlam": ["Ratlam Jn", "Ujjain", "Indore Jn", "Dewas", "Mhow", "Nagda"],
+  "Ahmedabad": ["ADI Jn", "Sabarmati", "Gandhinagar", "Viramgam", "Mehsana"],
+  "Delhi": ["NDLS", "Old Delhi", "Hazrat Nizamuddin", "Anand Vihar", "Delhi Cantt"],
+  "Ambala": ["Ambala Cantt", "Chandigarh", "Kalka", "Saharanpur"]
+}
