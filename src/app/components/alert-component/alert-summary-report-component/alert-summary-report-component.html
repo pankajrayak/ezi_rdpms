@@ -17,8 +17,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
-              [class.is-invalid]="zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)"
-              [class.is-valid]="!zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)">
+              [class.is-invalid]="zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)"
+              [class.is-valid]="zoneCtrl?.valid && (zoneCtrl?.touched || zoneCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
               @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
@@ -34,8 +34,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
-              [class.is-invalid]="divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)"
-              [class.is-valid]="!divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)">
+              [class.is-invalid]="divisionCtrl?.invalid && (divisionCtrl?.touched || divisionCtrl?.dirty)"
+              [class.is-valid]="divisionCtrl?.valid && (divisionCtrl?.touched || divisionCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
               @for (d of lists.divisions; track d) { <option [value]="d">{{d}}</option> }
@@ -51,8 +51,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
-              [class.is-invalid]="stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)"
-              [class.is-valid]="!stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)">
+              [class.is-invalid]="stationCtrl?.invalid && (stationCtrl?.touched || stationCtrl?.dirty)"
+              [class.is-valid]="stationCtrl?.valid && (stationCtrl?.touched || stationCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
               @for (s of lists.stations; track s) { <option [value]="s">{{s}}</option> }
@@ -68,8 +68,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
-              [class.is-invalid]="alertTypeCtrl?.errors && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)"
-              [class.is-valid]="!alertTypeCtrl?.errors && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)">
+              [class.is-invalid]="alertTypeCtrl?.invalid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)"
+              [class.is-valid]="alertTypeCtrl?.valid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
                @for (at of lists.alertTypes; track at) { <option [value]="at">{{at}}</option> }
@@ -85,8 +85,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType" (change)="onAssetTypeChange()"
-              [class.is-invalid]="assetTypeCtrl?.errors && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)"
-              [class.is-valid]="!assetTypeCtrl?.errors && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)">
+              [class.is-invalid]="assetTypeCtrl?.invalid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)"
+              [class.is-valid]="assetTypeCtrl?.valid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
                @for (at of lists.assetTypes; track at) { <option [value]="at">{{at}}</option> }
@@ -101,8 +101,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ASSET NUMBER</label>
             <select class="form-select form-select-sm" formControlName="assetNumber" (change)="onAssetNumberChange()"
-              [class.is-invalid]="assetNumberCtrl?.errors && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)"
-              [class.is-valid]="!assetNumberCtrl?.errors && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)">
+              [class.is-invalid]="assetNumberCtrl?.invalid && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)"
+              [class.is-valid]="assetNumberCtrl?.valid && (assetNumberCtrl?.touched || assetNumberCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
               <option value="PM-101">PM-101</option>
@@ -118,8 +118,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">CAUSE</label>
             <select class="form-select form-select-sm" formControlName="cause" (change)="onCauseChange()"
-              [class.is-invalid]="causeCtrl?.errors && (causeCtrl?.touched || causeCtrl?.dirty)"
-              [class.is-valid]="!causeCtrl?.errors && (causeCtrl?.touched || causeCtrl?.dirty)">
+              [class.is-invalid]="causeCtrl?.invalid && (causeCtrl?.touched || causeCtrl?.dirty)"
+              [class.is-valid]="causeCtrl?.valid && (causeCtrl?.touched || causeCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
               <option value="PT-OBS">PT-OBS</option>
@@ -134,8 +134,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">FROM DATE</label>
             <input type="date" class="form-control form-control-sm" formControlName="fromDate"
-              [class.is-invalid]="fromDateCtrl?.errors && (fromDateCtrl?.touched || fromDateCtrl?.dirty)"
-              [class.is-valid]="!fromDateCtrl?.errors && (fromDateCtrl?.touched || fromDateCtrl?.dirty)">
+              [class.is-invalid]="fromDateCtrl?.invalid && (fromDateCtrl?.touched || fromDateCtrl?.dirty)"
+              [class.is-valid]="fromDateCtrl?.valid && (fromDateCtrl?.touched || fromDateCtrl?.dirty)">
             @if(fromDateCtrl?.invalid && (fromDateCtrl?.touched || fromDateCtrl?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(fromDateCtrl?.hasError('required')){ required field }
@@ -146,8 +146,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">FROM TIME</label>
             <input type="time" class="form-control form-control-sm" formControlName="fromTime"
-              [class.is-invalid]="fromTimeCtrl?.errors && (fromTimeCtrl?.touched || fromTimeCtrl?.dirty)"
-              [class.is-valid]="!fromTimeCtrl?.errors && (fromTimeCtrl?.touched || fromTimeCtrl?.dirty)">
+              [class.is-invalid]="fromTimeCtrl?.invalid && (fromTimeCtrl?.touched || fromTimeCtrl?.dirty)"
+              [class.is-valid]="fromTimeCtrl?.valid && (fromTimeCtrl?.touched || fromTimeCtrl?.dirty)">
             @if(fromTimeCtrl?.invalid && (fromTimeCtrl?.touched || fromTimeCtrl?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(fromTimeCtrl?.hasError('required')){ required field }
@@ -158,8 +158,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">TO DATE</label>
             <input type="date" class="form-control form-control-sm" formControlName="toDate"
-              [class.is-invalid]="toDateCtrl?.errors && (toDateCtrl?.touched || toDateCtrl?.dirty)"
-              [class.is-valid]="!toDateCtrl?.errors && (toDateCtrl?.touched || toDateCtrl?.dirty)">
+              [class.is-invalid]="toDateCtrl?.invalid && (toDateCtrl?.touched || toDateCtrl?.dirty)"
+              [class.is-valid]="toDateCtrl?.valid && (toDateCtrl?.touched || toDateCtrl?.dirty)">
             @if(toDateCtrl?.invalid && (toDateCtrl?.touched || toDateCtrl?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(toDateCtrl?.hasError('required')){ required field }
@@ -170,8 +170,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">TO TIME</label>
             <input type="time" class="form-control form-control-sm" formControlName="toTime"
-              [class.is-invalid]="toTimeCtrl?.errors && (toTimeCtrl?.touched || toTimeCtrl?.dirty)"
-              [class.is-valid]="!toTimeCtrl?.errors && (toTimeCtrl?.touched || toTimeCtrl?.dirty)">
+              [class.is-invalid]="toTimeCtrl?.invalid && (toTimeCtrl?.touched || toTimeCtrl?.dirty)"
+              [class.is-valid]="toTimeCtrl?.valid && (toTimeCtrl?.touched || toTimeCtrl?.dirty)">
             @if(toTimeCtrl?.invalid && (toTimeCtrl?.touched || toTimeCtrl?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(toTimeCtrl?.hasError('required')){ required field }
@@ -182,8 +182,8 @@
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">VIEW</label>
             <select class="form-select form-select-sm" formControlName="view"
-              [class.is-invalid]="viewCtrl?.errors && (viewCtrl?.touched || viewCtrl?.dirty)"
-              [class.is-valid]="!viewCtrl?.errors && (viewCtrl?.touched || viewCtrl?.dirty)">
+              [class.is-invalid]="viewCtrl?.invalid && (viewCtrl?.touched || viewCtrl?.dirty)"
+              [class.is-valid]="viewCtrl?.valid && (viewCtrl?.touched || viewCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="Table">Table</option>
               <option value="Bar">Bar</option>

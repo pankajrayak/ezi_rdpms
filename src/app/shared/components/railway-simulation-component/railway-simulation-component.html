@@ -1,0 +1,42 @@
+<!-- =========================================================
+     station-layout.component.html
+========================================================= -->
+
+<div class="toolbar">
+
+  <button
+    (click)="panicStop()">
+
+    PANIC STOP
+  </button>
+
+  <button
+    (click)="clearPanic()">
+
+    CLEAR PANIC
+  </button>
+
+  <button
+    (click)="divertToPf1()">
+
+    ROUTE PF-1
+  </button>
+
+  <button
+    (click)="divertToPf2()">
+
+    ROUTE PF-2
+  </button>
+
+  <button
+    (click)="divertToPf3()">
+
+    ROUTE PF-3
+  </button>
+
+</div>
+
+<canvas
+  #railCanvas
+  class="rail-canvas">
+</canvas>

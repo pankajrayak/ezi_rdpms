@@ -16,14 +16,14 @@
           <div class="col-sm-6 col-md-4 col-lg-3">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
-              [class.is-invalid]="zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)"
-              [class.is-valid]="!zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)">
+              [class.is-invalid]="zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)"
+              [class.is-valid]="zoneCtrl?.valid && (zoneCtrl?.touched || zoneCtrl?.dirty)">
               <option value="" disabled>Select</option>
               @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
             </select>
             <!-- <multi-select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
-              [class.is-invalid]="zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)"
-              [class.is-valid]="!zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)"
+              [class.is-invalid]="zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)"
+              [class.is-valid]="zoneCtrl?.valid && (zoneCtrl?.touched || zoneCtrl?.dirty)"
               [enableSearch]="true" [enableSelectAll]="true" [showCheckbox]="true">
               @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
             </multi-select> -->
@@ -38,8 +38,8 @@
           <div class="col-sm-6 col-md-4 col-lg-3">
              <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
-              [class.is-invalid]="divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)"
-              [class.is-valid]="!divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)">
+              [class.is-invalid]="divisionCtrl?.invalid && (divisionCtrl?.touched || divisionCtrl?.dirty)"
+              [class.is-valid]="divisionCtrl?.valid && (divisionCtrl?.touched || divisionCtrl?.dirty)">
               <option value="" disabled>Select</option>
               @for (d of lists.divisions; track d) { <option [value]="d">{{d}}</option> }
             </select>
@@ -54,8 +54,8 @@
           <div class="col-sm-6 col-md-4 col-lg-3">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station"
-              [class.is-invalid]="stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)"
-              [class.is-valid]="!stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)">
+              [class.is-invalid]="stationCtrl?.invalid && (stationCtrl?.touched || stationCtrl?.dirty)"
+              [class.is-valid]="stationCtrl?.valid && (stationCtrl?.touched || stationCtrl?.dirty)">
               <option value="" disabled>Select</option>
               @for (s of lists.stations; track s) { <option [value]="s">{{s}}</option> }
             </select>

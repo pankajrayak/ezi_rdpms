@@ -14,11 +14,11 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" name="zone" #zn="ngModel" ngModel (ngModelChange)="onZoneChange()" required
-              [class.is-invalid]="zn?.errors && (zn?.touched || zn?.dirty)" [class.is-valid]="!zn?.errors && (zn?.touched || zn?.dirty)">
+              [class.is-invalid]="zn?.invalid && (zn?.touched || zn?.dirty)" [class.is-valid]="zn?.valid && (zn?.touched || zn?.dirty)">
               <option value="" disabled selected>Select</option>
               @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
             </select>
-            @if(zn?.errors && (zn?.touched || zn?.dirty)){
+            @if(zn?.invalid && (zn?.touched || zn?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(zn?.hasError('required')){ required field }
               </div>
@@ -28,11 +28,11 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" name="division" #div="ngModel" ngModel (ngModelChange)="onDivisionChange()" required
-              [class.is-invalid]="div?.errors && (div?.touched || div?.dirty)" [class.is-valid]="!div?.errors && (div?.touched || div?.dirty)">
+              [class.is-invalid]="div?.invalid && (div?.touched || div?.dirty)" [class.is-valid]="div?.valid && (div?.touched || div?.dirty)">
               <option value="" disabled selected>Select</option>
               @for (d of lists.divisions; track d) { <option [value]="d">{{d}}</option> }
             </select>
-            @if(div?.errors && (div?.touched || div?.dirty)){
+            @if(div?.invalid && (div?.touched || div?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(div?.hasError('required')){ required field }
               </div>
@@ -42,11 +42,11 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" name="station" #stn="ngModel" ngModel required
-              [class.is-invalid]="stn?.errors && (stn?.touched || stn?.dirty)" [class.is-valid]="!stn?.errors && (stn?.touched || stn?.dirty)">
+              [class.is-invalid]="stn?.invalid && (stn?.touched || stn?.dirty)" [class.is-valid]="stn?.valid && (stn?.touched || stn?.dirty)">
               <option value="" disabled selected>Select</option>
               @for (s of lists.stations; track s) { <option [value]="s">{{s}}</option> }
             </select>
-            @if(stn?.errors && (stn?.touched || stn?.dirty)){
+            @if(stn?.invalid && (stn?.touched || stn?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(stn?.hasError('required')){ required field }
               </div>
@@ -56,11 +56,11 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" name="assetType" #ast="ngModel" ngModel required
-              [class.is-invalid]="ast?.errors && (ast?.touched || ast?.dirty)" [class.is-valid]="!ast?.errors && (ast?.touched || ast?.dirty)">
+              [class.is-invalid]="ast?.invalid && (ast?.touched || ast?.dirty)" [class.is-valid]="ast?.valid && (ast?.touched || ast?.dirty)">
               <option value="" disabled selected>Select</option>
               @for (astt of lists.assetTypes; track astt) { <option [value]="astt">{{astt}}</option> }
             </select>
-            @if(ast?.errors && (ast?.touched || ast?.dirty)){
+            @if(ast?.invalid && (ast?.touched || ast?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(ast?.hasError('required')){ required field }
               </div>
@@ -70,11 +70,11 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ASSET MAKE</label>
             <select class="form-select form-select-sm" name="assetMake" #asm="ngModel" ngModel required
-              [class.is-invalid]="asm?.errors && (asm?.touched || asm?.dirty)" [class.is-valid]="!asm?.errors && (asm?.touched || asm?.dirty)">
+              [class.is-invalid]="asm?.invalid && (asm?.touched || asm?.dirty)" [class.is-valid]="asm?.valid && (asm?.touched || asm?.dirty)">
               <option value="" disabled selected>Select</option>
               @for (astm of lists.assetMakes; track astm) { <option [value]="astm">{{astm}}</option> }
             </select>
-            @if(asm?.errors && (asm?.touched || asm?.dirty)){
+            @if(asm?.invalid && (asm?.touched || asm?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(asm?.hasError('required')){ required field }
               </div>
@@ -84,11 +84,11 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">VIEW</label>
             <select class="form-select form-select-sm" name="view" #viw="ngModel" ngModel required
-              [class.is-invalid]="viw?.errors && (viw?.touched || viw?.dirty)" [class.is-valid]="!viw?.errors && (viw?.touched || viw?.dirty)">
+              [class.is-invalid]="viw?.invalid && (viw?.touched || viw?.dirty)" [class.is-valid]="viw?.valid && (viw?.touched || viw?.dirty)">
               <option value="" disabled selected>Select</option>
               @for (st of lists.views; track st) { <option [value]="st">{{st}}</option> }
             </select>
-            @if(viw?.errors && (viw?.touched || viw?.dirty)){
+            @if(viw?.invalid && (viw?.touched || viw?.dirty)){
               <div class="invalid-feedback small m-0">
                 @if(viw?.hasError('required')){ required field }
               </div>

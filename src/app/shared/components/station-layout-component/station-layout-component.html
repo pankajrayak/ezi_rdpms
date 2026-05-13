@@ -1,0 +1,102 @@
+<div class="layout">
+
+    <svg viewBox="0 0 1900 420" class="canvas">
+
+        <!-- TRACKS -->
+
+        <g *ngFor="let t of rail.tracks()">
+
+            <line x1="0" [attr.y1]="t.y" x2="1900" [attr.y2]="t.y" class="track" />
+
+            <text x="10" [attr.y]="t.y - 10" class="track-label">
+                {{t.id}}
+            </text>
+
+        </g>
+
+        <!-- JUNCTIONS -->
+
+        <g *ngFor="let j of rail.junctions()">
+
+            <line [attr.x1]="j.startX" [attr.y1]="rail.tracks().find(t => t.id === j.fromTrack)?.y" [attr.x2]="j.endX"
+                [attr.y2]="rail.tracks().find(t => t.id === j.toTrack)?.y" class="junction" />
+
+        </g>
+
+        <!-- STATIONS -->
+
+        <g *ngFor="let s of rail.stations()">
+
+            <rect [attr.x]="s.startX" y="120" [attr.width]="s.endX - s.startX" height="240" class="station-box" />
+
+            <text [attr.x]="s.startX + 150" y="110" class="station-title">
+                {{s.id}}
+            </text>
+
+            <!-- Platforms -->
+
+            <g *ngFor="let p of s.platforms">
+
+                <!-- MAIN PLATFORM -->
+
+                <rect [attr.x]="p.x" [attr.y]="rail.tracks().find(t => t.id === p.mainTrack)?.y! - 18"
+                    [attr.width]="p.width" height="10" class="platform" />
+
+                <!-- LOOP PLATFORM -->
+
+                <rect [attr.x]="p.x" [attr.y]="rail.tracks().find(t => t.id === p.loopTrack)?.y! - 18"
+                    [attr.width]="p.width" height="10" class="platform" />
+
+                <text [attr.x]="p.x + 10" [attr.y]="rail.tracks().find(t => t.id === p.mainTrack)?.y! - 25"
+                    class="platform-text">
+                    {{p.id}}
+                </text>
+
+            </g>
+
+        </g>
+
+        <!-- SIGNALS -->
+
+        <g *ngFor="let s of rail.signals() | keyvalue">
+
+            <circle [attr.cx]="s.value.x" [attr.cy]="rail.tracks().find(t => t.id === s.value.trackId)?.y! - 22" r="7"
+                [attr.fill]="s.value.status" class="signal" />
+
+        </g>
+
+        <!-- TRAINS -->
+
+        <g *ngFor="let t of rail.trains()">
+
+            <rect [attr.x]="t.x" [attr.y]="t.y - 14" width="90" height="28" rx="5" [attr.fill]="t.color" />
+
+            <text [attr.x]="t.x + 10" [attr.y]="t.y + 5" class="train-text">
+                {{t.id}}
+            </text>
+
+            <!-- TIMER -->
+
+            <text *ngIf="t.timer && t.timer > 0" [attr.x]="t.x + 20" [attr.y]="t.y - 22" class="timer">
+                {{t.timer}}s
+            </text>
+
+        </g>
+
+    </svg>
+
+    <!-- LOGS -->
+
+    <div class="logs">
+
+        <div class="log-title">
+            EVENT LOG
+        </div>
+
+        <div *ngFor="let log of rail.logs()" class="log-item">
+            {{log}}
+        </div>
+
+    </div>
+
+</div>

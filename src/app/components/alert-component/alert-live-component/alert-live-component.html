@@ -17,8 +17,8 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
-              [class.is-invalid]="zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)"
-              [class.is-valid]="!zoneCtrl?.errors && (zoneCtrl?.touched || zoneCtrl?.dirty)">
+              [class.is-invalid]="zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)"
+              [class.is-valid]="zoneCtrl?.valid && (zoneCtrl?.touched || zoneCtrl?.dirty)">
               <option value="" disabled>Select</option>
               @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
             </select>
@@ -33,8 +33,8 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
-              [class.is-invalid]="divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)"
-              [class.is-valid]="!divisionCtrl?.errors && (divisionCtrl?.touched || divisionCtrl?.dirty)">
+              [class.is-invalid]="divisionCtrl?.invalid && (divisionCtrl?.touched || divisionCtrl?.dirty)"
+              [class.is-valid]="divisionCtrl?.valid && (divisionCtrl?.touched || divisionCtrl?.dirty)">
               <option value="" disabled>Select</option>
               @for (d of lists.divisions; track d) { <option [value]="d">{{d}}</option> }
             </select>
@@ -49,8 +49,8 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
-              [class.is-invalid]="stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)"
-              [class.is-valid]="!stationCtrl?.errors && (stationCtrl?.touched || stationCtrl?.dirty)">
+              [class.is-invalid]="stationCtrl?.invalid && (stationCtrl?.touched || stationCtrl?.dirty)"
+              [class.is-valid]="stationCtrl?.valid && (stationCtrl?.touched || stationCtrl?.dirty)">
               <option value="" disabled>Select</option>
               @for (s of lists.stations; track s) { <option [value]="s">{{s}}</option> }
             </select>
@@ -65,8 +65,8 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
-              [class.is-invalid]="alertTypeCtrl?.errors && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)"
-              [class.is-valid]="!alertTypeCtrl?.errors && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)">
+              [class.is-invalid]="alertTypeCtrl?.invalid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)"
+              [class.is-valid]="alertTypeCtrl?.valid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
                @for (at of lists.alertTypes; track at) { <option [value]="at">{{at}}</option> }
@@ -82,8 +82,8 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType"
-              [class.is-invalid]="assetTypeCtrl?.errors && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)"
-              [class.is-valid]="!assetTypeCtrl?.errors && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)">
+              [class.is-invalid]="assetTypeCtrl?.invalid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)"
+              [class.is-valid]="assetTypeCtrl?.valid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
                @for (at of lists.assetTypes; track at) { <option [value]="at">{{at}}</option> }
