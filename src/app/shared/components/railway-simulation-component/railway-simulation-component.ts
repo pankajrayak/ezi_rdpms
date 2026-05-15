@@ -1,1958 +1,472 @@
-/* =========================================================
-   railway.models.ts
-========================================================= */
-
 import { CommonModule } from "@angular/common";
-import { Injectable, signal, Component, AfterViewInit, ViewChild, ElementRef } from "@angular/core";
+import { Injectable, Component, OnInit, OnDestroy, ViewChild, ElementRef } from "@angular/core";
 
-export type Direction =
-  | 'UP'
-  | 'DOWN';
-
-export type TrackType =
-  | 'MAIN'
-  | 'LOOP';
-
-export type SignalAspect =
-  | 'RED'
-  | 'YELLOW'
-  | 'GREEN';
-
-export interface Track {
-
+export interface TrackSegment {
   id: string;
-
+  type: 'main' | 'loop';
+  direction: 'up' | 'down';
+  platformNumber?: number;
   y: number;
-
-  type: TrackType;
-
-  direction: Direction;
-
-  startX: number;
-
-  endX: number;
-}
-
-export interface Junction {
-
-  id: string;
-
-  fromTrack: string;
-
-  toTrack: string;
-
-  startX: number;
-
-  endX: number;
-}
-
-export interface Platform {
-
-  id: string;
-
-  x: number;
-
-  width: number;
-
-  loopTrackId: string;
-}
-
-export interface Station {
-
-  id: string;
-
-  startX: number;
-
-  endX: number;
-
-  platforms: Platform[];
 }
 
 export interface Signal {
-
   id: string;
-
-  x: number;
-
   trackId: string;
-
-  direction: Direction;
-
-  aspect: SignalAspect;
+  x: number;
+  state: 'RED' | 'YELLOW' | 'GREEN';
 }
 
 export interface Train {
-
   id: string;
-
   name: string;
-
-  color: string;
-
-  direction: Direction;
-
+  direction: 'up' | 'down';
+  currentTrackId: string;
+  targetTrackId: string;
   x: number;
-
-  y: number;
-
   length: number;
-
   speed: number;
-
   maxSpeed: number;
+  isNonStop: boolean;
+  stopCounter: number;
+  hasStoppedAtPlatform: boolean;
+  isWaitingAtPlatform: boolean; // Secures station sequencing states against deadlocks
+  color: string;
+  status: 'RUNNING' | 'BRAKING' | 'STOPPED' | 'ACCELERATING' | 'EXITED';
+}
 
-  acceleration: number;
-
-  braking: number;
-
-  trackId: string;
-
-  route?: string;
-
-  manualRoute?: boolean;
-
-  halt: boolean;
-
-  emergencyBrake: boolean;
-
-  targetPlatform?: string;
-
-  platformStopDone?: boolean;
-
-  haltTimer?: number;
-
-  returningToMain?: boolean;
+export function getBezierY(t: number, p0: number, p1: number, p2: number, p3: number): number {
+  const mt = 1 - t;
+  return (mt * mt * mt * p0) + (3 * mt * mt * t * p1) + (3 * mt * t * t * p2) + (t * t * t * p3);
 }
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class RailwayService {
+export class RailwaySimulationService {
+  readonly canvasWidth = 1200;
+  readonly canvasHeight = 600;
+  readonly trackLineWidth = 15;
 
-  readonly canvasWidth = 2600;
+  tracks: TrackSegment[] = [];
+  signals: Signal[] = [];
+  trains: Train[] = [];
+  private trainCounter = 0;
 
-  private trainCounter = 1;
+  initializeLayout(): void {
+    this.tracks = [];
+    this.signals = [];
+    this.trains = [];
 
-  /* =====================================================
-     TRACKS
-  ===================================================== */
-
-  tracks = signal<Track[]>([
-
-    {
-      id: 'UP-MAIN',
-
-      y: 120,
-
-      type: 'MAIN',
-
-      direction: 'UP',
-
-      startX: 0,
-
-      endX: 2600
-    },
-
-    {
-      id: 'UP-LOOP-1',
-
-      y: 200,
-
-      type: 'LOOP',
-
-      direction: 'UP',
-
-      startX: 350,
-
-      endX: 1550
-    },
-
-    {
-      id: 'UP-LOOP-2',
-
-      y: 280,
-
-      type: 'LOOP',
-
-      direction: 'UP',
-
-      startX: 350,
-
-      endX: 1550
-    },
-
-    {
-      id: 'UP-LOOP-3',
-
-      y: 360,
-
-      type: 'LOOP',
-
-      direction: 'UP',
-
-      startX: 350,
-
-      endX: 1550
-    },
-
-    {
-      id: 'DOWN-MAIN',
-
-      y: 520,
-
-      type: 'MAIN',
-
-      direction: 'DOWN',
-
-      startX: 0,
-
-      endX: 2600
-    },
-
-    {
-      id: 'DOWN-LOOP-1',
-
-      y: 440,
-
-      type: 'LOOP',
-
-      direction: 'DOWN',
-
-      startX: 350,
-
-      endX: 1550
+    for (let i = 1; i <= 2; i++) {
+      this.tracks.push({ id: `loop_p${i}`, type: 'loop', direction: 'up', platformNumber: i, y: 120 + (i * 70) });
     }
-  ]);
+    this.tracks.push({ id: 'up_main', type: 'main', direction: 'up', y: 120 });
+    
 
-  /* =====================================================
-     STATION
-  ===================================================== */
-
-  stations = signal<Station[]>([
-
-    {
-      id: 'CENTRAL',
-
-      startX: 450,
-
-      endX: 1450,
-
-      platforms: [
-
-        {
-          id: 'PF-1',
-
-          x: 650,
-
-          width: 500,
-
-          loopTrackId: 'UP-LOOP-1'
-        },
-
-        {
-          id: 'PF-2',
-
-          x: 650,
-
-          width: 500,
-
-          loopTrackId: 'UP-LOOP-2'
-        },
-
-        {
-          id: 'PF-3',
-
-          x: 650,
-
-          width: 500,
-
-          loopTrackId: 'UP-LOOP-3'
-        }
-      ]
+    for (let i = 3; i <= 5; i++) {
+      this.tracks.push({ id: `loop_p${i}`, type: 'loop', direction: 'down', platformNumber: i, y: 480 - ((5 - i) * 70) });
     }
-  ]);
+    this.tracks.push({ id: 'down_main', type: 'main', direction: 'down', y: 550 });
 
-  /* =====================================================
-     JUNCTIONS
-  ===================================================== */
-
-  junctions = signal<Junction[]>([
-
-    {
-      id: 'UP-IN-1',
-
-      fromTrack: 'UP-MAIN',
-
-      toTrack: 'UP-LOOP-1',
-
-      startX: 250,
-
-      endX: 450
-    },
-
-    {
-      id: 'UP-OUT-1',
-
-      fromTrack: 'UP-LOOP-1',
-
-      toTrack: 'UP-MAIN',
-
-      startX: 1450,
-
-      endX: 1650
-    },
-
-    {
-      id: 'UP-IN-2',
-
-      fromTrack: 'UP-MAIN',
-
-      toTrack: 'UP-LOOP-2',
-
-      startX: 250,
-
-      endX: 450
-    },
-
-    {
-      id: 'UP-OUT-2',
-
-      fromTrack: 'UP-LOOP-2',
-
-      toTrack: 'UP-MAIN',
-
-      startX: 1450,
-
-      endX: 1650
-    },
-
-    {
-      id: 'UP-IN-3',
-
-      fromTrack: 'UP-MAIN',
-
-      toTrack: 'UP-LOOP-3',
-
-      startX: 250,
-
-      endX: 450
-    },
-
-    {
-      id: 'UP-OUT-3',
-
-      fromTrack: 'UP-LOOP-3',
-
-      toTrack: 'UP-MAIN',
-
-      startX: 1450,
-
-      endX: 1650
-    },
-
-    {
-      id: 'DOWN-IN-1',
-
-      fromTrack: 'DOWN-MAIN',
-
-      toTrack: 'DOWN-LOOP-1',
-
-      startX: 1450,
-
-      endX: 1650
-    },
-
-    {
-      id: 'DOWN-OUT-1',
-
-      fromTrack: 'DOWN-LOOP-1',
-
-      toTrack: 'DOWN-MAIN',
-
-      startX: 250,
-
-      endX: 450
-    }
-  ]);
-
-  /* =====================================================
-     SIGNALS
-  ===================================================== */
-
-  signals = signal<Signal[]>([]);
-
-  /* =====================================================
-     TRAINS
-  ===================================================== */
-
-  trains = signal<Train[]>([]);
-
-  /* =====================================================
-     LOGS
-  ===================================================== */
-
-  logs = signal<string[]>([]);
-
-  /* =====================================================
-     PANIC
-  ===================================================== */
-
-  panicMode = signal(false);
-
-  constructor() {
-
-    this.generateSignals();
-
-    this.startSpawner();
-
-    this.startEngine();
+    
+    this.tracks.forEach(track => {
+      for (let x = 10; x < this.canvasWidth; x += 200) {
+        this.signals.push({ id: `sig_${track.id}_${x}`, trackId: track.id, x, state: 'GREEN' });
+      }
+      this.signals.push({ id: `sig_${track.id}_${this.canvasWidth-10}`, trackId: track.id, x: this.canvasWidth-10, state: 'GREEN' });
+    });
   }
 
-  /* =====================================================
-     SIGNAL GENERATION
-  ===================================================== */
+  spawnTrain(): void {
+    this.trainCounter++;
+    const direction = Math.random() > 0.5 ? 'up' : 'down';
+    const isNonStop = Math.random() > 0.4;
+    const mainTrackId = direction === 'up' ? 'up_main' : 'down_main';
 
-  private generateSignals() {
+    const validLoops = this.tracks.filter(t => t.type === 'loop' && t.direction === direction);
+    const freeLoops = validLoops.filter(loop => !this.trains.some(t => t.targetTrackId === loop.id && t.status !== 'EXITED'));
 
-    const all: Signal[] = [];
+    const selectedLoop = freeLoops.length > 0 ? freeLoops[Math.floor(Math.random() * freeLoops.length)] : validLoops[Math.floor(Math.random() * validLoops.length)];
+    const targetTrackId = isNonStop ? mainTrackId : selectedLoop.id;
 
-    this.tracks().forEach(track => {
+    const initialX = direction === 'up' ? -350 : this.canvasWidth + 350;
+    const maxSpd = 1.2 + Math.random() * 1.5;
 
-      if (track.type === 'MAIN') {
+    const newTrain: Train = {
+      id: `T${this.trainCounter}`,
+      name: isNonStop ? `Express-${this.trainCounter}` : `Local-${this.trainCounter}`,
+      direction,
+      currentTrackId: mainTrackId,
+      targetTrackId,
+      x: initialX,
+      length: 210 + Math.random() * 20, 
+      speed: maxSpd,
+      maxSpeed: maxSpd,
+      isNonStop,
+      stopCounter: isNonStop ? 0 : 180 + Math.floor(Math.random() * 100),
+      hasStoppedAtPlatform: false,
+      isWaitingAtPlatform: false,
+      color: isNonStop ? '#e63946' : '#457b9d',
+      status: 'RUNNING'
+    };
 
-        for (
-          let x = 100;
-          x <= 2600;
-          x += 100
-        ) {
-
-          all.push({
-
-            id: `${track.id}-${x}`,
-
-            x,
-
-            trackId: track.id,
-
-            direction: track.direction,
-
-            aspect: 'GREEN'
-          });
-        }
-      }
-      else {
-
-        for (
-          let x = 450;
-          x <= 1450;
-          x += 100
-        ) {
-
-          all.push({
-
-            id: `${track.id}-${x}`,
-
-            x,
-
-            trackId: track.id,
-
-            direction: track.direction,
-
-            aspect: 'GREEN'
-          });
-        }
-      }
+    const routeBlocked = this.trains.some(t => {
+      if (t.currentTrackId !== mainTrackId) return false;
+      return direction === 'up' ? t.x < 350 : t.x > (this.canvasWidth - 350);
     });
 
-    this.signals.set(all);
+    if (!routeBlocked) {
+      this.trains.push(newTrain);
+    }
   }
 
-  /* =====================================================
-     SPAWNER
-  ===================================================== */
+  getTrackY(trackId: string, x: number): number {
+    const track = this.tracks.find(t => t.id === trackId);
+    if (!track) return 120;
+    if (track.type === 'main') return track.y;
 
-  private startSpawner() {
+    const mainY = track.direction === 'up' ? 120 : 550;
 
-    setInterval(() => {
+    if (x <= 50) return mainY;
+    if (x >= 1150) return mainY;
 
-      this.spawnUpTrain();
-
-    }, 12000);
-
-    setInterval(() => {
-
-      this.spawnDownTrain();
-
-    }, 18000);
-  }
-
-  private spawnUpTrain() {
-
-    const occupied =
-      this.trains().some(t =>
-        t.direction === 'UP' &&
-        t.x < 500
-      );
-
-    if (occupied) {
-      return;
+    if (x > 50 && x < 250) {
+      const t = (x - 50) / 200;
+      return getBezierY(t, mainY, mainY, track.y, track.y);
+    }
+    if (x > 950 && x < 1150) {
+      const t = (x - 950) / 200;
+      return getBezierY(t, track.y, track.y, mainY, mainY);
     }
 
-    const express =
-      this.trainCounter % 2 === 0;
-
-    const train: Train = {
-
-      id: `UP-${this.trainCounter}`,
-
-      name:
-        express
-          ? 'Rajdhani Express'
-          : 'Passenger Local',
-
-      color:
-        express
-          ? '#ff3355'
-          : '#00e5ff',
-
-      direction: 'UP',
-
-      x: -300,
-
-      y: 120,
-
-      length:
-        express
-          ? 220
-          : 150,
-
-      speed: 0,
-
-      maxSpeed:
-        express
-          ? 7
-          : 4,
-
-      acceleration: 0.03,
-
-      braking: 0.08,
-
-      trackId: 'UP-MAIN',
-
-      halt: false,
-
-      emergencyBrake: false
-    };
-
-    this.trainCounter++;
-
-    this.trains.update(all => [
-      ...all,
-      train
-    ]);
-
-    this.addLog(
-      `${train.name} entered UP MAIN`
-    );
+    return track.y;
   }
 
-  private spawnDownTrain() {
+  updatePhysics(): void {
+    this.trains.forEach(train => {
+      const isUp = train.direction === 'up';
+      const mainTrackId = isUp ? 'up_main' : 'down_main';
 
-    const occupied =
-      this.trains().some(t =>
-        t.direction === 'DOWN' &&
-        t.x > 2100
-      );
-
-    if (occupied) {
-      return;
-    }
-
-    const train: Train = {
-
-      id: `DOWN-${this.trainCounter}`,
-
-      name: 'Down Superfast',
-
-      color: '#ffaa00',
-
-      direction: 'DOWN',
-
-      x: 2900,
-
-      y: 520,
-
-      length: 200,
-
-      speed: 0,
-
-      maxSpeed: 6,
-
-      acceleration: 0.03,
-
-      braking: 0.08,
-
-      trackId: 'DOWN-MAIN',
-
-      halt: false,
-
-      emergencyBrake: false
-    };
-
-    this.trainCounter++;
-
-    this.trains.update(all => [
-      ...all,
-      train
-    ]);
-
-    this.addLog(
-      `${train.name} entered DOWN MAIN`
-    );
-  }
-
-  /* =====================================================
-     ENGINE
-  ===================================================== */
-
-  private startEngine() {
-
-    const frame = () => {
-
-      if (!this.panicMode()) {
-
-        this.autoRouting();
-
-        this.updateSignals();
-
-        this.moveTrains();
+      if (isUp) {
+        if (train.x >= 50 && train.currentTrackId !== train.targetTrackId && !train.hasStoppedAtPlatform) {
+          train.currentTrackId = train.targetTrackId;
+        }
+        if ((train.x - train.length) >= 1150 && train.currentTrackId !== mainTrackId) {
+          train.currentTrackId = mainTrackId;
+        }
+      } else {
+        if (train.x <= 1150 && train.currentTrackId !== train.targetTrackId && !train.hasStoppedAtPlatform) {
+          train.currentTrackId = train.targetTrackId;
+        }
+        if ((train.x + train.length) <= 50 && train.currentTrackId !== mainTrackId) {
+          train.currentTrackId = mainTrackId;
+        }
       }
 
-      requestAnimationFrame(frame);
-    };
+      let targetSpeed = train.maxSpeed;
 
-    frame();
-  }
+      // Station Stop Control State Engine
+      const currentTrack = this.tracks.find(t => t.id === train.currentTrackId)!;
+      if (currentTrack.type === 'loop' && !train.isNonStop && !train.hasStoppedAtPlatform) {
+        const platformMid = this.canvasWidth / 2;
+        const stopTarget = isUp ? platformMid + 120 : platformMid - 120;
+        const distToStation = isUp ? stopTarget - train.x : train.x - stopTarget;
 
-  /* =====================================================
-     PANIC
-  ===================================================== */
-
-  activatePanic() {
-
-    this.panicMode.set(true);
-
-    this.trains.update(all =>
-      all.map(t => ({
-        ...t,
-        halt: true
-      }))
-    );
-
-    this.signals.update(all =>
-      all.map(s => ({
-        ...s,
-        aspect: 'RED'
-      }))
-    );
-
-    this.addLog(
-      'PANIC MODE ACTIVATED'
-    );
-  }
-
-  clearPanic() {
-
-    this.panicMode.set(false);
-
-    this.trains.update(all =>
-      all.map(t => ({
-        ...t,
-        halt: false
-      }))
-    );
-
-    this.addLog(
-      'PANIC MODE CLEARED'
-    );
-  }
-
-  /* =====================================================
-     MANUAL DIVERT
-  ===================================================== */
-
-  divertTrain(
-    trainId: string,
-    loopTrack: string
-  ) {
-
-    this.trains.update(all =>
-      all.map(t => {
-
-        if (t.id !== trainId) {
-          return t;
+        if (train.isWaitingAtPlatform) {
+          targetSpeed = 0;
+          if (train.stopCounter > 0) {
+            train.stopCounter--;
+            train.status = 'STOPPED';
+          } else {
+            train.isWaitingAtPlatform = false;
+            train.hasStoppedAtPlatform = true;
+            train.status = 'ACCELERATING';
+          }
+        } else if (distToStation > -20 && distToStation < 320) {
+          if (distToStation <= 5) {
+            train.isWaitingAtPlatform = true;
+            targetSpeed = 0;
+            train.status = 'STOPPED';
+          } else {
+            targetSpeed = Math.min(targetSpeed, train.maxSpeed * (distToStation / 320));
+            train.status = 'BRAKING';
+          }
         }
+      }
 
-        if (
-          t.direction === 'UP' &&
-          t.x > 250
-        ) {
-          return t;
+      // Direction-Aware Headway Anti-Collision Math
+      this.trains.forEach(other => {
+        if (train.id === other.id) return;
+
+        const trainLeft = isUp ? train.x - train.length : train.x;
+        const trainRight = isUp ? train.x : train.x + train.length;
+        const otherLeft = other.direction === 'up' ? other.x - other.length : other.x;
+        const otherRight = other.direction === 'up' ? other.x : other.x + other.length;
+
+        const segmentsMatch = (train.currentTrackId === other.currentTrackId) ||
+                              (train.targetTrackId === other.currentTrackId && !train.hasStoppedAtPlatform) ||
+                              (train.currentTrackId === other.targetTrackId && !other.hasStoppedAtPlatform);
+
+        if (!segmentsMatch) return;
+
+        const gap = isUp ? (otherLeft - trainRight) : (trainLeft - otherRight);
+        if (gap > -40 && gap < 260) {
+          const ratio = Math.max(0, (gap - 80) / 180);
+          targetSpeed = Math.min(targetSpeed, train.maxSpeed * ratio);
+          if (gap < 85) targetSpeed = 0;
         }
+      });
 
-        return {
+      // Signaling Interlocks
+      const relevantSignals = this.signals.filter(s => s.trackId === train.currentTrackId);
+      const filteredSignals = isUp
+        ? relevantSignals.filter(s => s.x > train.x).sort((a, b) => a.x - b.x)
+        : relevantSignals.filter(s => s.x < train.x).sort((a, b) => b.x - a.x);
 
-          ...t,
+      // FIXED: Extract the single closest Signal object from index 0
+      const targetSignal = filteredSignals.length > 0 ? filteredSignals[0] : undefined;
 
-          route: loopTrack,
-
-          manualRoute: true
-        };
-      })
-    );
-
-    this.addLog(
-      `${trainId} diverted to ${loopTrack}`
-    );
-  }
-
-  /* =====================================================
-     AUTO ROUTING
-  ===================================================== */
-
-  private autoRouting() {
-
-    this.trains.update(all =>
-      all.map(train => {
-
-        if (train.manualRoute) {
-          return train;
+      if (targetSignal && currentTrack.type !== 'main') {
+        const distToSignal = isUp ? targetSignal.x - train.x : train.x - targetSignal.x;
+        if (distToSignal < 200) {
+          if (targetSignal.state === 'RED') {
+            targetSpeed = 0;
+          } else if (targetSignal.state === 'YELLOW') {
+            targetSpeed = train.maxSpeed * 0.35;
+          }
         }
+      }
 
-        if (
-          train.direction === 'UP' &&
-          train.name.includes('Passenger')
-        ) {
-
-          return {
-
-            ...train,
-
-            route: 'UP-LOOP-1'
-          };
-        }
-
-        return train;
-      })
-    );
-  }
-
-  /* =====================================================
-     SIGNALS
-  ===================================================== */
-
-  private updateSignals() {
-
-    this.signals.update(all =>
-      all.map(signal => {
-
-        const occupied =
-          this.trains().some(train => {
-
-            if (
-              train.trackId !==
-              signal.trackId
-            ) {
-              return false;
-            }
-
-            if (
-              signal.direction === 'UP'
-            ) {
-
-              return (
-                train.x > signal.x &&
-                train.x - signal.x < 220
-              );
-            }
-
-            return (
-              signal.x > train.x &&
-              signal.x - train.x < 220
-            );
+      // FIXED: Multi-Loop Switch Interlocking Protection Matrix
+      if (train.currentTrackId !== mainTrackId) {
+        const isApproachingMerge = isUp ? (train.x > 800 && train.x < 950) : (train.x < 400 && train.x > 250);
+        if (isApproachingMerge) {
+          
+          // Check 1: Is a train already on the mainline merge zone?
+          const mainlineOccupied = this.trains.some(t => {
+            if (t.id === train.id || t.currentTrackId !== mainTrackId) return false;
+            return isUp ? (t.x > 750 && t.x < 1180) : (t.x < 450 && t.x > 20);
           });
 
-        const aspect:
-          SignalAspect =
-          occupied
-            ? 'RED'
-            : 'GREEN';
+          // Check 2: Is another train on an adjacent loop track also entering the merge zone?
+          const adjacentLoopConflict = this.trains.some(t => {
+            if (t.id === train.id || t.currentTrackId === mainTrackId || t.direction !== train.direction) return false;
+            
+            const otherApproaching = isUp ? (t.x > 800 && t.x < 1150) : (t.x < 400 && t.x > 50);
+            if (!otherApproaching) return false;
 
-        return {
-          ...signal,
-          aspect
-        };
-      })
-    );
-  }
+            // Resolve priority using the train instantiation count order (First spawned gets priority)
+            const currentTrainIndex = parseInt(train.id.replace('T', ''), 10);
+            const otherTrainIndex = parseInt(t.id.replace('T', ''), 10);
+            return otherTrainIndex < currentTrainIndex;
+          });
 
-  /* =====================================================
-     PLATFORM STOP
-  ===================================================== */
-
-  private handlePlatformStop(
-    train: Train
-  ): Train {
-
-    if (
-      !train.trackId.includes('LOOP')
-    ) {
-      return train;
-    }
-
-    const station =
-      this.stations()[0];
-
-    const platform =
-      station.platforms.find(p =>
-        p.loopTrackId ===
-        train.trackId
-      );
-
-    if (!platform) {
-      return train;
-    }
-
-    const stopPoint =
-      platform.x +
-      platform.width / 2;
-
-    const distance =
-      Math.abs(
-        train.x - stopPoint
-      );
-
-    if (
-      !train.platformStopDone &&
-      distance < 8
-    ) {
-
-      this.addLog(
-        `${train.name} stopped at ${platform.id}`
-      );
-
-      return {
-
-        ...train,
-
-        speed: 0,
-
-        halt: true,
-
-        haltTimer: 300,
-
-        targetPlatform:
-          platform.id,
-
-        platformStopDone: true
-      };
-    }
-
-    if (
-      train.halt &&
-      train.haltTimer
-    ) {
-
-      const next =
-        train.haltTimer - 1;
-
-      if (next <= 0) {
-
-        this.addLog(
-          `${train.name} departed ${platform.id}`
-        );
-
-        return {
-
-          ...train,
-
-          halt: false,
-
-          haltTimer: 0,
-
-          returningToMain: true
-        };
+          if (mainlineOccupied || adjacentLoopConflict) {
+            targetSpeed = 0;
+            if (train.status !== 'STOPPED') train.status = 'BRAKING';
+          }
+        }
       }
 
-      return {
+      if (targetSpeed === 0) {
+        train.speed = Math.max(0, train.speed - 0.08);
+        if (train.speed === 0 && !train.isWaitingAtPlatform) train.status = 'STOPPED';
+      } else if (train.speed < targetSpeed) {
+        train.speed = Math.min(targetSpeed, train.speed + 0.04);
+        if (train.status === 'STOPPED' || train.status === 'BRAKING') train.status = 'ACCELERATING';
+      } else if (train.speed > targetSpeed) {
+        train.speed = Math.max(targetSpeed, train.speed - 0.08);
+        train.status = 'BRAKING';
+      }
 
-        ...train,
+      if (train.speed > 0.15 && train.status !== 'BRAKING' && train.status !== 'ACCELERATING' && train.status !== 'STOPPED') {
+        train.status = 'RUNNING';
+      }
 
-        haltTimer: next
-      };
-    }
+      train.x += isUp ? train.speed : -train.speed;
+    });
 
-    return train;
+    this.trains = this.trains.filter(t => t.x > -400 && t.x < this.canvasWidth + 400);
   }
 
-  /* =====================================================
-     MOVEMENT
-  ===================================================== */
-
-  private moveTrains() {
-
-    const updated =
-      this.trains()
-        .map(train => {
-
-          train =
-            this.handlePlatformStop(
-              train
-            );
-
-          if (train.halt) {
-            return train;
-          }
-
-          let speed = train.speed;
-
-          const nextSignal =
-            this.findNextSignal(
-              train
-            );
-
-          if (
-            nextSignal &&
-            nextSignal.aspect === 'RED'
-          ) {
-
-            const distance =
-              Math.abs(
-                nextSignal.x -
-                train.x
-              );
-
-            if (distance < 180) {
-
-              speed -= train.braking;
-
-              if (speed < 0) {
-                speed = 0;
-              }
-            }
-          }
-          else {
-
-            speed +=
-              train.acceleration;
-
-            if (
-              speed >
-              train.maxSpeed
-            ) {
-
-              speed =
-                train.maxSpeed;
-            }
-          }
-
-          const blocked =
-            this.trains().some(other => {
-
-              if (
-                other.id === train.id
-              ) {
-                return false;
-              }
-
-              if (
-                other.trackId !==
-                train.trackId
-              ) {
-                return false;
-              }
-
-              if (
-                train.direction ===
-                'UP'
-              ) {
-
-                return (
-                  other.x > train.x &&
-                  other.x - train.x <
-                  train.length + 80
-                );
-              }
-
-              return (
-                train.x > other.x &&
-                train.x - other.x <
-                train.length + 80
-              );
-            });
-
-          if (blocked) {
-            speed = 0;
-          }
-
-          let x =
-            train.direction === 'UP'
-              ? train.x + speed
-              : train.x - speed;
-
-          let y = train.y;
-
-          let trackId =
-            train.trackId;
-
-          /* =========================================
-             MAIN TO LOOP
-          ========================================= */
-
-          this.junctions()
-            .forEach(j => {
-
-              if (
-                j.fromTrack !==
-                train.trackId
-              ) {
-                return;
-              }
-
-              if (
-                j.toTrack !==
-                train.route
-              ) {
-                return;
-              }
-
-              if (
-                x < j.startX ||
-                x > j.endX
-              ) {
-                return;
-              }
-
-              const target =
-                this.tracks()
-                  .find(t =>
-                    t.id ===
-                    j.toTrack
-                  );
-
-              if (!target) {
-                return;
-              }
-
-              if (y < target.y) {
-                y += 1.4;
-              }
-
-              if (y > target.y) {
-                y -= 1.4;
-              }
-
-              if (
-                Math.abs(
-                  y - target.y
-                ) < 2
-              ) {
-
-                y = target.y;
-
-                trackId =
-                  target.id;
-              }
-            });
-
-          /* =========================================
-             LOOP TO MAIN
-          ========================================= */
-
-          if (
-            train.returningToMain &&
-            train.trackId.includes(
-              'LOOP'
-            )
-          ) {
-
-            const returnJunction =
-              this.junctions()
-                .find(j => {
-
-                  return (
-                    j.fromTrack ===
-                      train.trackId &&
-
-                    j.toTrack.includes(
-                      'MAIN'
-                    )
-                  );
-                });
-
-            if (returnJunction) {
-
-              if (
-                x >=
-                  returnJunction.startX &&
-                x <=
-                  returnJunction.endX
-              ) {
-
-                const target =
-                  this.tracks()
-                    .find(t =>
-                      t.id ===
-                      returnJunction.toTrack
-                    );
-
-                if (target) {
-
-                  if (y < target.y) {
-                    y += 1.6;
-                  }
-
-                  if (y > target.y) {
-                    y -= 1.6;
-                  }
-
-                  if (
-                    Math.abs(
-                      y - target.y
-                    ) < 2
-                  ) {
-
-                    y = target.y;
-
-                    trackId =
-                      target.id;
-
-                    train.returningToMain =
-                      false;
-
-                    train.route =
-                      undefined;
-
-                    this.addLog(
-                      `${train.name} returned to main line`
-                    );
-                  }
-                }
-              }
-            }
-          }
-
-          if (
-            train.direction === 'UP' &&
-            x > 2900
-          ) {
-            return null;
-          }
-
-          if (
-            train.direction ===
-              'DOWN' &&
-            x < -500
-          ) {
-            return null;
-          }
-
-          return {
-
-            ...train,
-
-            x,
-
-            y,
-
-            speed,
-
-            trackId
-          };
-        })
-        .filter(Boolean) as Train[];
-
-    this.trains.set(updated);
-  }
-
-  /* =====================================================
-     NEXT SIGNAL
-  ===================================================== */
-
-  private findNextSignal(
-    train: Train
-  ): Signal | undefined {
-
-    const signals =
-      this.signals()
-        .filter(signal => {
-
-          return (
-            signal.trackId ===
-            train.trackId
-          );
-        });
-
-    if (
-      train.direction === 'UP'
-    ) {
-
-      return signals.find(s =>
-        s.x > train.x
-      );
-    }
-
-    return [...signals]
-      .reverse()
-      .find(s =>
-        s.x < train.x
-      );
-  }
-
-  /* =====================================================
-     LOGS
-  ===================================================== */
-
-  private addLog(msg: string) {
-
-    const time =
-      new Date()
-        .toLocaleTimeString();
-
-    this.logs.update(prev => [
-
-      `[${time}] ${msg}`,
-
-      ...prev
-
-    ].slice(0, 20));
+  updateSignals(): void {
+    this.signals.forEach(sig => {
+      const track = this.tracks.find(t => t.id === sig.trackId)!;
+      const isUp = track.direction === 'up';
+
+      let closestAheadDist = Infinity;
+      const occupiedBy = this.trains.filter(t => t.currentTrackId === sig.trackId);
+
+      occupiedBy.forEach(t => {
+        const tLeft = t.direction === 'up' ? t.x - t.length : t.x;
+        const tRight = t.direction === 'up' ? t.x : t.x + t.length;
+
+        const dist = isUp ? tLeft - sig.x : sig.x - tRight;
+        if (dist > -t.length && dist < 250) {
+          closestAheadDist = Math.min(closestAheadDist, dist);
+        }
+      });
+
+      if (closestAheadDist > -20 && closestAheadDist < 50) {
+        sig.state = 'RED';
+      } else if (closestAheadDist >= 50 && closestAheadDist < 200) {
+        sig.state = 'YELLOW';
+      } else {
+        sig.state = 'GREEN';
+      }
+    });
   }
 }
 
+
+
 @Component({
   selector: 'railway-simulation-component',
-
   standalone: true,
-
   imports: [CommonModule],
-
-  templateUrl:
-    './railway-simulation-component.html',
-
-  styleUrls: [
-    './railway-simulation-component.css'
-  ]
+  templateUrl: './railway-simulation-component.html',
+  styleUrls: ['./railway-simulation-component.css']
 })
-export class RailwaySimulationComponent
-  implements AfterViewInit {
-
-  @ViewChild('railCanvas')
-  canvasRef!: ElementRef<HTMLCanvasElement>;
+export class RailwaySimulationComponent implements OnInit, OnDestroy {
+  @ViewChild('simulationCanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private ctx!: CanvasRenderingContext2D;
+  private animationFrameId!: number;
+  private spawnIntervalId: any;
 
-  readonly canvasWidth = 3000;
+  constructor(public simService: RailwaySimulationService) {}
 
-  readonly canvasHeight = 1000;
-
-  selectedTrainId = '';
-
-  constructor(
-    public rail: RailwayService
-  ) {}
-
-  /* =====================================================
-     INIT
-  ===================================================== */
-
-  ngAfterViewInit(): void {
-
-    const canvas =
-      this.canvasRef.nativeElement;
-
-    canvas.width =
-      this.canvasWidth;
-
-    canvas.height =
-      this.canvasHeight;
-
-    const context =
-      canvas.getContext('2d');
-
-    if (!context) {
-      return;
-    }
-
-    this.ctx = context;
-
-    this.startRenderer();
+  ngOnInit(): void {
+    this.initCanvas();
+    this.simService.initializeLayout();
+    this.startSimulationLoop();
+    this.spawnIntervalId = setInterval(() => this.simService.spawnTrain(), 3500);
   }
 
-  /* =====================================================
-     RENDER LOOP
-  ===================================================== */
+  ngOnDestroy(): void {
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    if (this.spawnIntervalId) clearInterval(this.spawnIntervalId);
+  }
 
-  private startRenderer(): void {
+  private initCanvas(): void {
+    const canvas = this.canvasRef.nativeElement;
+    canvas.width = this.simService.canvasWidth;
+    canvas.height = this.simService.canvasHeight;
+    this.ctx = canvas.getContext('2d')!;
+  }
 
-    const render = () => {
-
-      this.clearCanvas();
-
-      this.drawGrid();
-
-      this.drawTracks();
-
-      this.drawJunctions();
-
-      this.drawPlatforms();
-
-      this.drawSignals();
-
-      this.drawTrains();
-
-      this.drawHud();
-
-      requestAnimationFrame(render);
+  private startSimulationLoop(): void {
+    const loop = () => {
+      this.simService.updatePhysics();
+      this.simService.updateSignals();
+      this.render();
+      this.animationFrameId = requestAnimationFrame(loop);
     };
-
-    render();
+    this.animationFrameId = requestAnimationFrame(loop);
   }
 
-  /* =====================================================
-     CLEAR
-  ===================================================== */
+  private render(): void {
+    this.ctx.clearRect(0, 0, this.simService.canvasWidth, this.simService.canvasHeight);
+    this.ctx.fillStyle = '#111215';
+    this.ctx.fillRect(0, 0, this.simService.canvasWidth, this.simService.canvasHeight);
 
-  private clearCanvas(): void {
+    this.simService.tracks.forEach(track => {
+      if (track.type === 'loop' && track.platformNumber) {
+        const midX = this.simService.canvasWidth / 2;
+        this.ctx.fillStyle = '#212529';
+        this.ctx.fillRect(midX - 180, track.y - 25, 360, 8);
+        this.ctx.fillStyle = '#6c757d';
+        this.ctx.font = 'bold 10px sans-serif';
+        this.ctx.fillText(`PLATFORM ${track.platformNumber}`, midX - 30, track.y - 30);
+      }
+    });
 
-    this.ctx.fillStyle =
-      '#0a0a0a';
-
-    this.ctx.fillRect(
-      0,
-      0,
-      this.canvasWidth,
-      this.canvasHeight
-    );
-  }
-
-  /* =====================================================
-     GRID
-  ===================================================== */
-
-  private drawGrid(): void {
-
-    this.ctx.strokeStyle =
-      'rgba(255,255,255,0.05)';
-
-    this.ctx.lineWidth = 1;
-
-    for (
-      let x = 0;
-      x < this.canvasWidth;
-      x += 100
-    ) {
-
+    this.simService.tracks.forEach(track => {
+      this.ctx.strokeStyle = track.type === 'main' ? '#495057' : '#2b3035';
+      this.ctx.lineWidth = this.simService.trackLineWidth;
+      this.ctx.lineCap = 'round';
       this.ctx.beginPath();
 
-      this.ctx.moveTo(x, 0);
+      if (track.type === 'main') {
+        this.ctx.moveTo(0, track.y);
+        this.ctx.lineTo(this.simService.canvasWidth, track.y);
+        this.ctx.stroke();
+      } else {
+        const mainY = track.direction === 'up' ? 120 : 550;
+        this.ctx.moveTo(0, mainY);
+        this.ctx.lineTo(50, mainY);
+        this.ctx.bezierCurveTo(150, mainY, 150, track.y, 250, track.y);
+        this.ctx.lineTo(950, track.y);
+        this.ctx.bezierCurveTo(1050, track.y, 1050, mainY, 1150, mainY);
+        this.ctx.lineTo(this.simService.canvasWidth, mainY);
+        this.ctx.stroke();
+      }
+    });
 
-      this.ctx.lineTo(
-        x,
-        this.canvasHeight
-      );
+    this.simService.signals.forEach(sig => {
+      const track = this.simService.tracks.find(t => t.id === sig.trackId)!;
+      if (track.type === 'loop' && (sig.x < 250 || sig.x > 950)) return;
 
-      this.ctx.stroke();
-    }
-
-    for (
-      let y = 0;
-      y < this.canvasHeight;
-      y += 100
-    ) {
+      const computedY = this.simService.getTrackY(sig.trackId, sig.x);
+      this.ctx.fillStyle = '#000';
+      this.ctx.fillRect(sig.x - 3, computedY - 18, 6, 12);
 
       this.ctx.beginPath();
+      this.ctx.arc(sig.x, computedY - 12, 3.5, 0, Math.PI * 2);
+      this.ctx.fillStyle = sig.state === 'GREEN' ? '#198754' : sig.state === 'YELLOW' ? '#ffc107' : '#dc3545';
+      this.ctx.fill();
+    });
 
-      this.ctx.moveTo(0, y);
+    this.simService.trains.forEach(train => {
+      const isUp = train.direction === 'up';
+      
+      this.ctx.save();
+      this.ctx.fillStyle = train.color;
+      this.ctx.lineWidth = this.simService.trackLineWidth;
+      this.ctx.strokeStyle = train.color;
+      this.ctx.lineCap = 'round';
 
-      this.ctx.lineTo(
-        this.canvasWidth,
-        y
-      );
+      this.ctx.beginPath();
+      
+      if (isUp) {
+        const startX = train.x - train.length;
+        const startY = this.simService.getTrackY(train.currentTrackId, startX);
+        this.ctx.moveTo(startX, startY);
 
+        for (let segmentX = startX + 5; segmentX <= train.x; segmentX += 5) {
+          const segmentY = this.simService.getTrackY(train.currentTrackId, segmentX);
+          this.ctx.lineTo(segmentX, segmentY);
+        }
+      } else {
+        const startX = train.x;
+        const startY = this.simService.getTrackY(train.currentTrackId, startX);
+        this.ctx.moveTo(startX, startY);
+
+        for (let segmentX = startX + 5; segmentX <= train.x + train.length; segmentX += 5) {
+          const segmentY = this.simService.getTrackY(train.currentTrackId, segmentX);
+          this.ctx.lineTo(segmentX, segmentY);
+        }
+      }
       this.ctx.stroke();
-    }
-  }
 
-  /* =====================================================
-     TRACKS
-  ===================================================== */
-
-  private drawTracks(): void {
-
-    this.rail.tracks()
-      .forEach(track => {
-
-        this.ctx.beginPath();
-
-        this.ctx.lineWidth = 5;
-
-        this.ctx.strokeStyle =
-          track.type === 'MAIN'
-            ? '#bbbbbb'
-            : '#777777';
-
-        this.ctx.moveTo(
-          track.startX,
-          track.y
-        );
-
-        this.ctx.lineTo(
-          track.endX,
-          track.y
-        );
-
-        this.ctx.stroke();
-
-        /* sleepers */
-
-        for (
-          let x = track.startX;
-          x <= track.endX;
-          x += 35
-        ) {
-
-          this.ctx.beginPath();
-
-          this.ctx.strokeStyle =
-            '#4b2e18';
-
-          this.ctx.lineWidth = 2;
-
-          this.ctx.moveTo(
-            x,
-            track.y - 8
-          );
-
-          this.ctx.lineTo(
-            x,
-            track.y + 8
-          );
-
-          this.ctx.stroke();
-        }
-
-        /* label */
-
-        this.ctx.fillStyle =
-          '#ffffff';
-
-        this.ctx.font =
-          '14px Arial';
-
-        this.ctx.fillText(
-          track.id,
-          20,
-          track.y - 15
-        );
-      });
-  }
-
-  /* =====================================================
-     JUNCTIONS
-  ===================================================== */
-
-  private drawJunctions(): void {
-
-    this.rail.junctions()
-      .forEach(j => {
-
-        const from =
-          this.rail.tracks()
-            .find(t =>
-              t.id === j.fromTrack
-            );
-
-        const to =
-          this.rail.tracks()
-            .find(t =>
-              t.id === j.toTrack
-            );
-
-        if (!from || !to) {
-          return;
-        }
-
-        this.ctx.beginPath();
-
-        this.ctx.lineWidth = 4;
-
-        this.ctx.strokeStyle =
-          '#00ffaa';
-
-        this.ctx.moveTo(
-          j.startX,
-          from.y
-        );
-
-        this.ctx.bezierCurveTo(
-
-          j.startX + 80,
-          from.y,
-
-          j.endX - 80,
-          to.y,
-
-          j.endX,
-          to.y
-        );
-
-        this.ctx.stroke();
-      });
-  }
-
-  /* =====================================================
-     PLATFORMS
-  ===================================================== */
-
-  private drawPlatforms(): void {
-
-    this.rail.stations()
-      .forEach(station => {
-
-        /* station building */
-
-        this.ctx.fillStyle =
-          'rgba(255,255,255,0.05)';
-
-        this.ctx.fillRect(
-
-          station.startX,
-
-          130,
-
-          station.endX -
-          station.startX,
-
-          280
-        );
-
-        this.ctx.fillStyle =
-          '#ffffff';
-
-        this.ctx.font =
-          'bold 22px Arial';
-
-        this.ctx.fillText(
-
-          station.id,
-
-          station.startX + 30,
-
-          165
-        );
-
-        station.platforms
-          .forEach(platform => {
-
-            const track =
-              this.rail.tracks()
-                .find(t =>
-                  t.id ===
-                  platform.loopTrackId
-                );
-
-            if (!track) {
-              return;
-            }
-
-            this.ctx.fillStyle =
-              '#999999';
-
-            this.ctx.fillRect(
-
-              platform.x,
-
-              track.y - 18,
-
-              platform.width,
-
-              15
-            );
-
-            this.ctx.fillStyle =
-              '#ffffff';
-
-            this.ctx.font =
-              '15px Arial';
-
-            this.ctx.fillText(
-
-              platform.id,
-
-              platform.x + 15,
-
-              track.y - 25
-            );
-          });
-      });
-  }
-
-  /* =====================================================
-     SIGNALS
-  ===================================================== */
-
-  private drawSignals(): void {
-
-    this.rail.signals()
-      .forEach(signal => {
-
-        const track =
-          this.rail.tracks()
-            .find(t =>
-              t.id === signal.trackId
-            );
-
-        if (!track) {
-          return;
-        }
-
-        /* pole */
-
-        this.ctx.beginPath();
-
-        this.ctx.strokeStyle =
-          '#888';
-
-        this.ctx.lineWidth = 3;
-
-        this.ctx.moveTo(
-          signal.x,
-          track.y
-        );
-
-        this.ctx.lineTo(
-          signal.x,
-          track.y - 25
-        );
-
-        this.ctx.stroke();
-
-        /* lamp */
-
-        this.ctx.beginPath();
-
-        this.ctx.fillStyle =
-
-          signal.aspect === 'RED'
-            ? '#ff0033'
-
-            : signal.aspect ===
-              'YELLOW'
-            ? '#ffee00'
-
-            : '#00ff66';
-
-        this.ctx.arc(
-
-          signal.x,
-
-          track.y - 30,
-
-          7,
-
-          0,
-
-          Math.PI * 2
-        );
-
-        this.ctx.fill();
-      });
-  }
-
-  /* =====================================================
-     TRAINS
-  ===================================================== */
-
-  private drawTrains(): void {
-
-    this.rail.trains()
-      .forEach(train => {
-
-        /* body */
-
-        this.ctx.fillStyle =
-          train.color;
-
-        this.ctx.fillRect(
-
-          train.x,
-
-          train.y - 16,
-
-          train.length,
-
-          32
-        );
-
-        /* outline */
-
-        this.ctx.strokeStyle =
-          '#111';
-
-        this.ctx.lineWidth = 2;
-
-        this.ctx.strokeRect(
-
-          train.x,
-
-          train.y - 16,
-
-          train.length,
-
-          32
-        );
-
-        /* locomotive */
-
-        this.ctx.fillStyle =
-          '#222';
-
-        if (
-          train.direction === 'UP'
-        ) {
-
-          this.ctx.fillRect(
-
-            train.x,
-
-            train.y - 16,
-
-            28,
-
-            32
-          );
-        }
-        else {
-
-          this.ctx.fillRect(
-
-            train.x +
-            train.length - 28,
-
-            train.y - 16,
-
-            28,
-
-            32
-          );
-        }
-
-        /* train name */
-
-        this.ctx.fillStyle =
-          '#ffffff';
-
-        this.ctx.font =
-          'bold 13px Arial';
-
-        this.ctx.fillText(
-
-          train.name,
-
-          train.x + 12,
-
-          train.y + 4
-        );
-
-        /* speed */
-
-        this.ctx.fillStyle =
-          '#00ff99';
-
-        this.ctx.font =
-          '12px monospace';
-
-        this.ctx.fillText(
-
-          `${train.speed.toFixed(1)} km/h`,
-
-          train.x + 10,
-
-          train.y - 22
-        );
-
-        /* halt timer */
-
-        if (
-          train.haltTimer &&
-          train.haltTimer > 0
-        ) {
-
-          this.ctx.fillStyle =
-            '#ffee00';
-
-          this.ctx.font =
-            'bold 14px Arial';
-
-          this.ctx.fillText(
-
-            `STOP ${Math.floor(
-              train.haltTimer / 60
-            )}s`,
-
-            train.x + 20,
-
-            train.y - 38
-          );
-        }
-      });
-  }
-
-  /* =====================================================
-     HUD
-  ===================================================== */
-
-  private drawHud(): void {
-
-    this.ctx.fillStyle =
-      '#ffffff';
-
-    this.ctx.font =
-      'bold 16px Arial';
-
-    this.ctx.fillText(
-
-      `TRAINS : ${this.rail.trains().length}`,
-
-      20,
-
-      40
-    );
-
-    this.ctx.fillText(
-
-      `PANIC : ${
-        this.rail.panicMode()
-          ? 'ACTIVE'
-          : 'NORMAL'
-      }`,
-
-      20,
-
-      65
-    );
-
-    /* log box */
-
-    this.ctx.fillStyle =
-      'rgba(0,0,0,0.6)';
-
-    this.ctx.fillRect(
-
-      1900,
-
-      20,
-
-      650,
-
-      320
-    );
-
-    this.ctx.fillStyle =
-      '#00ff99';
-
-    this.ctx.font =
-      '13px monospace';
-
-    this.ctx.fillText(
-      'EVENT LOG',
-      1920,
-      45
-    );
-
-    this.rail.logs()
-      .forEach((log, i) => {
-
-        this.ctx.fillText(
-
-          log,
-
-          1920,
-
-          75 + i * 18
-        );
-      });
-  }
-
-  /* =====================================================
-     UI ACTIONS
-  ===================================================== */
-
-  panicStop(): void {
-
-    this.rail.activatePanic();
-  }
-
-  clearPanic(): void {
-
-    this.rail.clearPanic();
-  }
-
-  divertToPf1(): void {
-
-    const train =
-      this.rail.trains()
-        .find(t =>
-          t.direction === 'UP' &&
-          t.trackId === 'UP-MAIN'
-        );
-
-    if (!train) {
-      return;
-    }
-
-    this.rail.divertTrain(
-      train.id,
-      'UP-LOOP-1'
-    );
-  }
-
-  divertToPf2(): void {
-
-    const train =
-      this.rail.trains()
-        .find(t =>
-          t.direction === 'UP' &&
-          t.trackId === 'UP-MAIN'
-        );
-
-    if (!train) {
-      return;
-    }
-
-    this.rail.divertTrain(
-      train.id,
-      'UP-LOOP-2'
-    );
-  }
-
-  divertToPf3(): void {
-
-    const train =
-      this.rail.trains()
-        .find(t =>
-          t.direction === 'UP' &&
-          t.trackId === 'UP-MAIN'
-        );
-
-    if (!train) {
-      return;
-    }
-
-    this.rail.divertTrain(
-      train.id,
-      'UP-LOOP-3'
-    );
+      this.ctx.fillStyle = '#ffffff';
+      const cabX = train.x;
+      const cabY = this.simService.getTrackY(train.currentTrackId, cabX);
+      this.ctx.beginPath();
+      this.ctx.arc(cabX, cabY, 4, 0, Math.PI * 2);
+      this.ctx.fill();
+
+      this.ctx.restore();
+
+      const labelX = isUp ? (train.x - train.length) : train.x;
+      const labelY = this.simService.getTrackY(train.currentTrackId, labelX);
+      this.ctx.fillStyle = '#ffffff';
+      this.ctx.font = 'bold 10px sans-serif';
+      this.ctx.fillText(`${train.name} (${train.status})`, labelX, labelY - 24);
+      this.ctx.fillStyle = '#6c757d';
+      this.ctx.font = '9px monospace';
+      this.ctx.fillText(`V: ${train.speed.toFixed(1)} | Halt: ${train.stopCounter}`, labelX, labelY - 14);
+    });
   }
 }

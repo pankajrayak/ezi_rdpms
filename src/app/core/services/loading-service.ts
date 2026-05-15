@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError, Event as RouterEvent, RouteConfigLoadStart, RouteConfigLoadEnd } from '@angular/router';
-import { BehaviorSubject, distinctUntilChanged, map, Observable, tap } from 'rxjs';
-import { HttpCancelService } from './http-cancel-service';
+import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
+import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { HttpCancelService } from '@rdpms/core/services';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {

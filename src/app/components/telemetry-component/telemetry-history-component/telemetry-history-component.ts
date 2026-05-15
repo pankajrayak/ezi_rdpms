@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PageHeaderComponent } from '../../../shared/components/page-header-component/page-header-component';
+import { PageHeaderComponent } from '@rdpms/shared/components';
+import { DataService } from '@rdpms/utility';
 import { finalize } from 'rxjs';
-import { DataService } from '../../../utility/json-data-service';
 
 @Component({
   selector: 'app-telemetry-history-component',

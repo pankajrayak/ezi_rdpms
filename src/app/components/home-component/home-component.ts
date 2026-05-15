@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PageHeaderComponent } from '../../shared/components/page-header-component/page-header-component';
+import { PageHeaderComponent, MultiSelectDirectiveModule } from '@rdpms/shared/components';
+import { DataService, GlobalUtil } from '@rdpms/utility';
 import { finalize } from 'rxjs';
-import { GlobalUtil } from '../../utility/global-util';
-import { DataService } from '../../utility/json-data-service';
-import { MultiSelectDirectiveModule } from '../../shared';
 
 @Component({
   selector: 'home-component',

@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PageHeaderComponent } from '../../../shared/components/page-header-component/page-header-component';
+import { PageHeaderComponent } from '@rdpms/shared/components';
+import { DataService } from '@rdpms/utility';
 import { NgxPrintDirective } from 'ngx-print';
 import { finalize } from 'rxjs';
-import { DataService } from '../../../utility/json-data-service';
 
 @Component({
   selector: 'alert-summary-report-component',

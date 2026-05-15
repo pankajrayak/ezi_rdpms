@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { HttpCancelService } from '../services/http-cancel-service';
+import { HttpCancelService } from '@rdpms/core/services';
 import { takeUntil } from 'rxjs';
 
 export const httpCancelInterceptor: HttpInterceptorFn = (req, next) => {

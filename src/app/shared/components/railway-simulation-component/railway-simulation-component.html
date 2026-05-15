@@ -1,42 +1,12 @@
-<!-- =========================================================
-     station-layout.component.html
-========================================================= -->
-
-<div class="toolbar">
-
-  <button
-    (click)="panicStop()">
-
-    PANIC STOP
-  </button>
-
-  <button
-    (click)="clearPanic()">
-
-    CLEAR PANIC
-  </button>
-
-  <button
-    (click)="divertToPf1()">
-
-    ROUTE PF-1
-  </button>
-
-  <button
-    (click)="divertToPf2()">
-
-    ROUTE PF-2
-  </button>
-
-  <button
-    (click)="divertToPf3()">
-
-    ROUTE PF-3
-  </button>
-
+<div class="simulation-container">
+  <div class="header-panel">
+    <h2>Interlocking Railway Network Simulator</h2>
+    <div class="telemetry-badge">
+      Active Engines: <strong>{{ simService.trains.length }}</strong>
+    </div>
+  </div>
+  
+  <div class="canvas-wrapper">
+    <canvas #simulationCanvas></canvas>
+  </div>
 </div>
-
-<canvas
-  #railCanvas
-  class="rail-canvas">
-</canvas>

@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { clearHttpRequestCache } from '../decorators/cache-http-decorator';
 import { Router } from '@angular/router';
+import { clearHttpRequestCache } from '@rdpms/core/decorators';
 
 @Injectable({
   providedIn: 'root',

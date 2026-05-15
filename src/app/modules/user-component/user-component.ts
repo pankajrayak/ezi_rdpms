@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { SidebarComponent } from '../../layouts/sidebar-component/sidebar-component';
-import { HeaderComponent } from '../../layouts/header-component/header-component';
 import { RouterOutlet } from '@angular/router';
+import { HeaderComponent, SidebarComponent } from '@rdpms/layouts';
 
 @Component({
   selector: 'user-component',

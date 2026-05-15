@@ -26,9 +26,9 @@
                     formControlName="username" placeholder="EMP-XXXX" required>
                 </div>
 
-                @if(usernameCtrl?.invalid && (usernameCtrl?.touched || usernameCtrl?.dirty)){
+                @if(usernameCtrl.invalid && (usernameCtrl.touched || usernameCtrl.dirty)){
                   <div class="text-danger small m-0">
-                    @if(usernameCtrl?.hasError('required')){ required field }
+                    @if(usernameCtrl.hasError('required')){ required field }
                   </div>
                 }
               </div>
@@ -43,9 +43,9 @@
                     formControlName="password" placeholder="••••••••" required>
                 </div>
 
-                @if(passwordCtrl?.invalid && (passwordCtrl?.touched || passwordCtrl?.dirty)){
+                @if(passwordCtrl.invalid && (passwordCtrl.touched || passwordCtrl.dirty)){
                   <div class="text-danger small m-0">
-                    @if(passwordCtrl?.hasError('required')){ required field }
+                    @if(passwordCtrl.hasError('required')){ required field }
                   </div>
                 }
               </div>

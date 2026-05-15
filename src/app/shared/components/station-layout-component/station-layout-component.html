@@ -1,102 +1,109 @@
-<div class="layout">
+<div class="simulation-container">
+  <svg [attr.viewBox]="'0 0 ' + simService.canvasWidth + ' ' + simService.canvasHeight"
+       width="100%" 
+       height="100%" 
+       class="railway-svg">
+    
+    <!-- LAYER 1: Platforms Infrastructure -->
+    <g class="platforms-layer">
+      @for (track of simService.tracks; track track.id) {
+        @if (track.type === 'loop' && track.platformNumber) {
+          <rect [attr.x]="(simService.canvasWidth / 2) - 180" 
+                [attr.y]="track.y - 25" 
+                width="360" 
+                height="8" 
+                fill="#212529" />
+          <text [attr.x]="(simService.canvasWidth / 2) - 45" 
+                [attr.y]="track.y - 32" 
+                fill="#6c757d" 
+                font-size="10" 
+                font-weight="bold" 
+                font-family="sans-serif">
+            PLATFORM {{ track.platformNumber }}
+          </text>
+        }
+      }
+    </g>
 
-    <svg viewBox="0 0 1900 420" class="canvas">
+    <!-- LAYER 2: Track Layout Geometry -->
+    <g class="tracks-layer" 
+       [attr.stroke-width]="simService.trackLineWidth" 
+       stroke-linecap="round" 
+       fill="none">
+      @for (track of simService.tracks; track track.id) {
+        <path [attr.d]="getTrackPath(track)" 
+              [attr.stroke]="track.type === 'main' ? '#495057' : '#2b3035'" />
+      }
+    </g>
 
-        <!-- TRACKS -->
+    <!-- LAYER 3: Signals Interlocking -->
+    <g class="signals-layer">
+      <!-- FIXED: Changed track loop parameter to use the native $index fallback context -->
+      @for (sig of simService.signals; track $index) {
+        @let track = simService.tracks.find(t => t.id === sig.trackId);
+        @if (track && !(track.type === 'loop' && (sig.x < 250 || sig.x > 950))) {
+          @let computedY = simService.getTrackY(sig.trackId, sig.x);
+          
+          <rect [attr.x]="sig.x - 3" 
+                [attr.y]="computedY - 20" 
+                width="6" 
+                height="14" 
+                fill="#000" />
+          
+          <circle [attr.cx]="sig.x" 
+                  [attr.cy]="computedY - 14" 
+                  r="4" 
+                  [attr.fill]="getSignalColor(sig.state)" />
+        }
+      }
+    </g>
 
-        <g *ngFor="let t of rail.tracks()">
+     <!-- LAYER 4: Dynamic Running Stock -->
+    <g class="trains-layer">
+      @for (train of simService.trains(); track train.id) {
+        <!-- PRE-COMPUTE ALL MUTATING METRICS TO FREEZE LUNAR DIGEST VALUE CLASHES -->
+        @let isUpDirection = train.direction === 'up';
+        @let labelX = isUpDirection ? (train.x - train.length) : train.x;
+        @let labelY = simService.getTrackY(train.currentTrackId, labelX);
+        @let cabY = simService.getTrackY(train.currentTrackId, train.x);
+        @let formattedSpeed = train.speed.toFixed(1);
+        @let staticStopCounter = train.stopCounter;
 
-            <line x1="0" [attr.y1]="t.y" x2="1900" [attr.y2]="t.y" class="track" />
+        <g>
+          <!-- Train Ribbon Vector -->
+          <path [attr.d]="getTrainPath(train)" 
+                [attr.stroke]="train.color" 
+                [attr.stroke-width]="simService.trackLineWidth - 4" 
+                stroke-linecap="round"
+                fill="none" />
 
-            <text x="10" [attr.y]="t.y - 10" class="track-label">
-                {{t.id}}
+          <!-- Lead Cab Indicator -->
+          <circle [attr.cx]="train.x" 
+                  [attr.cy]="cabY" 
+                  r="4" 
+                  fill="#ffffff" />
+
+          <!-- Dynamic Telemetry String Labels -->
+          <g font-family="sans-serif">
+            <text [attr.x]="labelX" 
+                  [attr.y]="labelY - 26" 
+                  fill="#ffffff" 
+                  font-size="10" 
+                  font-weight="bold">
+              {{ train.name }} ({{ train.status }})
             </text>
-
-        </g>
-
-        <!-- JUNCTIONS -->
-
-        <g *ngFor="let j of rail.junctions()">
-
-            <line [attr.x1]="j.startX" [attr.y1]="rail.tracks().find(t => t.id === j.fromTrack)?.y" [attr.x2]="j.endX"
-                [attr.y2]="rail.tracks().find(t => t.id === j.toTrack)?.y" class="junction" />
-
-        </g>
-
-        <!-- STATIONS -->
-
-        <g *ngFor="let s of rail.stations()">
-
-            <rect [attr.x]="s.startX" y="120" [attr.width]="s.endX - s.startX" height="240" class="station-box" />
-
-            <text [attr.x]="s.startX + 150" y="110" class="station-title">
-                {{s.id}}
+            <text [attr.x]="labelX" 
+                  [attr.y]="labelY - 14" 
+                  fill="#a8dadc" 
+                  font-size="9" 
+                  font-family="monospace">
+              <!-- FIXED: Binds snapshot snapshot variable to prevent mid-cycle checking adjustments -->
+              V: {{ formattedSpeed }} | Halt: {{ staticStopCounter }}
             </text>
-
-            <!-- Platforms -->
-
-            <g *ngFor="let p of s.platforms">
-
-                <!-- MAIN PLATFORM -->
-
-                <rect [attr.x]="p.x" [attr.y]="rail.tracks().find(t => t.id === p.mainTrack)?.y! - 18"
-                    [attr.width]="p.width" height="10" class="platform" />
-
-                <!-- LOOP PLATFORM -->
-
-                <rect [attr.x]="p.x" [attr.y]="rail.tracks().find(t => t.id === p.loopTrack)?.y! - 18"
-                    [attr.width]="p.width" height="10" class="platform" />
-
-                <text [attr.x]="p.x + 10" [attr.y]="rail.tracks().find(t => t.id === p.mainTrack)?.y! - 25"
-                    class="platform-text">
-                    {{p.id}}
-                </text>
-
-            </g>
-
+          </g>
         </g>
+      }
+    </g>
 
-        <!-- SIGNALS -->
-
-        <g *ngFor="let s of rail.signals() | keyvalue">
-
-            <circle [attr.cx]="s.value.x" [attr.cy]="rail.tracks().find(t => t.id === s.value.trackId)?.y! - 22" r="7"
-                [attr.fill]="s.value.status" class="signal" />
-
-        </g>
-
-        <!-- TRAINS -->
-
-        <g *ngFor="let t of rail.trains()">
-
-            <rect [attr.x]="t.x" [attr.y]="t.y - 14" width="90" height="28" rx="5" [attr.fill]="t.color" />
-
-            <text [attr.x]="t.x + 10" [attr.y]="t.y + 5" class="train-text">
-                {{t.id}}
-            </text>
-
-            <!-- TIMER -->
-
-            <text *ngIf="t.timer && t.timer > 0" [attr.x]="t.x + 20" [attr.y]="t.y - 22" class="timer">
-                {{t.timer}}s
-            </text>
-
-        </g>
-
-    </svg>
-
-    <!-- LOGS -->
-
-    <div class="logs">
-
-        <div class="log-title">
-            EVENT LOG
-        </div>
-
-        <div *ngFor="let log of rail.logs()" class="log-item">
-            {{log}}
-        </div>
-
-    </div>
-
+  </svg>
 </div>

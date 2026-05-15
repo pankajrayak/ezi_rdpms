@@ -1,7 +1,6 @@
-import { isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandler, inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
-import { ToastService } from './toast-service';
+import { ToastService } from '@rdpms/core/services';
 
 @Injectable({
   providedIn: 'root',

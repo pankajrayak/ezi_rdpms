@@ -3,11 +3,8 @@ import { provideRouter, withInMemoryScrolling, withPreloading } from '@angular/r
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 import { APP_ROUTES } from './app.routes';
-import { authInterceptor } from './core/interceptors/auth-interceptor';
-import { httpCancelInterceptor } from './core/interceptors/http-cancel-interceptor';
-import { httpErrorInterceptor } from './core/interceptors/http-error-interceptor';
-import { HttpErrorHandlerService } from './core/services/http-error-handler-service';
-import { PreloadLazyloadService } from './core/services/preload-lazyload-service';
+import { authInterceptor, httpCancelInterceptor, httpErrorInterceptor } from '@rdpms/core/interceptors';
+import { HttpErrorHandlerService, PreloadLazyloadService } from '@rdpms/core/services';
 
 export const appConfig: ApplicationConfig = {
   providers: [

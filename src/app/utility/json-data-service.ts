@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpRequestCache } from '@rdpms/core/decorators';
+import { CacheHttpService } from '@rdpms/core/services';
 import { map, Observable } from 'rxjs';
-import { CacheHttpService } from '../core/services/cache-http-service';
-import { HttpRequestCache } from '../core/decorators/cache-http-decorator';
 
 @Injectable({ providedIn: 'root' })
 export class DataService extends CacheHttpService {

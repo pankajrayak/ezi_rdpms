@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { PageHeaderComponent } from '../../../shared/components/page-header-component/page-header-component';
 import { finalize } from 'rxjs';
-import { DataService } from '../../../utility/json-data-service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PageHeaderComponent } from '@rdpms/shared/components';
+import { DataService } from '@rdpms/utility';
 
 @Component({
   selector: 'app-sensor-detail-report-component',

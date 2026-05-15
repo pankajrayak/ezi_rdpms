@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PageHeaderComponent } from '../../../shared/components/page-header-component/page-header-component';
 import { finalize } from 'rxjs';
-import { DataService } from '../../../utility/json-data-service';
 import { NgxPrintDirective } from 'ngx-print';
+import { PageHeaderComponent } from '@rdpms/shared/components';
+import { DataService } from '@rdpms/utility';
 
 @Component({
   selector: 'alert-live-component',

@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
-import { PageHeaderComponent } from '../../../shared/components/page-header-component/page-header-component';
 import { finalize, of } from 'rxjs';
-import { GlobalUtil } from '../../../utility/global-util';
-import { DataService } from '../../../utility/json-data-service';
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { PageHeaderComponent } from '@rdpms/shared/components';
+import { DataService, GlobalUtil } from '@rdpms/utility';
 
 interface sensorFormModel {
   zone: string;

@@ -1,6 +1,6 @@
 import { inject, NgZone, ResourceRef } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 export interface RxResourceConfigOptions<T, P> {
   params: () => P | undefined | null;

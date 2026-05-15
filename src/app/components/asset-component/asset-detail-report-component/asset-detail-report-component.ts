@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { PageHeaderComponent } from '../../../shared/components/page-header-component/page-header-component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { PageHeaderComponent } from '@rdpms/shared/components';
+import { DataService } from '@rdpms/utility';
 import { NgxPrintDirective } from 'ngx-print';
-import { DataService } from '../../../utility/json-data-service';
 import { finalize } from 'rxjs';
 
 @Component({

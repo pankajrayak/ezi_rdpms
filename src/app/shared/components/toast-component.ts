@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { ToastService } from '../../core/services/toast-service';
 import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastService } from '@rdpms/core/services';
 
 @Component({
   selector: 'toasts-component',

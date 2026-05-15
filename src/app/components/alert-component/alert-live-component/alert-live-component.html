@@ -17,14 +17,14 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
-              [class.is-invalid]="zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)"
-              [class.is-valid]="zoneCtrl?.valid && (zoneCtrl?.touched || zoneCtrl?.dirty)">
+              [class.is-invalid]="zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)"
+              [class.is-valid]="zoneCtrl.valid && (zoneCtrl.touched || zoneCtrl.dirty)">
               <option value="" disabled>Select</option>
               @for (z of lists.zones; track z) { <option [value]="z.zone">{{z.zone}}</option> }
             </select>
-            @if(zoneCtrl?.invalid && (zoneCtrl?.touched || zoneCtrl?.dirty)){
+            @if(zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)){
               <div class="invalid-feedback small m-0">
-                @if(zoneCtrl?.hasError('required')){ required field }
+                @if(zoneCtrl.hasError('required')){ required field }
               </div>
             }
           </div>
@@ -33,14 +33,14 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
-              [class.is-invalid]="divisionCtrl?.invalid && (divisionCtrl?.touched || divisionCtrl?.dirty)"
-              [class.is-valid]="divisionCtrl?.valid && (divisionCtrl?.touched || divisionCtrl?.dirty)">
+              [class.is-invalid]="divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)"
+              [class.is-valid]="divisionCtrl.valid && (divisionCtrl.touched || divisionCtrl.dirty)">
               <option value="" disabled>Select</option>
               @for (d of lists.divisions; track d) { <option [value]="d">{{d}}</option> }
             </select>
-            @if(divisionCtrl?.invalid && (divisionCtrl?.touched || divisionCtrl?.dirty)){
+            @if(divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)){
               <div class="invalid-feedback small m-0">
-                @if(divisionCtrl?.hasError('required')){ required field }
+                @if(divisionCtrl.hasError('required')){ required field }
               </div>
             }
           </div>
@@ -49,14 +49,14 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
-              [class.is-invalid]="stationCtrl?.invalid && (stationCtrl?.touched || stationCtrl?.dirty)"
-              [class.is-valid]="stationCtrl?.valid && (stationCtrl?.touched || stationCtrl?.dirty)">
+              [class.is-invalid]="stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)"
+              [class.is-valid]="stationCtrl.valid && (stationCtrl.touched || stationCtrl.dirty)">
               <option value="" disabled>Select</option>
               @for (s of lists.stations; track s) { <option [value]="s">{{s}}</option> }
             </select>
-            @if(stationCtrl?.invalid && (stationCtrl?.touched || stationCtrl?.dirty)){
+            @if(stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)){
               <div class="invalid-feedback small m-0">
-                @if(stationCtrl?.hasError('required')){ required field }
+                @if(stationCtrl.hasError('required')){ required field }
               </div>
             }
           </div>
@@ -65,15 +65,15 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
-              [class.is-invalid]="alertTypeCtrl?.invalid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)"
-              [class.is-valid]="alertTypeCtrl?.valid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)">
+              [class.is-invalid]="alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)"
+              [class.is-valid]="alertTypeCtrl.valid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
                @for (at of lists.alertTypes; track at) { <option [value]="at">{{at}}</option> }
             </select>
-            @if(alertTypeCtrl?.invalid && (alertTypeCtrl?.touched || alertTypeCtrl?.dirty)){
+            @if(alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)){
               <div class="invalid-feedback small m-0">
-                @if(alertTypeCtrl?.hasError('required')){ required field }
+                @if(alertTypeCtrl.hasError('required')){ required field }
               </div>
             }
           </div>
@@ -82,15 +82,15 @@
           <div class="col-sm-6 col-md-4 col-lg-2">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType"
-              [class.is-invalid]="assetTypeCtrl?.invalid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)"
-              [class.is-valid]="assetTypeCtrl?.valid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)">
+              [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
+              [class.is-valid]="assetTypeCtrl.valid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)">
               <option value="" disabled>Select</option>
               <option value="All">All</option>
                @for (at of lists.assetTypes; track at) { <option [value]="at">{{at}}</option> }
             </select>
-            @if(assetTypeCtrl?.invalid && (assetTypeCtrl?.touched || assetTypeCtrl?.dirty)){
+            @if(assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)){
               <div class="invalid-feedback small m-0">
-                @if(assetTypeCtrl?.hasError('required')){ required field }
+                @if(assetTypeCtrl.hasError('required')){ required field }
               </div>
             }
           </div>
@@ -110,7 +110,7 @@
   </div>
 
   
-  @if(records?.length){
+  @if(records && records.length){
     <!-- Summary Bar -->
     <div class="row g-3 mb-4">
       @for (item of [{l:'Predictive', v:4, c:'warning'}, {l:'Failure', v:6, c:'danger'}, {l:'Total', v:10, c:'primary'}]; track item.l) {
