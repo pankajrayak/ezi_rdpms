@@ -22,6 +22,6 @@ export class AuthService {
   }
 
   currentUser(){
-    return null;
+    return {user:'manish', role: 'admin'};
   }
 }

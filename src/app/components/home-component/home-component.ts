@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageHeaderComponent, MultiSelectDirectiveModule } from '@rdpms/shared/components';
 import { DataService, GlobalUtil } from '@rdpms/utility';
 import { finalize } from 'rxjs';
+import { HasUnsavedChanges } from '../../core/interfaces';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'home-component',
@@ -11,11 +13,12 @@ import { finalize } from 'rxjs';
   templateUrl: './home-component.html',
   styleUrl: './home-component.css',
 })
-export class HomeComponent {
+export class HomeComponent implements HasUnsavedChanges {
 
   private fb = inject(NonNullableFormBuilder);
   private dataService = inject(DataService);
   public globalUtility = inject(GlobalUtil);
+  private destroyRef = inject(DestroyRef);
   
   lists = { 
     zones: [] as any[], 
@@ -34,6 +37,10 @@ export class HomeComponent {
 
   constructor(){
     this.calculateLayout();
+  }
+
+  hasUnsavedChanges(): boolean {
+    return false;
   }
 
   get form() { return this.searchForm.controls; }
@@ -60,7 +67,9 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((res: any) => this.lists.zones = res);
+    this.dataService.getZones().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((res: any) => this.lists.zones = res);
   }
   
   onZoneChange(): void {

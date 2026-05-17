@@ -1,23 +1,18 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { Router, UrlTree } from '@angular/router';
 import { AuthService } from '@rdpms/core/services';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard = (route: any, params: any): boolean | UrlTree => {
 
   const router = inject(Router);
   const authService = inject(AuthService);
   
   const user = authService.currentUser() as any;
   
-  if(!user){ 
-    return router.createUrlTree(['/login'],{
-      queryParams: { returnUrl: state.url }
-    });
-  }
+  if(user){ return true; }
 
-  const expectedRoles: string[] = route.data['expectedRoles'];
-  const hasRole = expectedRoles?.includes(user.role);
+  const returnUrl = Array.isArray(params) ? params.map(segment => segment.path).join('/') : params.url;
 
-  return hasRole ? true : router.parseUrl('/access-denied');
+  return router.createUrlTree(['/login'],{ queryParams: { returnUrl: returnUrl } });
 
 };

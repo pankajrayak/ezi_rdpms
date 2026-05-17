@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@rdpms/core/guards';
+import { authGuard, roleGuard } from '@rdpms/core/guards';
 
 export const APP_ROUTES: Routes = [
     { 
@@ -11,13 +11,12 @@ export const APP_ROUTES: Routes = [
     },
     {
         path: 'user',
-        // canActivate: [authGuard],
-        data: { expectedRoles: ['admin'] },
+        canMatch: [authGuard, roleGuard],
+        data: { roles: ['admin', 'master'] },
         loadChildren: () => import('./routes/user.routes').then(r => r.USER_ROUTES)
     }, 
     {
         path: 'access-denied',
-        // canActivate: [authGuard],
         loadComponent: () => import('./components/access-denied-component/access-denied-component').then(c => c.AccessDeniedComponent)
     },
 ];

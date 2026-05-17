@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@rdpms/core/guards';
+import { roleGuard, unsavedChangesGuard } from '@rdpms/core/guards';
 
 export const USER_ROUTES: Routes = [
     {
         path: '',
-        // canActivateChild: [authGuard],
+        canActivateChild: [roleGuard],
         loadComponent: () => import('../modules/user-component/user-component').then(c => c.UserComponent),
         children: [
             {
@@ -12,37 +12,33 @@ export const USER_ROUTES: Routes = [
             },
             {
                 path: 'home',
-                data: { title: 'Home', icon: 'bi-house', menu: true, expectedRoles: ['admin'] },
-                loadComponent: () => import('../components/home-component/home-component').then(c => c.HomeComponent)
-            },
-            {
-                path: 'user',
-                data: { expectedRoles: ['admin'] },
-                loadComponent: () => import('../components/home-component/home-component').then(c => c.HomeComponent)
+                canDeactivate: [unsavedChangesGuard],
+                data: { title: 'Home', icon: 'bi-house', menu: true, roles: ['admin'] },
+                loadComponent: () => import('../components/home-component/home-component').then(c => c.HomeComponent),
             },
             {
                 path: 'admin',
-                data: { expectedRoles: ['admin'] },
+                data: { roles: ['admin'] },
                 loadComponent: () => import('../components/home-component/home-component').then(c => c.HomeComponent)
             }, 
             {
                 path: 'alert',
-                data: { title: 'Alerts', icon: 'bi-bell', menu: true },
+                data: { title: 'Alerts', icon: 'bi-bell', menu: true, roles: ['admin'] },
                 loadChildren: () => import('../routes/alert.routes').then(r => r.ALERT_ROUTES)
             },
             {
                 path: 'telemetry',
-                data: { title: 'Telemetry', icon: 'bi-graph-up', menu: true },
+                data: { title: 'Telemetry', icon: 'bi-graph-up', menu: true, roles: ['admin'] },
                 loadChildren: () => import('../routes/telemetry.routes').then(r => r.TELEMETRY_ROUTES)
             },
             {
                 path: 'sensor',
-                data: { title: 'IOT/Sensor', icon: 'bi-hdd-network', menu: true },
+                data: { title: 'IOT/Sensor', icon: 'bi-hdd-network', menu: true, roles: ['admin'] },
                 loadChildren: () => import('../routes/sensor.routes').then(r => r.SENSOR_ROUTES)
             },
             {
                 path: 'asset',
-                data: { title: 'Asset', icon: 'bi-tag', menu: true },
+                data: { title: 'Asset', icon: 'bi-tag', menu: true, roles: ['admin'] },
                 loadChildren: () => import('../routes/asset.routes').then(r => r.ASSET_ROUTES)
             },      
         ]

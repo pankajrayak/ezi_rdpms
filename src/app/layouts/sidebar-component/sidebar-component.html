@@ -25,111 +25,36 @@
             
             <ul class="list-group list-group-flush">
 
-                <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
-                    [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
+                @for(menu of menus; track menu; let index = $index){
+                    <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode" #rla="routerLinkActive"
+                        [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
 
-                    <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
-                        routerLink="./home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                        <span><i class="bi bi-house me-3"></i>Home</span>
-                    </a>
-                </div>
-
-                <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
-                    [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
-
-                    <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
-                        data-bs-toggle="collapse" href="#alert" [attr.aria-expanded]="alertCollapse.classList.contains('show')">
-                        <span><i class="bi bi-bell me-3"></i>Alerts</span><i class="bi bi-chevron-down small"></i>
-                    </a>
-
-                    <div id="alert" class="collapse" #alertCollapse data-bs-parent="#accordionGroup" [routerLinkActive]="['show']">
-                        <div class="list-group list-group-flush">
-
-                            <a class="list-group-item list-group-item-action" routerLink="alert/live" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-activity me-3"></i>Alert Live</span>
+                        @if(!menu.children?.length){
+                            <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
+                                [routerLink]="[menu.path]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                                <span><i class="bi {{menu.icon}} me-3"></i>{{menu.title}}</span>
+                            </a>
+                        }@else{
+                            <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
+                                data-bs-toggle="collapse" [attr.href]="'#collapse-'+index" [attr.aria-expanded]="rla.isActive">
+                                <span><i class="bi {{menu.icon}} me-3"></i>{{menu.title}}</span><i class="bi bi-chevron-down small"></i>
                             </a>
 
-                            <a class="list-group-item list-group-item-action" routerLink="alert/detail-report" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-file-earmark-bar-graph me-3"></i>Alert Detail Report</span>
-                            </a>
+                            <div [id]="'collapse-'+index" class="collapse" data-bs-parent="#accordionGroup" [class.show]="rla.isActive">
+                                <div class="list-group list-group-flush">
 
-                            <a class="list-group-item list-group-item-action" routerLink="alert/summary-report" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-collection-play me-3"></i>Alert Summary Report</span>
-                            </a>
+                                    @for(child of menu.children; track child){
+                                        <a class="list-group-item list-group-item-action" [routerLink]="child.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                                            <span><i class="bi {{child.icon}} me-3"></i>{{child.title}}</span>
+                                        </a>
+                                    }
 
-                        </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                </div>
-
-                <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
-                    [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
-                    
-                    <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
-                        data-bs-toggle="collapse" href="#telemetry" [attr.aria-expanded]="telemetryCollapse.classList.contains('show')">
-                        <span><i class="bi bi-graph-up me-3"></i>Telemetry</span><i class="bi bi-chevron-down small"></i>
-                    </a>
-
-                    <div id="telemetry" class="collapse" #telemetryCollapse data-bs-parent="#accordionGroup" [routerLinkActive]="['show']">
-                        <div class="list-group list-group-flush">
-
-                            <a class="list-group-item list-group-item-action" routerLink="telemetry/live" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-broadcast me-3"></i>Telemetry Live</span>
-                            </a>
-
-                            <a class="list-group-item list-group-item-action" routerLink="telemetry/history" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-clock-history me-3"></i>Telemetry History</span>
-                            </a>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
-                    [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
-
-                    <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
-                        data-bs-toggle="collapse" href="#sensor" [attr.aria-expanded]="sensorCollapse.classList.contains('show')">
-                        <span><i class="bi bi-hdd-network me-3"></i>IOT/Sensor</span><i class="bi bi-chevron-down small"></i>
-                    </a>
-
-                    <div id="sensor" class="collapse" #sensorCollapse data-bs-parent="#accordionGroup" [routerLinkActive]="['show']">
-                        <div class="list-group list-group-flush">
-
-                            <a class="list-group-item list-group-item-action" routerLink="sensor/live" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-cpu me-3"></i>IOT/Sensor Live</span>
-                            </a>
-
-                            <a class="list-group-item list-group-item-action" routerLink="sensor/detail-report" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-file-earmark-medical me-3"></i>IOT/Sensor Detail Report</span>
-                            </a>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
-                    [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
-
-                    <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
-                        data-bs-toggle="collapse" href="#asset" [attr.aria-expanded]="assetCollapse.classList.contains('show')">
-                        <span><i class="bi bi-tag me-3"></i>Asset</span><i class="bi bi-chevron-down small"></i>
-                    </a>
-
-                    <div id="asset" class="collapse" #assetCollapse data-bs-parent="#accordionGroup" [routerLinkActive]="['show']">
-                        <div class="list-group list-group-flush">
-
-                            <a class="list-group-item list-group-item-action" routerLink="asset/detail-report" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-journal-text me-3"></i>Asset Detail Report</span>
-                            </a>
-
-                            <a class="list-group-item list-group-item-action" routerLink="asset/utilization" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi bi-bar-chart-steps me-3"></i>Asset Utilization</span>
-                            </a>
-
-                        </div>
-                    </div>
-                </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-
+                }
+                
                 <!-- Horizontal Fly-out Dropdown -->
                 <!-- <div class="dropdown dropend position-static rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
                     [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
@@ -156,35 +81,3 @@
     </div>
 
 </aside>
-
-
-
-<!-- <ul class="list-group list-group-flush">
-
-    @for(menu of menus; track menu){
-        <div class="rounded-3 mb-3 overflow-hidden" routerLinkActive="active-mode"
-            [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
-
-            @if(!menu.children?.length){
-                <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
-                    [routerLink]="['/user', menu.path]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                    <span><i class="bi {{menu.icon}} me-3"></i>{{menu.title}}</span>
-                </a>
-            }@else{
-                <a class="main-menu list-group-item list-group-item-action d-flex justify-content-between align-items-center collapsed" 
-                    data-bs-toggle="collapse" [attr.href]="'#'+menu.path">
-                    <span><i class="bi {{menu.icon}} me-3"></i>{{menu.title}}</span><i class="bi bi-chevron-down small"></i>
-                </a>
-                <div [id]="menu.path" class="collapse" data-bs-parent="#accordionGroup" [routerLinkActive]="['show']">
-                    <div class="list-group list-group-flush">
-                        @for(child of menu.children; track child){
-                            <a class="list-group-item list-group-item-action" [routerLink]="child.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                                <span><i class="bi {{child.icon}} me-3"></i>{{child.title}}</span>
-                            </a>
-                        }
-                    </div>
-                </div>
-            }
-        </div>
-    }
-</ul> -->

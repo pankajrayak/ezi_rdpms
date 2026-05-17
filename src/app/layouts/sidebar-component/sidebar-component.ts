@@ -1,64 +1,87 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, Routes } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Route, Router, RouterLink, RouterLinkActive, Routes } from '@angular/router';
+import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'sidebar-component',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar-component.html',
   styleUrl: './sidebar-component.css',
   styles: [` `],
 })
 export class SidebarComponent implements OnInit {
 
-  menus: any[] = [];
+  @Input() parentRoute!: string;
+  @Input() routeConfig!: Routes;
+  menus!: any[];
 
-  constructor(private router: Router) {}
+
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
+  
+  }
 
   async ngOnInit() {
-    this.menus = await this.buildMenu(this.router.config);
+    if(!this.parentRoute || !this.routeConfig){ return; }
+
+    this.menus = await this.buildMenu(this.parentRoute, this.routeConfig);
+    this.cdr.detectChanges();
     console.log(this.menus);
   }
 
-  async buildMenu(routes: Routes) {
-
-    const userRoute: any = routes.find(r => r.path === 'user');
-    const loadedRoutes = await userRoute.loadChildren();
-    const rootChildren = loadedRoutes[0].children || [];
-    const menus = [];
-
-    for (const route of rootChildren) {
-      if(!route.data?.menu){ continue; }
-      const menu = await this.createMenu(route);
-      menus.push(menu);
-    }
-
-    return menus
+  async buildMenu(baseUrl: string, routes: Routes): Promise<any[]> {
+    return await Promise.all(
+      routes.filter((route: Route) => route.data?.['menu'])
+        .map(async (route: Route) => ({
+          order: route?.data?.['order'],
+          title: route?.data?.['title'],
+          icon: route?.data?.['icon'],
+          path: `/${baseUrl}/${route.path}`,
+          children: await this.loadChildren(baseUrl, route)
+        }))
+    )
     // .sort((a, b) => (a.order ?? 0) - (b.order ?? 0) );
   }
 
-  async createMenu(route: any){
-    const menu: any = {
-      order: route.data.order,
-      title: route.data.title,
-      icon: route.data.icon,
-      path: route.path,
-      children: []
-    };
+  private async loadChildren(baseUrl: string, route: Route): Promise<any[]> {
+    if (!route.loadChildren) return [];
 
-    if(route.loadChildren) {
-      const childRoutes = await route.loadChildren();
-      const children = childRoutes[0].children || [];
-
-      menu.children = children
-        .filter((child: any) => child.data?.menu)
-        .map((child: any) => ({
-          order: child.data.order,
-          title: child.data.title,
-          icon: child.data.icon,
-          path: `/user/${route.path}/${child.path}`
-        }))
-        // .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
-    }
-    return menu
+    const childRoutes = await route.loadChildren();
+    const children = Array.isArray(childRoutes) ? (childRoutes[0].children || [] ) : [];
+    
+    return children.filter((child: Route) => child.data?.['menu'])
+      .map((child: Route) => ({
+        order: child?.data?.['order'],
+        title: child?.data?.['title'],
+        icon: child?.data?.['icon'],
+        path: `/${baseUrl}/${route.path}/${child.path}`
+      }))
+      // .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
   }
+
+
+  buildMenus(baseUrl: string, routes: Routes): any[] {
+    return routes.filter((route: Route) => route.data?.['menu'])
+      .map((route: Route) => ({
+        order: route.data?.['order'],
+        title: route.data?.['title'],
+        icon: route.data?.['icon'],
+        path: `/${baseUrl}/${route.path}`,
+        children: this.getStaticChildren(baseUrl, route)
+      }))
+      // .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  getStaticChildren(baseUrl: string, route: Route): any[] {
+    const children = route.children || [];
+
+    return children.filter((child: Route) => child.data?.['menu'])
+      .map((child: Route) => ({
+        order: child.data?.['order'],
+        title: child.data?.['title'],
+        icon: child.data?.['icon'],
+        path: `/${baseUrl}/${route.path}/${child.path}`
+      }))
+      // .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
 }

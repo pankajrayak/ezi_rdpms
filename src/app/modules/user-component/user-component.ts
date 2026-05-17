@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent, SidebarComponent } from '@rdpms/layouts';
+import { USER_ROUTES } from '../../routes';
 
 @Component({
   selector: 'user-component',
@@ -8,4 +9,7 @@ import { HeaderComponent, SidebarComponent } from '@rdpms/layouts';
   templateUrl: './user-component.html',
   styleUrl: './user-component.css',
 })
-export class UserComponent {}
+export class UserComponent {
+
+  routeConfig = USER_ROUTES[0]?.children || [];
+}

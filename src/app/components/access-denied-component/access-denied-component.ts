@@ -5,10 +5,10 @@ import { RouterLink } from '@angular/router';
   selector: 'access-denied-component',
   imports: [RouterLink],
   template: `
-    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
-      <h1>Access Denied</h1>
-      <p>You do not have the required permissions to view this page.</p>
-      <a routerLink="/home" class=text-decoration-none>Back to Home</a>
+    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+      <h1 class="text-center">Access Denied</h1>
+      <p class="text-center">You do not have the required permissions to view this page.</p>
+      <a routerLink="/user" class="text-center text-decoration-none">Back to Home</a>
     </div>
   `
 })
