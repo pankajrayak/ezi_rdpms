@@ -4,8 +4,8 @@ import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } fr
 import { PageHeaderComponent, MultiSelectDirectiveModule } from '@rdpms/shared/components';
 import { DataService, GlobalUtil } from '@rdpms/utility';
 import { finalize } from 'rxjs';
-import { HasUnsavedChanges } from '../../core/interfaces';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HasUnsavedChanges } from '@rdpms/core/interfaces';
 
 @Component({
   selector: 'home-component',
