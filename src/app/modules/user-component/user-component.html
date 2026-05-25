@@ -1,16 +1,21 @@
-<div class="container-fluid h-100 p-0">
-    <div class="row h-100 g-0">
-        
+<div class="container-fluid vh-100 overflow-hidden p-0">
+    <div class="row g-0 h-100">
+
         <sidebar-component 
-            class="col-xl-2 col-lg-3 d-flex flex-column h-lg-100" 
-            [parentRoute]="'user'" [routeConfig]="routeConfig" 
+            class="col-xl-2 col-lg-3 h-100 offcanvas-lg offcanvas-end bg-dark text-white sidebar-wrapper" 
+            id="sidebarMenu"
+            tabindex="-1"
+            data-bs-scroll="true"
+            [parentRoute]="'user'" 
+            [routeConfig]="routeConfig" 
         ></sidebar-component>
+        
          
-        <main class="col-xl-10 col-lg-9 col-12 d-flex flex-column h-100">
+        <main class="col-xl-10 col-lg-9 col-12 d-flex flex-column h-100 overflow-hidden">
             
             <header-component></header-component>
 
-            <div class="flex-grow-1 overflow-auto p-2 bg-light">
+            <div class="flex-grow-1 overflow-auto bg-light p-2">
                 <router-outlet></router-outlet>
             </div>
         </main>

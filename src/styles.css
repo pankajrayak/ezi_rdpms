@@ -1,13 +1,6 @@
 
 @import '../public/css/print.css';
 
-body, html { height: 100vh; overflow: hidden; }
-:host {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-}
 .text-vertical {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
@@ -21,13 +14,7 @@ body, html { height: 100vh; overflow: hidden; }
     white-space: nowrap;
     line-height: 1;
 }
-@media (min-width: 992px) {
-    .h-lg-100{
-        height: 100%;
-    }
-}
-
-html{
+html, body{
     scrollbar-width: thin;
     scrollbar-color: #ced4da #f8f9fa; /* thumb | track */
 }

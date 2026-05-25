@@ -21,7 +21,13 @@ export class MultiSelectOptionDirective {
   constructor(public el: ElementRef<HTMLOptionElement>) {}
 
   get actualValue() {
-    return this.ngValue !== undefined ? this.ngValue : this.value;
+    if(this.value) {
+      return typeof this.value === 'object' ? String(this.value) : this.value;
+    }
+    if(this.ngValue) {
+      return this.ngValue;
+    }
+    return this.label;
   }
 
   get label(): string {
@@ -65,7 +71,7 @@ export class MultiSelectComponent implements ControlValueAccessor, AfterContentI
   disabled = false;
   searchText = signal('');
   
-  constructor(@Self() @Optional() public ngControl: NgControl, public el: ElementRef<HTMLOptionElement>) {
+  constructor(@Self() @Optional() public ngControl: NgControl, public el: ElementRef<HTMLElement>) {
     if(this.ngControl) this.ngControl.valueAccessor = this;
   }
 

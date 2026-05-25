@@ -1,12 +1,11 @@
-.sidebar-wrapper { 
-    /* overflow: visible;  */
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+.sidebar-scroll { 
+    direction: rtl; 
+    overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 .sidebar-content { direction: ltr; }
 @media (min-width: 992px) {
-    .h-lg-100{
-        height: 100%;
-    }
     .sidebar-content .dropdown-menu.show {
         display: flex; 
         flex-direction: row;
@@ -14,13 +13,6 @@
         min-width: max-content; 
     }
 }
-.sidebar-scroll { 
-    direction: rtl; 
-    overflow-y: auto; 
-    scrollbar-width: thin; 
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-/* Base and Normal State */
 .main-menu.dropdown-link,
 .main-menu.list-group-item{
     background: rgba(255, 255, 255, 0.15) !important;
@@ -28,7 +20,6 @@
     border: none !important;
     transition: all 0.3s ease;
 }
-/* All Hover States (Normal & Active) */
 .active-mode > .main-menu:hover,
 .main-menu.dropdown-link:hover,
 .main-menu.list-group-item:hover{
@@ -36,21 +27,14 @@
     /* color: #fff !important; */
     cursor: pointer;
 }
-/* Active State (Direct and Parent Group) */
 .active-mode > .main-menu{
     color: #0d6efd !important;
     font-weight: bold;
 }
-/* Rotate only if the menu is physically expanded */
 [aria-expanded="true"] [class*="bi-chevron"] {
     transition: transform 0.3s ease;
     transform: rotate(180deg) !important;
 }
-/* Ensure arrow resets if the parent is no longer active */
 [aria-expanded="false"] [class*="bi-chevron"] {
     transform: rotate(0deg) !important;
-}
-/* Force collapse reset when the 'show' class is missing */
-.collapse:not(.show) {
-    display: none !important;
 }
