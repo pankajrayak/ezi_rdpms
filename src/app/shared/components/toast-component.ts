@@ -15,14 +15,14 @@ import { ToastService } from '@rdpms/core/services';
         (hidden)="toastService.remove(toast)"
       >
         <!-- {{toast.text}} -->
-        <div class="d-flex justify-content-between align-items-center p-2"
+        <div class="d-flex justify-content-between align-items-start p-2"
           [class.text-white]="isDarkBg(toast.classname)" 
           [class.text-dark]="!isDarkBg(toast.classname)"
         >
           <span>{{toast.text}}</span>
 
           @if(toast.showClose !== false){
-            <button type="button" class="btn-close ms-2" 
+            <button type="button" class="btn-close ms-2 flex-shrink-0" 
               [class.btn-close-white]="isDarkBg(toast.classname)"
               (click)="toastService.remove(toast)">
             </button>
@@ -52,6 +52,13 @@ import { ToastService } from '@rdpms/core/services';
       z-index: 1200;
       max-height: calc(100vh - 50px);
       overflow-y: auto;
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
     }
     .custom-toast { 
       position: relative;
