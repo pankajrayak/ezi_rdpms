@@ -18,18 +18,9 @@
         -webkit-print-color-adjust: exact !important;
     } */
 
-    .page-break-avoid {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-
-    .page-break-always {
-        page-break-before: always;
-        break-inside: always;
-    }
-
-    .page-break-auto {
-        page-break-inside: auto;
-        break-inside: auto;
+    .page-break {
+        &-avoid  { page-break-inside: avoid; break-inside: avoid; }
+        &-always { page-break-before: always; break-inside: always; }
+        &-auto   { page-break-inside: auto; break-inside: auto; }
     }
 }

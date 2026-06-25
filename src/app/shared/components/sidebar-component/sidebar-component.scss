@@ -1,0 +1,64 @@
+.sidebar {
+  &-scroll {
+    direction: rtl;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+
+  &-content {
+    direction: ltr;
+    @media (min-width: 992px) {
+      .dropdown-menu.show {
+        display: flex;
+        flex-direction: row;
+        padding: 0.5rem;
+        min-width: max-content;
+      }
+    }
+  }
+}
+
+.main-menu {
+  &.dropdown-link, &.list-group-item {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+    border: none !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25) !important;
+      cursor: pointer;
+    }
+  }
+}
+
+.active-mode {
+  > .main-menu {
+    color: #0d6efd !important;
+    font-weight: bold;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25) !important;
+      cursor: pointer;
+    }
+  }
+}
+
+[aria-expanded] {
+  [class*='bi-chevron'] {
+    transition: transform 0.3s ease;
+  }
+
+  &[aria-expanded='true'] {
+    [class*='bi-chevron'] {
+      transform: rotate(180deg) !important;
+    }
+  }
+
+  &[aria-expanded='false'] {
+    [class*='bi-chevron'] {
+      transform: rotate(0deg) !important;
+    }
+  }
+}

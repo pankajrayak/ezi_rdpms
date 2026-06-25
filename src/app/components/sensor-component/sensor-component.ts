@@ -5,6 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-sensor-component',
   imports: [RouterOutlet],
   templateUrl: './sensor-component.html',
-  styleUrl: './sensor-component.css',
+  styleUrl: './sensor-component.scss',
 })
 export class SensorComponent {}

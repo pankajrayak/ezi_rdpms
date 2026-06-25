@@ -5,6 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-telemetry-component',
   imports: [RouterOutlet],
   templateUrl: './telemetry-component.html',
-  styleUrl: './telemetry-component.css',
+  styleUrl: './telemetry-component.scss',
 })
 export class TelemetryComponent {}

@@ -8,7 +8,11 @@
   "projects": {
     "rdpms": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -25,13 +29,11 @@
               }
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css", 
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "src/styles.css"
+              "src/styles.scss"
             ],
-             "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ],
+            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"],
             "outputMode": "static",
             "security": {
               "allowedHosts": []
@@ -66,7 +68,7 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "proxyConfig": "src/proxy.conf.json",
+            "proxyConfig": "proxy.conf.json",
             "host": "0.0.0.0",
             "port": 3003
           },

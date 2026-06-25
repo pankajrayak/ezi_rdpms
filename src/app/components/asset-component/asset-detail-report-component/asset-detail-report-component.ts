@@ -11,53 +11,53 @@ import { finalize } from 'rxjs';
   selector: 'app-asset-detail-report-component',
   imports: [CommonModule, FormsModule, PageHeaderComponent, NgbPaginationModule, NgxPrintDirective],
   templateUrl: './asset-detail-report-component.html',
-  styleUrl: './asset-detail-report-component.css',
+  styleUrl: './asset-detail-report-component.scss',
 })
 export class AssetDetailReportComponent implements OnInit, AfterViewInit {
-
   private dataService = inject(DataService);
   @ViewChild('searchForm') searchForm!: NgForm;
 
   results: any;
-  
-  lists = { 
-    zones: [] as any[], 
-    divisions: [] as any[], 
-    stations: [] as any[], 
-    assetTypes: [] as any[], 
-    assetMakes: ['1', '2'] as any[], 
-    views: ['Table', 'Pie', 'Bar', 'Graph'] as any[]
+
+  lists = {
+    zones: [] as any[],
+    divisions: [] as any[],
+    stations: [] as any[],
+    assetTypes: [] as any[],
+    assetMakes: ['1', '2'] as any[],
+    views: ['Table', 'Pie', 'Bar', 'Graph'] as any[],
   };
 
   form = { zone: '', division: '', station: '', assetType: '', assetMake: '', view: 'Table' };
 
   get zoneCtrl() { return this.searchForm.controls['zone']; }
   get divisionCtrl() { return this.searchForm.controls['division']; }
-  get stationCtrl() { return this.searchForm.controls['station'] }
-  get assetTypectrl() {return this.searchForm.controls['assetType']; }
-  get assetMakeCtrl() { return this.searchForm.controls['assetMake'] }
-  get viewCtrl() { return this.searchForm.controls['view'] }
+  get stationCtrl() { return this.searchForm.controls['station']; }
+  get assetTypectrl() { return this.searchForm.controls['assetType']; }
+  get assetMakeCtrl() { return this.searchForm.controls['assetMake']; }
+  get viewCtrl() { return this.searchForm.controls['view']; }
 
-  
   ngOnInit() {
-    this.dataService.getZones().subscribe(res => this.lists.zones = res);
-    this.dataService.getAssetTypes().subscribe(res => this.lists.assetTypes = res);
+    this.dataService.getZones().subscribe((res) => (this.lists.zones = res));
+    this.dataService.getAssetTypes().subscribe((res) => (this.lists.assetTypes = res));
   }
 
   ngAfterViewInit() {
-    setTimeout(() => { 
+    setTimeout(() => {
       this.searchForm.setValue(this.form);
-      this.divisionCtrl?.disable(); this.stationCtrl?.disable(); 
+      this.divisionCtrl?.disable();
+      this.stationCtrl?.disable();
     }, 0);
   }
 
   onZoneChange() {
-    this.lists.divisions = []; this.lists.stations = [];
+    this.lists.divisions = [];
+    this.lists.stations = [];
     this.divisionCtrl?.reset({ value: '', disabled: true });
     this.stationCtrl?.reset({ value: '', disabled: true });
-    
-    if(this.zoneCtrl?.valid && this.zoneCtrl?.value) {
-      this.dataService.getDivisions(this.zoneCtrl?.value).subscribe(res => {
+
+    if (this.zoneCtrl?.valid && this.zoneCtrl?.value) {
+      this.dataService.getDivisions(this.zoneCtrl?.value).subscribe((res) => {
         this.lists.divisions = res;
         this.divisionCtrl?.enable();
       });
@@ -69,7 +69,7 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
     this.stationCtrl?.reset({ value: '', disabled: true });
 
     if (this.divisionCtrl?.valid && this.divisionCtrl?.value) {
-      this.dataService.getStations(this.divisionCtrl?.value).subscribe(res => {
+      this.dataService.getStations(this.divisionCtrl?.value).subscribe((res) => {
         this.lists.stations = res;
         this.stationCtrl?.enable();
       });
@@ -82,18 +82,21 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
       return;
     }
     this.searchForm.form.disable();
-    this.results = {}; this.getData();
+    this.results = {};
+    this.getData();
   }
 
-  getData(){
-    this.dataService.getPagedRecord(1, 10, { station: 'CSMT' })
-    .pipe( 
-      finalize(() => this.searchForm.control.enable()) 
-    )
-    .subscribe({
-      next: (results) => { this.results = results || {}; this.resetForm(); },
-      error: (err) => console.error('Search failed:', err)
-    });
+  getData() {
+    this.dataService
+      .getPagedRecord(1, 10, { station: 'CSMT' })
+      .pipe(finalize(() => this.searchForm.control.enable()))
+      .subscribe({
+        next: (results) => {
+          this.results = results || {};
+          this.resetForm();
+        },
+        error: (err) => console.error('Search failed:', err),
+      });
   }
 
   resetForm() {
@@ -102,11 +105,10 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
   }
 
   resetFormStyles() {
-    if(this.searchForm) {
+    if (this.searchForm) {
       this.searchForm.control.markAsPristine();
       this.searchForm.control.markAsUntouched();
       this.searchForm.control.updateValueAndValidity();
     }
   }
-
 }

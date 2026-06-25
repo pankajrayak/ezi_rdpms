@@ -11,31 +11,30 @@ import { DataService, GlobalUtil } from '@rdpms/shared/utility';
   selector: 'home-component',
   imports: [CommonModule, ReactiveFormsModule, PageHeaderComponent, MultiSelectDirectiveModule],
   templateUrl: './home-component.html',
-  styleUrl: './home-component.css',
+  styleUrl: './home-component.scss',
 })
 export class HomeComponent implements HasUnsavedChanges {
-
   private fb = inject(NonNullableFormBuilder);
   private dataService = inject(DataService);
   public globalUtility = inject(GlobalUtil);
   private destroyRef = inject(DestroyRef);
-  
-  lists = { 
-    zones: [] as any[], 
-    divisions: [] as any[], 
-    stations: [] as any[], 
+
+  lists = {
+    zones: [] as any[],
+    divisions: [] as any[],
+    stations: [] as any[],
   };
 
   searchForm: FormGroup = this.fb.group({
     zone: ['', Validators.required],
-    division: [{ value: '', disabled: true }, [Validators.required] ],
+    division: [{ value: '', disabled: true }, [Validators.required]],
     station: [{ value: '', disabled: true }, { validators: [Validators.required] }],
   });
 
   topCards: any = [];
   sideCards: any = [];
 
-  constructor(){
+  constructor() {
     this.calculateLayout();
   }
 
@@ -47,37 +46,37 @@ export class HomeComponent implements HasUnsavedChanges {
   get zoneCtrl() { return this.form['zone']; }
   get divisionCtrl() { return this.form['division']; }
   get stationCtrl() { return this.form['station']; }
-  
-  calculateLayout(){
-    const n: number = this.assets.length;
-    if(n === 0){ return }
 
-    let topCount = Math.max(4, Math.floor(n/2) + 1);
-    if(topCount > n ) { topCount = n; }
+  calculateLayout() {
+    const n: number = this.assets.length;
+    if (n === 0) { return; }
+
+    let topCount = Math.max(4, Math.floor(n / 2) + 1);
+    if (topCount > n) { topCount = n; }
 
     let sideCount = n - topCount;
 
-    if(sideCount === 1 && topCount > 1) {
+    if (sideCount === 1 && topCount > 1) {
       topCount -= 1;
       sideCount += 1;
     }
     this.topCards = this.assets.slice(0, topCount);
     this.sideCards = this.assets.slice(topCount);
-    
   }
 
   ngOnInit() {
-    this.dataService.getZones().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe((res: any) => this.lists.zones = res);
+    this.dataService.getZones()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res: any) => (this.lists.zones = res));
   }
-  
+
   onZoneChange(): void {
-    this.lists.divisions = []; this.lists.stations = [];
+    this.lists.divisions = [];
+    this.lists.stations = [];
     this.divisionCtrl?.reset({ value: '', disabled: true });
     this.stationCtrl?.reset({ value: '', disabled: true });
-    
-    if(this.zoneCtrl?.valid && this.zoneCtrl.value) {
+
+    if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((res: any) => {
         this.lists.divisions = res;
         this.divisionCtrl?.enable();
@@ -89,7 +88,7 @@ export class HomeComponent implements HasUnsavedChanges {
     this.lists.stations = [];
     this.stationCtrl.reset({ value: '', disabled: true });
 
-    if(this.divisionCtrl?.valid && this.divisionCtrl.value) {
+    if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((res: any) => {
         this.lists.stations = res;
         this.stationCtrl?.enable();
@@ -98,23 +97,22 @@ export class HomeComponent implements HasUnsavedChanges {
   }
 
   onSubmit() {
-  
-    if(!this.searchForm.valid) {
-      this.searchForm.markAllAsTouched(); 
+    if (!this.searchForm.valid) {
+      this.searchForm.markAllAsTouched();
       return;
     }
-    
+
     this.searchForm.disable();
     const payload = this.searchForm.getRawValue();
-    this.dataService.searchData(payload).pipe(
-      finalize(() => this.searchForm.enable() ),
-    ).subscribe({
-      next: (res) => console.log('Search complete', res),
-      error: (err) => console.error('Search failed', err)
-    })
+    this.dataService.searchData(payload)
+      .pipe(finalize(() => this.searchForm.enable()))
+      .subscribe({
+        next: (res) => console.log('Search complete', res),
+        error: (err) => console.error('Search failed', err),
+      });
   }
 
-    // Dummy Data for the 7 specific assets requested
+  // Dummy Data for the 7 specific assets requested
   assets = [
     { name: 'DC Track Circuit', healthy: 85, predictive: 10, failure: 5 },
     { name: 'Main Signal', healthy: 92, predictive: 5, failure: 3 },
@@ -125,4 +123,3 @@ export class HomeComponent implements HasUnsavedChanges {
     { name: 'Total Assets', healthy: 403, predictive: 60, failure: 37 },
   ];
 }
-

@@ -7,17 +7,16 @@ import { AuthService } from '@rdpms/services';
 
 @Component({
   selector: 'login-component',
-  imports: [CommonModule, ReactiveFormsModule,],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login-component.html',
-  styleUrl: './login-component.css',
+  styleUrl: './login-component.scss',
 })
 export class LoginComponent {
-
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
-  
+
   sessionExpired = signal(false);
 
   loginForm: FormGroup = this.fb.nonNullable.group({
@@ -25,8 +24,8 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
-  constructor(){
-    if(this.route.snapshot.queryParams['reason'] === 'session-expired'){
+  constructor() {
+    if (this.route.snapshot.queryParams['reason'] === 'session-expired') {
       this.sessionExpired.set(true);
     }
   }
@@ -36,29 +35,26 @@ export class LoginComponent {
   get passwordCtrl() { return this.form['password']; }
 
   onSubmit() {
-    if(!this.loginForm.valid) {
-      this.loginForm.markAllAsTouched(); 
+    if (!this.loginForm.valid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
-    this.routeChange(); return;
+    this.routeChange();
+    return;
 
     this.loginForm.disable();
     const payload = this.loginForm.getRawValue();
 
-    this.authService.login(payload).pipe(
-      finalize(() => this.loginForm.enable() ),
-    ).subscribe({
-      next: (res) => {
-        console.log('successfull', res);
-        this.routeChange()
-      },
-      error: (err) => console.error('failed', err)
-    })
+    this.authService.login(payload)
+      .pipe(finalize(() => this.loginForm.enable()))
+      .subscribe({
+        next: (res) => { this.routeChange(); },
+        error: (err) => console.error('failed', err),
+      });
   }
 
-  routeChange(){
+  routeChange() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';
     this.router.navigateByUrl(returnUrl);
   }
-
 }

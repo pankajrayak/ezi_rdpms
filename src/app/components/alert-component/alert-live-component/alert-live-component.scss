@@ -1,5 +1,7 @@
+$border-weight-heavy: 4px;
+
 .border-4 {
-  border-left-width: 4px !important;
+  border-left-width: $border-weight-heavy !important;
 }
 
 /* Ensure the sticky header stays above table body content */

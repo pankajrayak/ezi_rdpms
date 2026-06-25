@@ -5,6 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-alert-component',
   imports: [RouterOutlet],
   templateUrl: './alert-component.html',
-  styleUrl: './alert-component.css',
+  styleUrl: './alert-component.scss',
 })
 export class AlertComponent {}

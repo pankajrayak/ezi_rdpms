@@ -5,6 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-asset-component',
   imports: [RouterOutlet],
   templateUrl: './asset-component.html',
-  styleUrl: './asset-component.css',
+  styleUrl: './asset-component.scss',
 })
 export class AssetComponent {}

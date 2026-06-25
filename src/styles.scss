@@ -1,0 +1,49 @@
+@import '../public/css/print.scss';
+
+$track-color: #f8f9fa;
+$thumb-color: #ced4da;
+$radius-full: 10px;
+
+.text {
+  &-vertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+  }
+  &-stack {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    text-transform: uppercase;
+    letter-spacing: -0.25rem;
+    white-space: nowrap;
+    line-height: 1;
+  }
+}
+
+html, body {
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-color $track-color; /* thumb | track */
+}
+
+body {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard */
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+
+  &-track {
+    background: $track-color;
+    border-radius: $radius-full;
+  }
+  &-thumb {
+    background-color: $thumb-color;
+    border-radius: $radius-full;
+    border: 2px solid $track-color;
+    &:hover { background-color: #adb5bd; }
+  }
+}

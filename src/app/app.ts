@@ -4,17 +4,14 @@ import { AsyncPipe } from '@angular/common';
 import { ToastComponent } from './shared/components';
 import { InactivityService, LoadingService } from './core/services';
 
-
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, AsyncPipe, ToastComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss',
 })
 export class App {
-
   // Injecting services here starts the service constructor logic
   protected incativityService = inject(InactivityService);
   protected loadingService = inject(LoadingService);
-
 }
