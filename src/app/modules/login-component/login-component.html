@@ -15,7 +15,7 @@
           <div class="card-body p-4">
             <h4 class="mb-4 text-center">System Authentication</h4>
             
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
               <!-- Employee ID / Terminal ID -->
               <div class="mb-3">
                 <label class="form-label text-info small fw-bold">User / Employee ID</label>
@@ -23,7 +23,7 @@
 
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-badge"></i></span>
                   <input type="text" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75" 
-                    formControlName="username" placeholder="EMP-XXXX" required>
+                    formControlName="username" placeholder="EMP-XXXX" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
                 </div>
 
                 @if(usernameCtrl.invalid && (usernameCtrl.touched || usernameCtrl.dirty)){
@@ -39,8 +39,8 @@
                 <div class="input-group border-bottom border-secondary bg-transparent">
 
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-shield-lock"></i></span>
-                  <input type="text" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75"
-                    formControlName="password" placeholder="••••••••" required>
+                  <input type="password" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75"
+                    formControlName="password" placeholder="••••••••" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
                 </div>
 
                 @if(passwordCtrl.invalid && (passwordCtrl.touched || passwordCtrl.dirty)){

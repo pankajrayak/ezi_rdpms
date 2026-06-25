@@ -3,7 +3,7 @@ import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/co
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService } from '@rdpms/utility';
+import { DataService } from '@rdpms/shared/utility';
 import { NgxPrintDirective } from 'ngx-print';
 import { finalize } from 'rxjs';
 

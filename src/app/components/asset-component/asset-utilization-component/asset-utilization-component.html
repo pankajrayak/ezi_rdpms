@@ -1,6 +1,4 @@
 <div class="container-fluid p-3 bg-light">
-
-    <!-- Page Header -->
     <page-header 
         title="Asset Utilization" 
         subtitle="Efficiency metrics and uptime analytics for railway assets" 
@@ -20,14 +18,14 @@
                             [class.is-invalid]="zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())" 
                             [class.is-valid]="zoneCtrl.valid() && (zoneCtrl.touched() || zoneCtrl.dirty())">
                             <option value="" disabled selected>Select Zone</option>
-                            @for (zone of zonesRes.value(); track zone) {
+                            @for(zone of zonesRes.value(); track zone) {
                                 <option [value]="zone.zone">{{ zone.zone }}</option>
                             }
                         </select>
                         @if(zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty() )){
                             @let firstError = zoneCtrl.errors()?.[0];
                             <div class="invalid-feedback small m-0">
-                                @if(firstError?.kind === 'required') { required field }
+                                @if(firstError?.kind === 'required') { {{firstError?.message}} }
                             </div>
                         }
                     </div>
@@ -39,14 +37,14 @@
                             [class.is-invalid]="divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())" 
                             [class.is-valid]="divisionCtrl.valid() && (divisionCtrl.touched() || divisionCtrl.dirty())">
                             <option value="" disabled selected>Select Division</option>
-                            @for (division of divisionsRes.value(); track division) {
+                            @for(division of divisionsRes.value(); track division) {
                                 <option [value]="division">{{ division }}</option>
                             }
                         </select>
                         @if(divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of divisionCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
+                                @for(err of divisionCtrl.errors(); track err.kind) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
                                 }
                             </div>
                         }
@@ -59,14 +57,14 @@
                             [class.is-invalid]="stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())" 
                             [class.is-valid]="stationCtrl.valid() && (stationCtrl.touched() || stationCtrl.dirty())">
                             <option value="" disabled selected>Select Station</option>
-                            @for (station of stationsRes.value(); track station) {
+                            @for(station of stationsRes.value(); track station) {
                                 <option [value]="station">{{ station }}</option>
                             }
                         </select>
                         @if(stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of stationCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
+                                @for(err of stationCtrl.errors(); track err.kind) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
                                 }
                             </div>
                         }
@@ -80,14 +78,14 @@
                             [class.is-valid]="assetTypeCtrl.valid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())">
                             <option value="" disabled selected>Select Asset Type</option>
                             <option >All</option>
-                            @for (assetType of assetTypesRes.value(); track assetType) {
+                            @for(assetType of assetTypesRes.value(); track assetType) {
                                 <option [value]="assetType">{{ assetType }}</option>
                             }
                         </select>
                         @if(assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of assetTypeCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
+                                @for(err of assetTypeCtrl.errors(); track err.kind) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
                                 }
                             </div>
                         }
@@ -101,14 +99,14 @@
                             [class.is-valid]="assetNumberCtrl.valid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())">
                             <option value="" disabled selected>Select Asset Number</option>
                             <option >All</option>
-                            @for (assetNumber of assetNumbersRes.value(); track assetNumber) {
+                            @for(assetNumber of assetNumbersRes.value(); track assetNumber) {
                                 <option [value]="assetNumber">{{ assetNumber }}</option>
                             }
                         </select>
                         @if(assetNumberCtrl.invalid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of assetNumberCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
+                                @for(err of assetNumberCtrl.errors(); track err.kind) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
                                 }
                             </div>
                         }
@@ -122,8 +120,9 @@
                             [class.is-valid]="fromDtCtrl.valid() && (fromDtCtrl.touched() || fromDtCtrl.dirty())">
                         @if(fromDtCtrl.invalid() && (fromDtCtrl.touched() || fromDtCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of fromDtCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
+                                @for(err of fromDtCtrl.errors(); track err.kind) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
+                                    @else if(err?.kind === 'maxDate') { {{err?.message}} }
                                     @else{ {{err.kind}} }
                                 }
                             </div>
@@ -138,9 +137,10 @@
                             [class.is-valid]="toDtCtrl.valid() && (toDtCtrl.touched() || toDtCtrl.dirty())">
                         @if(toDtCtrl.invalid() && (toDtCtrl.touched() || toDtCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of toDtCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
-                                    @if (err?.kind === 'dateRange') { date can not be less then {{this.model().fromDate | date : 'yyyy-MM-dd'}} }
+                                @for(err of toDtCtrl.errors(); track err) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
+                                    @else if(err?.kind === 'minDate') { {{err?.message}} }
+                                    @else{ {{err.kind}} }
                                 }
                             </div>
                         }
@@ -153,25 +153,24 @@
                             [class.is-invalid]="viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())" 
                             [class.is-valid]="viewCtrl.valid() && (viewCtrl.touched() || viewCtrl.dirty())">
                             <option value="" disabled selected>Select View Type</option>
-                            @for (viw of viewsRes.value(); track viw) {
+                            @for(viw of viewsRes.value(); track viw) {
                                 <option [value]="viw">{{ viw }}</option>
                             }
                         </select>
                         @if(viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty() )){
                             <div class="invalid-feedback small m-0">
-                                @for (err of viewCtrl.errors(); track err.kind) {
-                                    @if (err?.kind === 'required') { required field }
+                                @for(err of viewCtrl.errors(); track err.kind) {
+                                    @if(err?.kind === 'required') { {{err?.message}} }
                                 }
                             </div>
                         }
                     </div>
 
-                    <!-- Button -->
                     <div class="col">
                         <label class="small invisible d-block">Search</label>
                         <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold shadow-sm" [disabled]="isSubmitting()">
-                            @if(isSubmitting()) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
-                            @else { Search }
+                            @if(isSubmitting()) { <span class="spinner-border spinner-border-sm"></span> Searching... } 
+                            @else { <span class="bi bi-search"></span> Search }
                         </button>
                     </div>
                 </div>

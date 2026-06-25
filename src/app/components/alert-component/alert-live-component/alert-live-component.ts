@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { NgxPrintDirective } from 'ngx-print';
+import { NgbActiveModal, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService } from '@rdpms/utility';
+import { DataService } from '@rdpms/shared/utility';
 
 @Component({
   selector: 'alert-live-component',
-  imports: [CommonModule, ReactiveFormsModule, PageHeaderComponent, NgxPrintDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, PageHeaderComponent, NgxPrintDirective, NgbModalModule],
   templateUrl: './alert-live-component.html',
   styleUrl: './alert-live-component.css',
 })
 export class AlertLiveComponent implements OnInit {
 
   private fb = inject(FormBuilder);
+  private modalService = inject(NgbModal);
   private dataService = inject(DataService);
   
   lists = { 
@@ -23,6 +25,7 @@ export class AlertLiveComponent implements OnInit {
     stations: [] as any[], 
     alertTypes: [] as any[],
     assetTypes: [] as any[],
+    feedbackList:[] as any[],
   };
 
   searchForm: FormGroup = this.fb.nonNullable.group({
@@ -48,6 +51,8 @@ export class AlertLiveComponent implements OnInit {
     this.dataService.getZones().subscribe((data: any) => this.lists.zones = data);
     this.dataService.getAlertTypes().subscribe((data: any) => this.lists.alertTypes = data);
     this.dataService.getAssetTypes().subscribe((data: any) => this.lists.assetTypes = data);
+
+    this.lists.feedbackList = ['Wrong Sensor Reading', 'Software Bug', "Temporaray Bug", 'Other Reson'];
   }
 
   
@@ -96,49 +101,64 @@ export class AlertLiveComponent implements OnInit {
     })
   }
 
+  openFeedbackModal(templateRef: TemplateRef<any>, record: any, feedbackType: string){
+    const modalRef = this.modalService.open(templateRef, { keyboard: false, centered: true, scrollable: true, fullscreen: false, animation: true, backdrop: 'static', size: 'md', role: 'alertdialog' });
+    modalRef.result
+      .then((reason: any) =>{ console.log(reason); })
+      .catch((reason: any) => { console.log(reason); });
+  }
+
+  feedbackSubmit(form: NgForm, activeModal: NgbActiveModal){
+    if(form.invalid){
+      form.form.markAllAsTouched(); return;
+    }
+    console.log(form.value, activeModal);
+    activeModal.close('success');
+  }
+
   
   // Dummy Table Data
   records = [
     { sNo: 1, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 2, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 2, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 3, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 4, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 4, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 5, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 6, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 6, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 7, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 8, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 8, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 9, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 10, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 10, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 11, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 12, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 12, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 13, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 14, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 14, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 15, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 16, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 16, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 17, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 18, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 18, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 19, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 20, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 20, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 21, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 22, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 22, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 23, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 24, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 24, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 25, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 26, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 26, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 27, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 28, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 28, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 29, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 30, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 30, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 31, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 32, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 32, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 33, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 34, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 34, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 35, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 36, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 36, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 37, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 38, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 38, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
     { sNo: 39, zone: 'Central', div: 'Mumbai', stn: 'CSMT', alert: 'Failure', assetType: 'Point Machine', assetNo: 'PM-101', incTime: '2026-05-01 10:00', rectTime: '2026-05-01 12:00', duration: '2h', cause: 'Voltage Drop', feedback: 'T' },
-    { sNo: 40, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: 'N/A', duration: '--', cause: 'Loose Conn', feedback: 'M' },
+    { sNo: 40, zone: 'Western', div: 'Ratlam', stn: 'Ujjain', alert: 'Predictive', assetType: 'Track Ckt', assetNo: 'TC-502', incTime: '2026-05-02 08:30', rectTime: null, duration: null, cause: null, feedback: 'M' },
   ];
 
 }

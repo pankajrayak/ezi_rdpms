@@ -15,14 +15,16 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
+      "@rdpms/services": ["./src/app/services/index.ts"],
       "@rdpms/routes": ["./src/app/routes/index.ts"],
-      "@rdpms/utility": ["./src/app/utility/index.ts"],
       "@rdpms/core/guards": ["./src/app/core/guards/index.ts"],
       "@rdpms/core/models": ["./src/app/core/models/index.ts"],
       "@rdpms/core/services": ["./src/app/core/services/index.ts"],
       "@rdpms/core/interfaces": ["./src/app/core/interfaces/index.ts"],
-      "@rdpms/core/decorators": ["./src/app/core/decorators/index.ts"],
       "@rdpms/core/interceptors": ["./src/app/core/interceptors/index.ts"],
+      "@rdpms/shared/pipes": ["./src/app/shared/pipes/index.ts"],
+      "@rdpms/shared/utility": ["./src/app/shared/utility/index.ts"],
+      "@rdpms/shared/directives": ["./src/app/shared/directives/index.ts"],
       "@rdpms/shared/components": ["./src/app/shared/components/index.ts"],
     }
   },

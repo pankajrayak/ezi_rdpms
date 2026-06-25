@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService } from '@rdpms/utility';
+import { DataService } from '@rdpms/shared/utility';
 import { NgxPrintDirective } from 'ngx-print';
 import { finalize } from 'rxjs';
 

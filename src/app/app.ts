@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { InactivityService, LoadingService } from '@rdpms/core/services';
-import { ToastComponent } from '@rdpms/shared/components';
+import { ToastComponent } from './shared/components';
+import { InactivityService, LoadingService } from './core/services';
+
 
 @Component({
   selector: 'app-root',

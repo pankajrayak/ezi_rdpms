@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
-import { AuthService } from '@rdpms/core/services';
+import { AuthService } from '@rdpms/services';
 
 export const authGuard = (route: any, params: any): boolean | UrlTree => {
 

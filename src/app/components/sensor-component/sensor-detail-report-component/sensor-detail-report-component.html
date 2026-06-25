@@ -1,6 +1,5 @@
 <div class="container-fluid p-3 bg-light">
 
-    <!-- Page Header -->
     <page-header 
         title="IOT/Sensor Detail Report" 
         subtitle="Comprehensive technical logs for individual smart sensors" 
@@ -138,12 +137,11 @@
                         }
                     </div>
 
-                    <!-- Button -->
                     <div class="col">
                         <label class="small invisible d-block">Search</label>
                         <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" [disabled]="searchForm.disabled">
-                            @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
-                            @else { Search }
+                            @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Searching... } 
+                            @else { <span class="bi bi-search"></span> Search }
                         </button>
                     </div>
                 </div>

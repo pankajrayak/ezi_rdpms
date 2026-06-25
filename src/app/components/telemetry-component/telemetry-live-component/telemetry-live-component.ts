@@ -2,14 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService } from '@rdpms/utility';
+import { DataService } from '@rdpms/shared/utility';
 import { finalize } from 'rxjs';
-import { RailwaySimulationComponent } from '../../../shared/components/railway-simulation-component/railway-simulation-component';
-import { StationLayoutComponent } from '../../../shared/components/station-layout-component/station-layout-component';
 
 @Component({
   selector: 'app-telemetry-live-component',
-  imports: [CommonModule, ReactiveFormsModule, PageHeaderComponent, RailwaySimulationComponent, StationLayoutComponent],
+  imports: [CommonModule, ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './telemetry-live-component.html',
   styleUrl: './telemetry-live-component.css',
 })

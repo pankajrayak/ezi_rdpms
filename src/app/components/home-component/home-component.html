@@ -1,5 +1,4 @@
 <div class="container-fluid py-3 bg-light">
-  <!-- Page Header -->
   <page-header 
       title="Health Dashboard" 
       subtitle="Overview of railway asset performance and analytics" 
@@ -12,7 +11,6 @@
       <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
         <div class="row g-2 align-items-baseline">
           
-          <!-- Zone -->
           <div class="col-sm-6 col-md-4 col-lg-3">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
@@ -34,7 +32,6 @@
             }
           </div>
 
-          <!-- Division -->
           <div class="col-sm-6 col-md-4 col-lg-3">
              <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
@@ -50,7 +47,6 @@
             }
           </div>
 
-          <!-- Station -->
           <div class="col-sm-6 col-md-4 col-lg-3">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station"
@@ -66,12 +62,11 @@
             }
           </div>
 
-          <!-- Button -->
           <div class="col">
             <label class="small invisible d-block">Search</label>
             <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold shadow-sm" [disabled]="searchForm.disabled">
-              @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
-              @else { Search }
+              @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Searching... } 
+              @else { <span class="bi bi-search"></span> Search }
             </button>
           </div>
 

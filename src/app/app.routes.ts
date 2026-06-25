@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, roleGuard } from '@rdpms/core/guards';
+import { authGuard, roleGuard } from './core/guards';
 
 export const APP_ROUTES: Routes = [
     { 

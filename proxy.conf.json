@@ -1,0 +1,13 @@
+{
+  "/rdpms/backend/api/": {
+    "target": "http://xx.xx.xx.xxx:8080",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/rdpms/mis/api/": {
+    "target": "http://xx.xx.xx.xxx:8080",
+    "secure": false,
+    "logLevel": "debug"
+    
+  }  
+}

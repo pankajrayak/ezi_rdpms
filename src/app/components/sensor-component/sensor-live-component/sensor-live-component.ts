@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService } from '@rdpms/utility';
+import { DataService } from '@rdpms/shared/utility';
 
 @Component({
   selector: 'app-sensor-live-component',

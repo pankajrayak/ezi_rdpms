@@ -1,5 +1,4 @@
 <div class="container-fluid p-3 bg-light">
-  <!-- Page Header -->
   <page-header 
     title="Alert Detail Report" 
     subtitle="Comprehensive log of asset failures and maintenance feedback" 
@@ -12,7 +11,6 @@
       <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
         <div class="row g-2 align-items-baseline">
           
-          <!-- Zone -->
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
@@ -29,7 +27,6 @@
             }
           </div>
 
-          <!-- Division -->
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
@@ -46,7 +43,6 @@
             }
           </div>
 
-          <!-- Station -->
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
@@ -63,7 +59,6 @@
             }
           </div>
 
-          <!-- Alert Type -->
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
@@ -80,7 +75,6 @@
             }
           </div>
 
-          <!-- Asset Type -->
           <div class="col-sm-6 col-md-3 col-lg-2">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType" (change)="onAssetTypeChange()"
@@ -196,12 +190,11 @@
             }
           </div>
 
-          <!-- Button -->
           <div class="col m-0">
             <label class="small invisible d-block">Search</label>
             <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold shadow-sm" [disabled]="searchForm.disabled">
-              @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
-              @else { Search }
+              @if(searchForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Searching... } 
+              @else { <span class="bi bi-search"></span> Search }
             </button>
           </div>
 
@@ -211,7 +204,6 @@
   </div>
 
   @if(records.length){
-    <!-- Summary Bar -->
     <div class="row g-3 mb-4">
       <div class="col-12">
         <div class="card border-0 shadow-sm border-start border-4 border-primary bg-primary bg-opacity-10">
@@ -241,7 +233,6 @@
             </div>
           </div>
 
-          <!-- Action Buttons for Report -->
           <div class="d-flex gap-2">
             <button class="btn btn-outline-secondary btn-sm d-flex align-items-center" ngxPrint
               printSectionId="print-section" printTitle="Alert Detail Report" [useExistingCss]="true">
@@ -263,7 +254,6 @@
             <table class="table table-bordered table-hover align-top mb-0 small">
               <thead class="table-light text-uppercase small align-top sticky-top">
                   <tr>
-                    <!-- Vertical Headers -->
                     <th class="text-center">S.No</th>
                     <th class="text-center">Zone</th>
                     <th class="text-center">Division</th>
@@ -313,6 +303,5 @@
       </div>
 
     </div>
-
   }
 </div>

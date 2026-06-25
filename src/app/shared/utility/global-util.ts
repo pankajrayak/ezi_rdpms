@@ -1,6 +1,6 @@
 import { DOCUMENT, Inject, Injectable } from '@angular/core';
 import { ToastService } from '@rdpms/core/services';
-import { ConstantUtil } from '@rdpms/utility';
+import { ERROR_MESSAGES } from './constants/error-message.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -72,6 +72,45 @@ export class GlobalUtil {
       .filter(([_, v]) => this.isDefined(v))
       .reduce((acc, [k, v]) => ({ ...acc, [k]: v}), {});
   }
+
+  sortArrayByKey(array: any[], key: string, order: 'asc' | 'desc' = 'asc') {
+    return [...array].sort((a, b) => {
+      
+      if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+        return order === 'asc' ? a[key] - b[key] : b[key] - a[key];
+      }
+      
+      if (typeof a[key] === 'string' && typeof b[key] === 'string') {
+        return order === 'asc' 
+          ? a[key].localeCompare(b[key]) 
+          : b[key].localeCompare(a[key]);
+      }
+      return 0;
+    });
+  }
+
+  getFilteredListByKey(list: any[], term: string): any[] {
+    if(!list?.length || !term) return list;
+
+    const search = term.toLowerCase();
+
+    return list.filter(item => {
+      const deepCheck = (val: any): boolean => {
+        if(!val) return false;
+
+        if(typeof val === 'string' || val === 'number') {
+          return val.toString().toLowerCase().includes(search);
+        }
+
+        if(typeof val === 'object'){
+          return Object.values(val).some((childVal: any) => deepCheck(childVal));
+        }
+        return false;
+      };
+      return deepCheck(item);
+    });
+  }
+
 
   saveFile(file: any, filename: string, extention?: string, prompt = false) {
     if(!extention){
@@ -149,29 +188,29 @@ export class GlobalUtil {
   }
 
   getErrorMessage(error: any): string {
-    if(error?.status === 0 ) return ConstantUtil.ERRORS.NETWORK;
-    if(error?.status === 500) return ConstantUtil.ERRORS.SERVER;
+    if(error?.status === 0 ) return ERROR_MESSAGES.ERROR_NETWORK;
+    if(error?.status === 500) return ERROR_MESSAGES.ERROR_SERVER;
 
     const rawError = error?.errorMessage || error?.message || error || '';
 
     if(typeof rawError === 'string') {
       try{
         const parsed = JSON.parse(rawError);
-        return parsed.message || ConstantUtil.ERRORS.GENERAL;
+        return parsed.message || ERROR_MESSAGES.ERROR_GENERAL;
       }catch {
-        return rawError || ConstantUtil.ERRORS.GENERAL;
+        return rawError || ERROR_MESSAGES.ERROR_GENERAL;
       }
     }
-    return ConstantUtil.ERRORS.GENERAL;
+    return ERROR_MESSAGES.ERROR_GENERAL;
   }
 
   async getErrorMessageFromBlob(blob: Blob): Promise<string> {
     try{
       const text = await blob.text();
       const json = JSON.parse(text);
-      return json.errorMessage || json.message || ConstantUtil.ERRORS.GENERAL;
+      return json.errorMessage || json.message || ERROR_MESSAGES.ERROR_GENERAL;
     }catch {
-      return ConstantUtil.ERRORS.GENERAL;
+      return ERROR_MESSAGES.ERROR_GENERAL;
     }
   }
 

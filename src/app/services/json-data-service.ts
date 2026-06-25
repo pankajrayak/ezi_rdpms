@@ -1,17 +1,19 @@
-import { Injectable } from '@angular/core';
-import { HttpRequestCache } from '@rdpms/core/decorators';
-import { CacheHttpService } from '@rdpms/core/services';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { IS_CACHE_ENABLE, CACHE_TIME_MS } from '../shared/utility/context-tokens';
+// import { CacheHttpService } from '@rdpms/core/services';
+
 
 @Injectable({ providedIn: 'root' })
-export class DataService extends CacheHttpService {
+export class DataService {
 
-  @HttpRequestCache(10 * 60 * 10000)
+  private http = inject(HttpClient);
+
   getZones(): Observable<any[]> {
     return this.http.get<any[]>('json-data/zones.json');
   }
 
-  @HttpRequestCache()
   getDivisions(zone: string): Observable<any[]> {
     return this.http.get<Record<string, any[]>>('json-data/divisions.json').pipe(
       map(data => data[zone] || [])
@@ -20,17 +22,18 @@ export class DataService extends CacheHttpService {
 
   // Get Stations filtered by Division
   getStations(division: string): Observable<any[]> {
-    return this.getCached<Record<string, any[]>>('json-data/stations.json').pipe(
+    return this.http.get<Record<string, any[]>>('json-data/stations.json').pipe(
       map(data => data[division] || [])
     );
   }
 
   getAlertTypes(): Observable<string[]> {
-    return this.getCached<string[]>('json-data/alert-types.json');
+    const context =  new HttpContext().set(IS_CACHE_ENABLE, true).set(CACHE_TIME_MS, 1000 * 60 * 10);
+    return this.http.get<string[]>('json-data/alert-types.json', { context: context });
   }
 
   getAssetTypes(): Observable<string[]> {
-    return this.getCached<string[]>('json-data/asset-types.json');
+    return this.http.get<string[]>('json-data/asset-types.json');
   }
 
   searchData(payload: any) : Observable<any> {
