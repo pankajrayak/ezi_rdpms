@@ -48,7 +48,7 @@ export class AssetUtilizationComponent {
     required(schemaPath.assetNumber, { message: 'required field' });
     required(schemaPath.fromDate, { message: 'required field' });
     required(schemaPath.view, { message: 'required field' });
-    required(schemaPath.toDate, { message: 'required field', when: () => !!this.model().fromDate });
+    // required(schemaPath.toDate, { message: 'required field', when: () => !!this.model().fromDate });
   });
 
   f = form(this.model, (schemaPath) => {
@@ -61,19 +61,19 @@ export class AssetUtilizationComponent {
     //   schema((ss) => { required(ss, { message: 'required field' }); })
     // );
 
-    validate(schemaPath.fromDate, () => {
-      const state = this.model();
-      return new Date(state.fromDate)?.getTime() > new Date(state.toDate)?.getTime()
-        ? { kind: 'maxDate', message: `date can not be more than ${state.toDate}` }
-        : null;
-    });
+    // validate(schemaPath.fromDate, () => {
+    //   const state = this.model();
+    //   return new Date(state.fromDate)?.getTime() > new Date(state.toDate)?.getTime()
+    //     ? { kind: 'maxDate', message: `date can not be more than ${state.toDate}` }
+    //     : null;
+    // });
 
-    validate(schemaPath.toDate, () => {
-      const state = this.model();
-      return new Date(state.toDate)?.getTime() < new Date(state.fromDate)?.getTime()
-        ? { kind: 'minDate', message: `date can not be less than ${state.fromDate}` }
-        : null;
-    });
+    // validate(schemaPath.toDate, () => {
+    //   const state = this.model();
+    //   return new Date(state.toDate)?.getTime() < new Date(state.fromDate)?.getTime()
+    //     ? { kind: 'minDate', message: `date can not be less than ${state.fromDate}` }
+    //     : null;
+    // });
 
     // validate(s.fromDate, this.maxDateValidation(s.toDate));
     // validate(s.toDate, this.minDateValidation(s.fromDate));

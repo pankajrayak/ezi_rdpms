@@ -38,15 +38,22 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
   get viewCtrl() { return this.searchForm.controls['view']; }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((res) => (this.lists.zones = res));
-    this.dataService.getAssetTypes().subscribe((res) => (this.lists.assetTypes = res));
+    this.dataService.getZones().subscribe((res) => {
+      this.lists.zones = res; this.zoneCtrl.enable(); 
+    });
+
+    this.dataService.getAssetTypes().subscribe((res) => {
+      this.lists.assetTypes = res; this.assetTypectrl.enable(); 
+    });
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
       this.searchForm.setValue(this.form);
+      this.zoneCtrl?.disable(); 
       this.divisionCtrl?.disable();
       this.stationCtrl?.disable();
+      this.assetTypectrl?.disable();
     }, 0);
   }
 
@@ -58,8 +65,7 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl?.value) {
       this.dataService.getDivisions(this.zoneCtrl?.value).subscribe((res) => {
-        this.lists.divisions = res;
-        this.divisionCtrl?.enable();
+        this.lists.divisions = res; this.divisionCtrl?.enable();
       });
     }
   }
@@ -70,8 +76,7 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl?.value) {
       this.dataService.getStations(this.divisionCtrl?.value).subscribe((res) => {
-        this.lists.stations = res;
-        this.stationCtrl?.enable();
+        this.lists.stations = res; this.stationCtrl?.enable();
       });
     }
   }
@@ -83,20 +88,19 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
     }
     this.searchForm.form.disable();
     this.results = {};
-    this.getData();
+    // this.getData();
   }
 
   getData() {
-    this.dataService
-      .getPagedRecord(1, 10, { station: 'CSMT' })
-      .pipe(finalize(() => this.searchForm.control.enable()))
-      .subscribe({
-        next: (results) => {
-          this.results = results || {};
-          this.resetForm();
-        },
-        error: (err) => console.error('Search failed:', err),
-      });
+    this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }).pipe(
+      finalize(() => this.searchForm.control.enable())
+    ).subscribe({
+      next: (results) => {
+        this.results = results || {};
+        this.resetForm();
+      },
+      error: (err) => console.error('Search failed:', err),
+    });
   }
 
   resetForm() {

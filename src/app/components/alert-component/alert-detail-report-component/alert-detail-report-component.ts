@@ -25,11 +25,11 @@ export class AlertDetailReportComponent {
   };
 
   searchForm: FormGroup = this.fb.nonNullable.group({
-    zone: ['', Validators.required],
+    zone: [{ value: '', disabled: true }, Validators.required],
     division: [{ value: '', disabled: true }, Validators.required],
     station: [{ value: '', disabled: true }, Validators.required],
-    alertType: ['All', Validators.required],
-    assetType: ['All', Validators.required],
+    alertType: [{ value: 'All', disabled: true }, Validators.required],
+    assetType: [{ value: 'All', disabled: true }, Validators.required],
     assetNumber: ['All', Validators.required],
     cause: ['All', Validators.required],
     alertFeedback: ['All', Validators.required],
@@ -39,50 +39,33 @@ export class AlertDetailReportComponent {
     toTime: [''],
   });
 
-  get form() {
-    return this.searchForm.controls;
-  }
-  get zoneCtrl() {
-    return this.form['zone'];
-  }
-  get divisionCtrl() {
-    return this.form['division'];
-  }
-  get stationCtrl() {
-    return this.form['station'];
-  }
-  get alertTypeCtrl() {
-    return this.form['alertType'];
-  }
-  get assetTypeCtrl() {
-    return this.form['assetType'];
-  }
-  get assetNumberCtrl() {
-    return this.form['assetNumber'];
-  }
-  get causeCtrl() {
-    return this.form['cause'];
-  }
-  get alertFeedbackCtrl() {
-    return this.form['alertFeedback'];
-  }
-  get fromDateCtrl() {
-    return this.form['fromDate'];
-  }
-  get fromTimeCtrl() {
-    return this.form['fromTime'];
-  }
-  get toDateCtrl() {
-    return this.form['toDate'];
-  }
-  get toTimeCtrl() {
-    return this.form['toTime'];
-  }
+  get form() { return this.searchForm.controls; }
+  get zoneCtrl() { return this.form['zone']; }
+  get divisionCtrl() { return this.form['division']; }
+  get stationCtrl() { return this.form['station']; }
+  get alertTypeCtrl() { return this.form['alertType']; }
+  get assetTypeCtrl() { return this.form['assetType']; }
+  get assetNumberCtrl() { return this.form['assetNumber']; }
+  get causeCtrl() { return this.form['cause']; }
+  get alertFeedbackCtrl() { return this.form['alertFeedback']; }
+  get fromDateCtrl() { return this.form['fromDate']; }
+  get fromTimeCtrl() { return this.form['fromTime']; }
+  get toDateCtrl() { return this.form['toDate']; }
+  get toTimeCtrl() { return this.form['toTime']; }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((data: any) => (this.lists.zones = data));
-    this.dataService.getAlertTypes().subscribe((data: any) => (this.lists.alertTypes = data));
-    this.dataService.getAssetTypes().subscribe((data: any) => (this.lists.assetTypes = data));
+    this.dataService.getZones().subscribe((data: any) => {
+      this.lists.zones = data; this.zoneCtrl.enable();
+    });
+
+    this.dataService.getAlertTypes().subscribe((data: any) => {
+      this.lists.alertTypes = data; this.alertTypeCtrl.enable();
+    });
+
+    this.dataService.getAssetTypes().subscribe((data: any) => {
+      this.lists.assetTypes = data; this.assetTypeCtrl.enable();
+    });
+
   }
 
   onZoneChange(): void {
@@ -93,8 +76,7 @@ export class AlertDetailReportComponent {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data;
-        this.divisionCtrl?.enable();
+        this.lists.divisions = data; this.divisionCtrl?.enable();
       });
     }
   }
@@ -105,8 +87,7 @@ export class AlertDetailReportComponent {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data;
-        this.stationCtrl?.enable();
+        this.lists.stations = data; this.stationCtrl?.enable();
       });
     }
   }
@@ -129,13 +110,12 @@ export class AlertDetailReportComponent {
 
     this.searchForm.disable();
     const payload = this.searchForm.getRawValue();
-    this.dataService
-      .searchData(payload)
-      .pipe(finalize(() => this.searchForm.enable()))
-      .subscribe({
-        next: (res) => console.log('Search complete', res),
-        error: (err) => console.error('Search failed', err),
-      });
+    this.dataService.searchData(payload).pipe(
+      finalize(() => this.searchForm.enable())
+    ).subscribe({
+      next: (res) => console.log('Search complete', res),
+      error: (err) => console.error('Search failed', err),
+    });
   }
 
   records = [

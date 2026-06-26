@@ -62,7 +62,6 @@
                             [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
                             [class.is-valid]="assetTypeCtrl.valid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)">
                             <option value="" disabled>Select</option>
-                            <option value="All">All</option>
                             @for (ast of lists.assetTypes; track ast) { <option [value]="ast">{{ast}}</option> }
                         </select>
                         @if(assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)){

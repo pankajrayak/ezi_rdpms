@@ -26,9 +26,9 @@ export class HomeComponent implements HasUnsavedChanges {
   };
 
   searchForm: FormGroup = this.fb.group({
-    zone: ['', Validators.required],
-    division: [{ value: '', disabled: true }, [Validators.required]],
-    station: [{ value: '', disabled: true }, { validators: [Validators.required] }],
+    zone: [{ value: '', disabled: true }, Validators.required],
+    division: [{ value: '', disabled: true }, { validators: [Validators.required] }],
+    station: [{ value: '', disabled: true }, Validators.compose([Validators.required])],
   });
 
   topCards: any = [];
@@ -67,7 +67,9 @@ export class HomeComponent implements HasUnsavedChanges {
   ngOnInit() {
     this.dataService.getZones()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((res: any) => (this.lists.zones = res));
+      .subscribe((res: any) => {
+        this.lists.zones = res; this.zoneCtrl.enable();
+      });
   }
 
   onZoneChange(): void {
@@ -78,8 +80,7 @@ export class HomeComponent implements HasUnsavedChanges {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((res: any) => {
-        this.lists.divisions = res;
-        this.divisionCtrl?.enable();
+        this.lists.divisions = res; this.divisionCtrl?.enable();
       });
     }
   }
@@ -90,8 +91,7 @@ export class HomeComponent implements HasUnsavedChanges {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((res: any) => {
-        this.lists.stations = res;
-        this.stationCtrl?.enable();
+        this.lists.stations = res; this.stationCtrl?.enable();
       });
     }
   }

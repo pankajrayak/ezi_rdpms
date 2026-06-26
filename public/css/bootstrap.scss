@@ -1,0 +1,25 @@
+// 1. Define your custom breakpoint map (values must be in ascending order)
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+  xxxl: 1900px // Your new breakpoint
+);
+
+// 2. Define the max container width for the new breakpoint 
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px,
+  xxxl: 1820px // Max width for your new 1900px screen tier
+);
+
+$enable-validation-icons: false;
+
+// 3. Import Bootstrap source files
+@import "../../node_modules/bootstrap/scss/bootstrap";

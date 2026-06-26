@@ -9,9 +9,9 @@
   <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
       <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
-        <div class="row g-2 align-items-baseline">
+        <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
           
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
               [class.is-invalid]="zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)"
@@ -27,7 +27,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
               [class.is-invalid]="divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)"
@@ -43,7 +43,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
               [class.is-invalid]="stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)"
@@ -59,7 +59,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
               [class.is-invalid]="alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)"
@@ -75,7 +75,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType" (change)="onAssetTypeChange()"
               [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
@@ -91,7 +91,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ASSET NUMBER</label>
             <select class="form-select form-select-sm" formControlName="assetNumber" (change)="onAssetNumberChange()"
               [class.is-invalid]="assetNumberCtrl.invalid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)"
@@ -108,7 +108,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">CAUSE</label>
             <select class="form-select form-select-sm" formControlName="cause" (change)="onCauseChange()"
               [class.is-invalid]="causeCtrl.invalid && (causeCtrl.touched || causeCtrl.dirty)"
@@ -124,8 +124,8 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
-            <label class="small fw-bold text-muted">ALERT FEEDBACK</label>
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
+            <label class="small fw-bold text-muted text-nowrap">ALERT FEEDBACK</label>
             <select class="form-select form-select-sm" formControlName="alertFeedback"
               [class.is-invalid]="alertFeedbackCtrl.invalid && (alertFeedbackCtrl.touched || alertFeedbackCtrl.dirty)"
               [class.is-valid]="alertFeedbackCtrl.valid && (alertFeedbackCtrl.touched || alertFeedbackCtrl.dirty)">
@@ -142,7 +142,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">FROM DATE</label>
             <input type="date" class="form-control form-control-sm" formControlName="fromDate"
               [class.is-invalid]="fromDateCtrl.invalid && (fromDateCtrl.touched || fromDateCtrl.dirty)"
@@ -154,7 +154,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">FROM TIME</label>
             <input type="time" class="form-control form-control-sm" formControlName="fromTime"
               [class.is-invalid]="fromTimeCtrl.invalid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)"
@@ -166,7 +166,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">TO DATE</label>
             <input type="date" class="form-control form-control-sm" formControlName="toDate"
               [class.is-invalid]="toDateCtrl.invalid && (toDateCtrl.touched || toDateCtrl.dirty)"
@@ -178,7 +178,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-3 col-lg-2">
+          <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">TO TIME</label>
             <input type="time" class="form-control form-control-sm" formControlName="toTime"
               [class.is-invalid]="toTimeCtrl.invalid && (toTimeCtrl.touched || toTimeCtrl.dirty)"
@@ -248,9 +248,9 @@
       </div>
 
       <div class="card-body p-3">
-        <div class="position-relative border rounded" style="max-height: 500px;">
-
-          <div id="print-section" class="table-responsive" style="max-height: 500px;">
+        <div class="position-relative border rounded">
+          
+          <div id="print-section" class="table-responsive">
             <table class="table table-bordered table-hover align-top mb-0 small">
               <thead class="table-light text-uppercase small align-top sticky-top">
                   <tr>
@@ -299,6 +299,7 @@
               </tbody>
             </table>
           </div>
+
         </div>
       </div>
 

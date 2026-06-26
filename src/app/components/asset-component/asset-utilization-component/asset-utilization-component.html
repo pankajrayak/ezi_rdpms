@@ -9,9 +9,9 @@
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-3">
             <form (submit)="onSubmit(); $event.preventDefault()" novalidate>
-                <div class="row g-2 align-items-baseline">
+                <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
           
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                          @let zoneCtrl = f.zone();
                         <label class="small fw-bold text-muted">ZONE</label>
                         <select [formField]="f.zone" class="form-select form-select-sm" (change)="onZoneChange()"
@@ -30,7 +30,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let divisionCtrl = f.division();
                         <label class="small fw-bold text-muted">DIVISION</label>
                         <select [formField]="f.division" class="form-select form-select-sm" (change)="onDivisionChange()"
@@ -50,7 +50,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let stationCtrl = f.station();
                         <label class="small fw-bold text-muted">STATION</label>
                         <select [formField]="f.station" class="form-select form-select-sm"
@@ -70,7 +70,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let assetTypeCtrl = f.assetType();
                         <label class="small fw-bold text-muted">ASSET TYPE</label>
                         <select [formField]="f.assetType" class="form-select form-select-sm"
@@ -91,7 +91,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let assetNumberCtrl = f.assetNumber();
                         <label class="small fw-bold text-muted">ASSET NUMBER</label>
                         <select [formField]="f.assetNumber" class="form-select form-select-sm"
@@ -112,7 +112,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let fromDtCtrl = f.fromDate();
                         <label class="small fw-bold text-muted">FROM DATE</label>
                         <input type="date" [formField]="f.fromDate" class="form-control form-control-sm" (input)="onDateTimeChange($event)"
@@ -129,7 +129,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let toDtCtrl = f.toDate();
                         <label class="small fw-bold text-muted">TO DATE</label>
                         <input type="date" [formField]="f.toDate" class="form-control form-control-sm" (input)="onDateTimeChange($event)"
@@ -146,7 +146,7 @@
                         }
                     </div>
 
-                    <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let viewCtrl = f.view();
                         <label class="small fw-bold text-muted">VIEW</label>
                         <select [formField]="f.view" class="form-select form-select-sm"

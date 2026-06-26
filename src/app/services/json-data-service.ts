@@ -1,7 +1,8 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { CACHE_TIME_MS, IS_CACHE_ENABLE } from '@rdpms/shared/utility';
 import { map, Observable } from 'rxjs';
-import { IS_CACHE_ENABLE, CACHE_TIME_MS } from '../shared/utility/context-tokens';
+import { API_ENDPOINT } from '@rdpms/shared/utility';
 // import { CacheHttpService } from '@rdpms/core/services';
 
 
@@ -9,6 +10,7 @@ import { IS_CACHE_ENABLE, CACHE_TIME_MS } from '../shared/utility/context-tokens
 export class DataService {
 
   private http = inject(HttpClient);
+  private contextPath = API_ENDPOINT.BACKEND_PREFIX;
 
   getZones(): Observable<any[]> {
     return this.http.get<any[]>('json-data/zones.json');

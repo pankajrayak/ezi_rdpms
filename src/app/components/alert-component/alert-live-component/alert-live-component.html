@@ -123,12 +123,14 @@
             <div class="d-flex align-items-center">
               <h4 class="mb-0 fw-bold text-secondary">Records</h4>
             </div>
+            <div class="text-end d-none d-md-block">
+              <span class="badge bg-light text-dark border shadow-sm p-2">
+                <i class="bi bi-calendar-check me-1"></i> Generated: 19-Apr-2026
+              </span>
+            </div>
           </div>
 
           <div class="d-flex gap-2">
-            <button class="badge bg-light text-dark fw-bold shadow-sm border py-2" disabled>
-              <i class="bi bi-calendar-check me-2"></i> Generated: 19-Apr-2026
-            </button>
             <button class="btn btn-outline-secondary btn-sm d-flex align-items-center" ngxPrint
               printSectionId="print-section" printTitle="Alert Detail Report" [useExistingCss]="true">
               <i class="bi bi-printer me-2"></i> Print
@@ -140,15 +142,15 @@
         </div>
       </div>
       <div class="card-body p-3">
-
-        <div class="position-relative border rounded" style="max-height: 500px;">
+        <div class="position-relative border rounded">
+          
           <!-- <div id="loadingOverlay" class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-75" style="z-index: 10;">
             <div class="text-dark d-flex fw-bold">
               <div class="spinner-border me-2" role="status"></div> Loading...
             </div>
           </div> -->
-          
-          <div id="print-section" class="table-responsive" style="max-height: 500px;">
+
+          <div id="print-section" class="table-responsive">
             <table class="table table-hover align-middle mb-0 small text-nowrap">
               <thead class="table-light text-uppercase small sticky-top">
                 <tr>
@@ -192,8 +194,8 @@
               </tbody>
             </table>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   }

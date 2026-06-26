@@ -24,7 +24,6 @@ export class SidebarComponent implements OnInit {
 
     this.menus = await this.buildMenu(currentRoute, currentConfig);
     this.cdr.detectChanges();
-    console.log(this.menus);
   }
 
   async buildMenu(baseUrl: string, routes: Routes): Promise<any[]> {

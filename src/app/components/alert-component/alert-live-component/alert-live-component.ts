@@ -42,39 +42,35 @@ export class AlertLiveComponent implements OnInit {
   };
 
   searchForm: FormGroup = this.fb.nonNullable.group({
-    zone: ['', Validators.required],
+    zone: [{ value: '', disabled: true }, Validators.required],
     division: [{ value: '', disabled: true }, Validators.required],
     station: [{ value: '', disabled: true }, Validators.required],
-    alertType: ['All', Validators.required],
-    assetType: ['All', Validators.required],
+    alertType: [{ value: 'All', disabled: true }, Validators.required],
+    assetType: [{ value: 'All', disabled: true }, Validators.required],
   });
 
   // Summary Metrics
   summary = { predictive: 12, failure: 5, total: 17 };
 
-  get form() {
-    return this.searchForm.controls;
-  }
-  get zoneCtrl() {
-    return this.form['zone'];
-  }
-  get divisionCtrl() {
-    return this.form['division'];
-  }
-  get stationCtrl() {
-    return this.form['station'];
-  }
-  get alertTypeCtrl() {
-    return this.form['alertType'];
-  }
-  get assetTypeCtrl() {
-    return this.form['assetType'];
-  }
+  get form() { return this.searchForm.controls; }
+  get zoneCtrl() { return this.form['zone']; }
+  get divisionCtrl() { return this.form['division']; }
+  get stationCtrl() { return this.form['station']; }
+  get alertTypeCtrl() { return this.form['alertType']; }
+  get assetTypeCtrl() { return this.form['assetType']; }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((data: any) => (this.lists.zones = data));
-    this.dataService.getAlertTypes().subscribe((data: any) => (this.lists.alertTypes = data));
-    this.dataService.getAssetTypes().subscribe((data: any) => (this.lists.assetTypes = data));
+    this.dataService.getZones().subscribe((data: any) => {
+      this.lists.zones = data; this.zoneCtrl.enable();
+    });
+
+    this.dataService.getAlertTypes().subscribe((data: any) => {
+      this.lists.alertTypes = data; this.alertTypeCtrl.enable();
+    });
+
+    this.dataService.getAssetTypes().subscribe((data: any) => {
+      this.lists.assetTypes = data; this.assetTypeCtrl.enable();
+    });
 
     this.lists.feedbackList = [
       'Wrong Sensor Reading',
@@ -92,8 +88,7 @@ export class AlertLiveComponent implements OnInit {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data;
-        this.divisionCtrl?.enable();
+        this.lists.divisions = data; this.divisionCtrl?.enable();
       });
     }
   }
@@ -104,8 +99,7 @@ export class AlertLiveComponent implements OnInit {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data;
-        this.stationCtrl?.enable();
+        this.lists.stations = data; this.stationCtrl?.enable();
       });
     }
   }
@@ -132,23 +126,10 @@ export class AlertLiveComponent implements OnInit {
   }
 
   openFeedbackModal(templateRef: TemplateRef<any>, record: any, feedbackType: string) {
-    const modalRef = this.modalService.open(templateRef, {
-      keyboard: false,
-      centered: true,
-      scrollable: true,
-      fullscreen: false,
-      animation: true,
-      backdrop: 'static',
-      size: 'md',
-      role: 'alertdialog',
-    });
+    const modalRef = this.modalService.open(templateRef, { keyboard: false, centered: true, scrollable: true, fullscreen: false, animation: true, backdrop: 'static', size: 'md', role: 'alertdialog', });
     modalRef.result
-      .then((reason: any) => {
-        console.log(reason);
-      })
-      .catch((reason: any) => {
-        console.log(reason);
-      });
+      .then((reason: any) => { console.log(reason); })
+      .catch((reason: any) => { console.log(reason); });
   }
 
   feedbackSubmit(form: NgForm, activeModal: NgbActiveModal) {

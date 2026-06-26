@@ -27,10 +27,10 @@ export class TelemetryHistoryComponent implements OnInit {
   };
 
   searchForm: FormGroup = this.fb.nonNullable.group({
-    zone: ['', Validators.required],
+    zone: [{ value: '', disabled: true }, Validators.required],
     division: [{ value: '', disabled: true }, Validators.required],
     station: [{ value: '', disabled: true }, Validators.required],
-    assetType: ['All', Validators.required],
+    assetType: [{ value: '', disabled: true }, Validators.required],
     assetNumber: ['', Validators.required],
     view: ['Table', Validators.required],
     fromDate: ['', Validators.required],
@@ -52,8 +52,13 @@ export class TelemetryHistoryComponent implements OnInit {
   get toTimeCtrl() { return this.form['toTime']; }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((res) => (this.lists.zones = res));
-    this.dataService.getAssetTypes().subscribe((res) => (this.lists.assetTypes = res));
+    this.dataService.getZones().subscribe((res) => {
+      this.lists.zones = res; this.zoneCtrl.enable();
+    });
+
+    this.dataService.getAssetTypes().subscribe((res) => {
+      this.lists.assetTypes = res; this.assetTypeCtrl.enable();
+    });
   }
 
   onZoneChange() {
@@ -64,8 +69,7 @@ export class TelemetryHistoryComponent implements OnInit {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((res) => {
-        this.lists.divisions = res;
-        this.divisionCtrl?.enable();
+        this.lists.divisions = res; this.divisionCtrl?.enable();
       });
     }
   }
@@ -76,8 +80,7 @@ export class TelemetryHistoryComponent implements OnInit {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((res) => {
-        this.lists.stations = res;
-        this.stationCtrl?.enable();
+        this.lists.stations = res; this.stationCtrl?.enable();
       });
     }
   }
@@ -95,13 +98,13 @@ export class TelemetryHistoryComponent implements OnInit {
   }
 
   getData() {
-    // Access form values using this.searchForm.value
-    this.dataService.getPagedRecord(1, 10, this.searchForm.getRawValue())
-      .pipe(finalize(() => this.searchForm.enable()))
-      .subscribe({
-        next: (results) => { this.results = results || {}; },
-        error: (err) => console.error('Search failed:', err),
-      });
+    const formValue = this.searchForm.getRawValue();
+    this.dataService.getPagedRecord(1, 10, formValue).pipe(
+      finalize(() => this.searchForm.enable())
+    ).subscribe({
+      next: (results) => { this.results = results || {}; },
+      error: (err) => console.error('Search failed:', err),
+    });
   }
 
   resetForm() {

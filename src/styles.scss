@@ -1,4 +1,5 @@
-@import '../public/css/print.scss';
+@use '../public//css//bootstrap.scss';
+@use '../public/css/print.scss';
 
 $track-color: #f8f9fa;
 $thumb-color: #ced4da;

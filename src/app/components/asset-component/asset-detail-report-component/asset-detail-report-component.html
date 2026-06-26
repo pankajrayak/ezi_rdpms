@@ -9,9 +9,9 @@
   <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
       <form #searchForm="ngForm" (ngSubmit)="onSubmit()"> <!-- novalidate-->
-        <div class="row g-2 align-items-baseline">
+        <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
           
-          <div class="col-sm-6 col-md-4 col-lg-2">
+          <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ZONE</label>
             <select class="form-select form-select-sm" name="zone" #zn="ngModel" ngModel (ngModelChange)="onZoneChange()" required
               [class.is-invalid]="zn.invalid && (zn.touched || zn.dirty)" [class.is-valid]="zn.valid && (zn.touched || zn.dirty)">
@@ -25,7 +25,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-4 col-lg-2">
+          <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">DIVISION</label>
             <select class="form-select form-select-sm" name="division" #div="ngModel" ngModel (ngModelChange)="onDivisionChange()" required
               [class.is-invalid]="div.invalid && (div.touched || div.dirty)" [class.is-valid]="div.valid && (div.touched || div.dirty)">
@@ -39,7 +39,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-4 col-lg-2">
+          <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">STATION</label>
             <select class="form-select form-select-sm" name="station" #stn="ngModel" ngModel required
               [class.is-invalid]="stn.invalid && (stn.touched || stn.dirty)" [class.is-valid]="stn.valid && (stn.touched || stn.dirty)">
@@ -53,7 +53,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-4 col-lg-2">
+          <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ASSET TYPE</label>
             <select class="form-select form-select-sm" name="assetType" #ast="ngModel" ngModel required
               [class.is-invalid]="ast.invalid && (ast.touched || ast.dirty)" [class.is-valid]="ast.valid && (ast.touched || ast.dirty)">
@@ -67,11 +67,12 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-4 col-lg-2">
+          <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">ASSET MAKE</label>
             <select class="form-select form-select-sm" name="assetMake" #asm="ngModel" ngModel required
               [class.is-invalid]="asm.invalid && (asm.touched || asm.dirty)" [class.is-valid]="asm.valid && (asm.touched || asm.dirty)">
               <option value="" disabled selected>Select</option>
+              <option value="All">All</option>
               @for (astm of lists.assetMakes; track astm) { <option [value]="astm">{{astm}}</option> }
             </select>
             @if(asm.invalid && (asm.touched || asm.dirty)){
@@ -81,7 +82,7 @@
             }
           </div>
 
-          <div class="col-sm-6 col-md-4 col-lg-2">
+          <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
             <label class="small fw-bold text-muted">VIEW</label>
             <select class="form-select form-select-sm" name="view" #viw="ngModel" ngModel required
               [class.is-invalid]="viw.invalid && (viw.touched || viw.dirty)" [class.is-valid]="viw.valid && (viw.touched || viw.dirty)">
@@ -138,7 +139,7 @@
         </div>
       </div>
       <div class="card-body p-3">
-        <div class="position-relative border rounded" style="max-height: 500px; min-height: 300px;">
+        <div class="position-relative border rounded">
           
           @if(searchForm.submitted && searchForm.disabled){
             <div id="loadingOverlay" class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-75" style="z-index: 10;">
@@ -148,7 +149,7 @@
             </div>
           }
           
-          <div id="print-section" class="table-responsive" style="max-height: 500px; min-height: 300px;">
+          <div id="print-section" class="table-responsive">
             <table class="table table-hover align-middle mb-0 small text-nowrap">
               <thead class="table-light text-uppercase small sticky-top">
                 <tr>
@@ -187,10 +188,11 @@
               </tbody>
             </table>
           </div>
-
+          
           <!-- <ngb-pagination class="d-flex justify-content-end p-2" size="md" [collectionSize]="result?.total" [pageSize]="size()" [maxSize]="4" 
             [page]="page()" [rotate]="true" [ellipses]="true" [boundaryLinks]="true" [directionLinks]="true" (pageChange)="page.set($event)">
           </ngb-pagination> -->
+
         </div>
       </div>
     </div>

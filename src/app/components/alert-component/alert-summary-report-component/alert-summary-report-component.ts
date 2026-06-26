@@ -25,11 +25,11 @@ export class AlertSummaryReportComponent {
   };
 
   searchForm: FormGroup = this.fb.nonNullable.group({
-    zone: ['', Validators.required],
+    zone: [{ value: '', disabled: true }, Validators.required],
     division: [{ value: '', disabled: true }, Validators.required],
     station: [{ value: '', disabled: true }, Validators.required],
-    alertType: ['All', Validators.required],
-    assetType: ['All', Validators.required],
+    alertType: [{ value: 'All', disabled: true }, Validators.required],
+    assetType: [{ value: 'All', disabled: true }, Validators.required],
     assetNumber: ['All', Validators.required],
     cause: ['All', Validators.required],
     view: ['Table', Validators.required],
@@ -54,9 +54,17 @@ export class AlertSummaryReportComponent {
   get toTimeCtrl() { return this.form['toTime']; }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((data: any) => (this.lists.zones = data));
-    this.dataService.getAlertTypes().subscribe((data: any) => (this.lists.alertTypes = data));
-    this.dataService.getAssetTypes().subscribe((data: any) => (this.lists.assetTypes = data));
+    this.dataService.getZones().subscribe((data: any) => {
+      this.lists.zones = data; this.zoneCtrl.enable();
+    });
+
+    this.dataService.getAlertTypes().subscribe((data: any) => {
+      this.lists.alertTypes = data; this.alertTypeCtrl.enable();
+    });
+
+    this.dataService.getAssetTypes().subscribe((data: any) => {
+      this.lists.assetTypes = data; this.assetTypeCtrl.enable();
+    });
   }
 
   onZoneChange(): void {
@@ -67,8 +75,7 @@ export class AlertSummaryReportComponent {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data;
-        this.divisionCtrl?.enable();
+        this.lists.divisions = data; this.divisionCtrl?.enable();
       });
     }
   }
@@ -79,8 +86,7 @@ export class AlertSummaryReportComponent {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data;
-        this.stationCtrl?.enable();
+        this.lists.stations = data; this.stationCtrl?.enable();
       });
     }
   }
@@ -103,104 +109,13 @@ export class AlertSummaryReportComponent {
 
     this.searchForm.disable();
     const payload = this.searchForm.getRawValue();
-    this.dataService.searchData(payload)
-      .pipe(finalize(() => this.searchForm.enable()))
-      .subscribe({
-        next: (res) => console.log('Search complete', res),
-        error: (err) => console.error('Search failed', err),
-      });
+    this.dataService.searchData(payload).pipe(
+      finalize(() => this.searchForm.enable())
+    ).subscribe({
+      next: (res) => console.log('Search complete', res),
+      error: (err) => console.error('Search failed', err),
+    });
   }
 
-  records = [
-    {
-      sNo: 1,
-      zone: 'Central',
-      division: 'Mumbai',
-      station: 'CSTM',
-      alertType: 'Failure',
-      assetType: 'Point Machine',
-      assetNumber: 'PM-202A',
-      cause: 'PT-OBS',
-      alertFeedback: 'T',
-      incDateTime: '2026-04-19 10:00 AM',
-      duration: '02:45:00',
-      feedbackDateTime: '2026-04-19 12:45 PM',
-      maintainerName: 'Rahul Sharma',
-      maintainerDesignation: 'Sr. Technician',
-      maintainerMobile: '9876543210',
-      maintainerRemark: 'Loose connection tightened at junction box.',
-    },
-    {
-      sNo: 2,
-      zone: 'Western',
-      division: 'Ratlam',
-      station: 'Ujjain Jn',
-      alertType: 'Predictive',
-      assetType: 'Track Ckt',
-      assetNumber: 'TC-501',
-      cause: 'Voltage Drop',
-      alertFeedback: 'M',
-      incDateTime: '2026-04-19 08:15 AM',
-      duration: '01:20:00',
-      feedbackDateTime: '2026-04-19 09:35 AM',
-      maintainerName: 'Amit Verma',
-      maintainerDesignation: 'JE S&T',
-      maintainerMobile: '9123456789',
-      maintainerRemark: 'Battery bank checked, charging stabilized.',
-    },
-    {
-      sNo: 3,
-      zone: 'Central',
-      division: 'Nagpur',
-      station: 'Ajni',
-      alertType: 'Failure',
-      assetType: 'Point Machine',
-      assetNumber: 'PM-114',
-      cause: 'PT-OBS',
-      alertFeedback: 'F',
-      incDateTime: '2026-04-18 11:45 PM',
-      duration: '04:10:00',
-      feedbackDateTime: '2026-04-19 03:55 AM',
-      maintainerName: 'Suresh Raina',
-      maintainerDesignation: 'Technician-I',
-      maintainerMobile: '9988776655',
-      maintainerRemark: 'Foreign object removed from point blade.',
-    },
-    {
-      sNo: 4,
-      zone: 'Western',
-      division: 'Ahmedabad',
-      station: 'Sabarmati',
-      alertType: 'Predictive',
-      assetType: 'Axle Counter',
-      assetNumber: 'AC-309',
-      cause: 'Communication Error',
-      alertFeedback: 'T',
-      incDateTime: '2026-04-18 02:20 PM',
-      duration: '00:55:00',
-      feedbackDateTime: '2026-04-18 03:15 PM',
-      maintainerName: 'Deepak Jha',
-      maintainerDesignation: 'ESM',
-      maintainerMobile: '8877665544',
-      maintainerRemark: 'Reset done, card working normally.',
-    },
-    {
-      sNo: 5,
-      zone: 'Central',
-      division: 'Pune',
-      station: 'Lonavala',
-      alertType: 'Failure',
-      assetType: 'Signal Main',
-      assetNumber: 'SIG-L12',
-      cause: 'Fuse Blown',
-      alertFeedback: 'M',
-      incDateTime: '2026-04-17 05:10 AM',
-      duration: '01:05:00',
-      feedbackDateTime: '2026-04-17 06:15 AM',
-      maintainerName: 'Karan Singh',
-      maintainerDesignation: 'Helper',
-      maintainerMobile: '7766554433',
-      maintainerRemark: 'Fuse replaced, signal aspect restored.',
-    },
-  ];
+  records: any[] = [];
 }
