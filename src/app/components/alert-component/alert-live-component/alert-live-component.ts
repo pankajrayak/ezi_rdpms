@@ -127,8 +127,10 @@ export class AlertLiveComponent implements OnInit {
 
   openFeedbackModal(templateRef: TemplateRef<any>, record: any, feedbackType: string) {
     const modalRef = this.modalService.open(templateRef, { keyboard: false, centered: true, scrollable: true, fullscreen: false, animation: true, backdrop: 'static', size: 'md', role: 'alertdialog', });
-    modalRef.result
-      .then((reason: any) => { console.log(reason); })
+    modalRef.result.then(
+        (result: any) => { console.log(result); },
+        (reason: any) => { console.log(reason); }
+      )
       .catch((reason: any) => { console.log(reason); });
   }
 

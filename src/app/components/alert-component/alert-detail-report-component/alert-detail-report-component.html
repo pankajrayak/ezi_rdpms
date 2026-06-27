@@ -251,7 +251,7 @@
         <div class="position-relative border rounded">
           
           <div id="print-section" class="table-responsive">
-            <table class="table table-bordered table-hover align-top mb-0 small">
+            <table class="table table-bordered table-hover align-top mb-0">
               <thead class="table-light text-uppercase small align-top sticky-top">
                   <tr>
                     <th class="text-center">S.No</th>
@@ -264,8 +264,8 @@
                     <th class="text-center">Cause Of Asset Failure</th>
                     <th class="text-center">Alert Feedback (T/M/F)</th>
                     <th class="text-center">Incidence Date & Time</th>
+                    <th class="text-center">Rectification Date & Time</th>
                     <th class="text-center">Incidence Duration</th>
-                    <th class="text-center">Rectification Feedback Date & Time</th>
                     <th class="text-center">Alert Feedback Date & Time</th>
                     <th class="text-center">Maintainer Name</th>
                     <th class="text-center">Maintainer Designation</th>
@@ -284,13 +284,22 @@
                     <td class="fw-bold">{{row.assetNumber}}</td>
                     <td>{{row.cause}}</td>
                     <td class="text-center fw-bold">{{row.alertFeedback}}</td>
-                    <td class="text-nowrap">{{row.incDateTime}}</td>
+                    <td>
+                      <div class="text-nowrap mx-1">{{row.incDateTime | date : 'yyyy-MM-dd'}}</div>
+                      <div class="text-nowrap mx-1">{{row.incDateTime | date : 'hh:mm:ss'}}</div>
+                    </td>
+                    <td>
+                      <div class="text-nowrap mx-1">{{row.incDateTime | date : 'yyyy-MM-dd'}}</div>
+                      <div class="text-nowrap mx-1">{{row.incDateTime | date : 'hh:mm:ss'}}</div>
+                    </td>
                     <td>{{row.duration}}</td>
-                    <td>{{row.incDateTime}}</td>
-                    <td>{{row.feedbackDateTime}}</td>
+                    <td>
+                      <div class="text-nowrap mx-1">{{row.feedbackDateTime | date : 'yyyy-MM-dd'}}</div>
+                      <div class="text-nowrap mx-1">{{row.feedbackDateTime | date : 'hh:mm:ss'}}</div>
+                    </td>
                     <td class="text-nowrap">
                       {{row.maintainerName}} <br>
-                      <small class="text-muted">{{row.maintainerMobile}}</small>
+                      <small class="text-danger fw-bold">{{row.maintainerMobile}}</small>
                     </td>
                     <td>{{row.maintainerDesignation}}</td>
                     <td>{{row.maintainerRemark}}</td>
