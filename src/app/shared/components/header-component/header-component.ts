@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { BsThemeService } from '@rdpms/services';
 
 @Component({
   selector: 'header-component',
@@ -6,4 +7,15 @@ import { Component } from '@angular/core';
   templateUrl: './header-component.html',
   styleUrl: './header-component.scss',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+
+  themeService = inject(BsThemeService);
+
+  onToggleTheme(){
+    this.themeService.toggleTheme();
+  }
+
+  get currentTheme(){
+    return this.themeService.getCurrentTheme();
+  }
+}
