@@ -34,7 +34,7 @@ export class BsThemeService {
   setTheme(theme: 'light' | 'dark'){
     this.currentTheme = theme;
     this.renderer.setAttribute(document.documentElement, 'data-bs-theme', theme);
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('rdpms-theme', theme);
   }
 
   toggleTheme(){

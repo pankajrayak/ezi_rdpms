@@ -1,8 +1,28 @@
 <header class="navbar navbar-light bg-white px-3 py-2 border-bottom shadow">
     <span class="navbar-brand text-primary fw-bold">RDPMS</span>
-    <div class="ms-auto d-flex d-lg-none">
+    <div class="ms-auto d-flex gap-2">
+        <div class="btn-group d-none">
+            @let isDarkTheme = currentTheme === 'dark';
+            <button type="button" class="btn btn-link nav-link px-0 px-lg-2 py-2 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                <i class="bi" [class]="isDarkTheme ? 'bi-moon-stars-fill' : 'bi-brightness-high-fill'"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="mx-2 my-1">
+                    <a class="dropdown-item d-flex justify-content-between align-items-center rounded-2" [class.active]="!isDarkTheme" href="javascript:void(0)" (click)="toggleTheme()">
+                        <div>Light <i class="bi bi-brightness-high-fill ms-2"></i></div>
+                        @if(!isDarkTheme){ <i class="bi bi-check2"></i> }
+                    </a>
+            </li>
+                <li class="mx-2 my-1">
+                    <a class="dropdown-item d-flex justify-content-between align-items-center rounded-2" [class.active]="isDarkTheme" href="javascript:void(0)" (click)="toggleTheme()">
+                        <div>Dark <i class="bi bi-moon-stars-fill ms-2"></i></div>
+                        @if(isDarkTheme){ <i class="bi bi-check2"></i> }
+                    </a>
+                </li>
+            </ul>
+        </div>
         <button type="button" 
-            class="btn btn-primary" 
+            class="btn btn-primary d-lg-none" 
             data-bs-toggle="offcanvas" 
             data-bs-target="#sidebarMenu"
             aria-controls="sidebarMenu"
