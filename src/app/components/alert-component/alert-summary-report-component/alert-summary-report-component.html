@@ -1,4 +1,4 @@
-<div class="container-fluid p-3 bg-light">
+<div class="container-fluid p-3 bg-body-tertiary">
   <page-header 
     title="Alert Summary Report" 
     subtitle="High-level overview and statistical summary of asset alerts" 
@@ -12,7 +12,7 @@
         <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
           
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ZONE</label>
+            <label class="small fw-bold text-body-secondary">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
               [class.is-invalid]="zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)"
               [class.is-valid]="zoneCtrl.valid && (zoneCtrl.touched || zoneCtrl.dirty)">
@@ -28,7 +28,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">DIVISION</label>
+            <label class="small fw-bold text-body-secondary">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
               [class.is-invalid]="divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)"
               [class.is-valid]="divisionCtrl.valid && (divisionCtrl.touched || divisionCtrl.dirty)">
@@ -44,7 +44,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">STATION</label>
+            <label class="small fw-bold text-body-secondary">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
               [class.is-invalid]="stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)"
               [class.is-valid]="stationCtrl.valid && (stationCtrl.touched || stationCtrl.dirty)">
@@ -60,7 +60,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ALERT TYPE</label>
+            <label class="small fw-bold text-body-secondary">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
               [class.is-invalid]="alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)"
               [class.is-valid]="alertTypeCtrl.valid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)">
@@ -76,7 +76,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ASSET TYPE</label>
+            <label class="small fw-bold text-body-secondary">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType" (change)="onAssetTypeChange()"
               [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
               [class.is-valid]="assetTypeCtrl.valid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)">
@@ -92,7 +92,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ASSET NUMBER</label>
+            <label class="small fw-bold text-body-secondary">ASSET NUMBER</label>
             <select class="form-select form-select-sm" formControlName="assetNumber" (change)="onAssetNumberChange()"
               [class.is-invalid]="assetNumberCtrl.invalid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)"
               [class.is-valid]="assetNumberCtrl.valid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)">
@@ -109,7 +109,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">CAUSE</label>
+            <label class="small fw-bold text-body-secondary">CAUSE</label>
             <select class="form-select form-select-sm" formControlName="cause" (change)="onCauseChange()"
               [class.is-invalid]="causeCtrl.invalid && (causeCtrl.touched || causeCtrl.dirty)"
               [class.is-valid]="causeCtrl.valid && (causeCtrl.touched || causeCtrl.dirty)">
@@ -125,7 +125,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">FROM DATE</label>
+            <label class="small fw-bold text-body-secondary">FROM DATE</label>
             <input type="date" class="form-control form-control-sm" formControlName="fromDate"
               [class.is-invalid]="fromDateCtrl.invalid && (fromDateCtrl.touched || fromDateCtrl.dirty)"
               [class.is-valid]="fromDateCtrl.valid && (fromDateCtrl.touched || fromDateCtrl.dirty)">
@@ -137,7 +137,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">FROM TIME</label>
+            <label class="small fw-bold text-body-secondary">FROM TIME</label>
             <input type="time" class="form-control form-control-sm" formControlName="fromTime"
               [class.is-invalid]="fromTimeCtrl.invalid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)"
               [class.is-valid]="fromTimeCtrl.valid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)">
@@ -149,7 +149,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">TO DATE</label>
+            <label class="small fw-bold text-body-secondary">TO DATE</label>
             <input type="date" class="form-control form-control-sm" formControlName="toDate"
               [class.is-invalid]="toDateCtrl.invalid && (toDateCtrl.touched || toDateCtrl.dirty)"
               [class.is-valid]="toDateCtrl.valid && (toDateCtrl.touched || toDateCtrl.dirty)">
@@ -161,7 +161,7 @@
           </div>
 
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">TO TIME</label>
+            <label class="small fw-bold text-body-secondary">TO TIME</label>
             <input type="time" class="form-control form-control-sm" formControlName="toTime"
               [class.is-invalid]="toTimeCtrl.invalid && (toTimeCtrl.touched || toTimeCtrl.dirty)"
               [class.is-valid]="toTimeCtrl.valid && (toTimeCtrl.touched || toTimeCtrl.dirty)">
@@ -173,7 +173,7 @@
           </div>
           
           <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">VIEW</label>
+            <label class="small fw-bold text-body-secondary">VIEW</label>
             <select class="form-select form-select-sm" formControlName="view"
               [class.is-invalid]="viewCtrl.invalid && (viewCtrl.touched || viewCtrl.dirty)"
               [class.is-valid]="viewCtrl.valid && (viewCtrl.touched || viewCtrl.dirty)">
@@ -218,13 +218,13 @@
     </div>
 
     <div class="card border-0 shadow-sm overflow-hidden">
-      <div class="card-header bg-white border-0 py-0">
+      <div class="card-header bg-body border-0 py-0">
 
         <div class="d-flex align-items-center justify-content-between border-bottom py-3">
 
           <div class="d-flex gap-2">
             <div class="d-flex align-items-center">
-              <h4 class="mb-0 fw-bold text-secondary">Records</h4>
+              <h4 class="mb-0 fw-bold text-body-secondary">Records</h4>
             </div>
           </div>
 
@@ -246,8 +246,8 @@
         <div class="position-relative border rounded">
           
           <div id="print-section" class="table-responsive">
-            <table class="table table-sm table-bordered table-hover align-top mb-0 small">
-              <thead class="table-light text-uppercase small align-top sticky-top">
+            <table class="table table-sm table-striped table-bordered table-hover align-top mb-0 small">
+              <thead class="text-uppercase small align-top sticky-top">
                 <tr>
                   <th class="text-center">S.No</th>
                   <th class="text-center">Zone</th>
@@ -285,7 +285,7 @@
                     <td>{{row?.feedbackDateTime}}</td>
                     <td class="text-nowrap">
                       {{row?.maintainerName}} <br>
-                      <small class="text-muted">{{row?.maintainerMobile}}</small>
+                      <small class="text-body-secondary">{{row?.maintainerMobile}}</small>
                     </td>
                     <td>{{row?.maintainerDesignation}}</td>
                     <td>{{row?.maintainerRemark}}</td>

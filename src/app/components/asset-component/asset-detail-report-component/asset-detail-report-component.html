@@ -1,4 +1,4 @@
-<div class="container-fluid p-3 bg-light">
+<div class="container-fluid p-3 bg-body-tertiary">
   <page-header 
     title="Asset Detail Report" 
     subtitle="Full lifecycle and maintenance history per asset number" 
@@ -12,7 +12,7 @@
         <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
           
           <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ZONE</label>
+            <label class="small fw-bold text-body-secondary">ZONE</label>
             <select class="form-select form-select-sm" name="zone" #zn="ngModel" ngModel (ngModelChange)="onZoneChange()" required
               [class.is-invalid]="zn.invalid && (zn.touched || zn.dirty)" [class.is-valid]="zn.valid && (zn.touched || zn.dirty)">
               <option value="" disabled selected>Select</option>
@@ -26,7 +26,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">DIVISION</label>
+            <label class="small fw-bold text-body-secondary">DIVISION</label>
             <select class="form-select form-select-sm" name="division" #div="ngModel" ngModel (ngModelChange)="onDivisionChange()" required
               [class.is-invalid]="div.invalid && (div.touched || div.dirty)" [class.is-valid]="div.valid && (div.touched || div.dirty)">
               <option value="" disabled selected>Select</option>
@@ -40,7 +40,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">STATION</label>
+            <label class="small fw-bold text-body-secondary">STATION</label>
             <select class="form-select form-select-sm" name="station" #stn="ngModel" ngModel required
               [class.is-invalid]="stn.invalid && (stn.touched || stn.dirty)" [class.is-valid]="stn.valid && (stn.touched || stn.dirty)">
               <option value="" disabled selected>Select</option>
@@ -54,7 +54,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ASSET TYPE</label>
+            <label class="small fw-bold text-body-secondary">ASSET TYPE</label>
             <select class="form-select form-select-sm" name="assetType" #ast="ngModel" ngModel required
               [class.is-invalid]="ast.invalid && (ast.touched || ast.dirty)" [class.is-valid]="ast.valid && (ast.touched || ast.dirty)">
               <option value="" disabled selected>Select</option>
@@ -68,7 +68,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">ASSET MAKE</label>
+            <label class="small fw-bold text-body-secondary">ASSET MAKE</label>
             <select class="form-select form-select-sm" name="assetMake" #asm="ngModel" ngModel required
               [class.is-invalid]="asm.invalid && (asm.touched || asm.dirty)" [class.is-valid]="asm.valid && (asm.touched || asm.dirty)">
               <option value="" disabled selected>Select</option>
@@ -83,7 +83,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2 col-xxxl">
-            <label class="small fw-bold text-muted">VIEW</label>
+            <label class="small fw-bold text-body-secondary">VIEW</label>
             <select class="form-select form-select-sm" name="view" #viw="ngModel" ngModel required
               [class.is-invalid]="viw.invalid && (viw.touched || viw.dirty)" [class.is-valid]="viw.valid && (viw.touched || viw.dirty)">
               <option value="" disabled selected>Select</option>
@@ -112,14 +112,14 @@
 
   @if(results){
     <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-      <div class="card-header bg-white border-0 py-0">
+      <div class="card-header bg-body border-0 py-0">
         <div class="d-flex align-items-center justify-content-between border-bottom py-3">
           <div class="d-flex gap-2">
             <div class="d-flex align-items-center">
-              <h4 class="mb-0 fw-bold text-secondary">Records</h4>
+              <h4 class="mb-0 fw-bold text-body-secondary">Records</h4>
             </div>
             <div class="text-end d-none d-md-block">
-              <span class="badge bg-light text-dark border shadow-sm p-2">
+              <span class="badge bg-body-tertiary text-secondary border shadow-sm p-2">
                 <i class="bi bi-calendar-check me-1"></i> Generated: 19-Apr-2026
               </span>
             </div>
@@ -142,16 +142,16 @@
         <div class="position-relative border rounded">
           
           @if(searchForm.submitted && searchForm.disabled){
-            <div id="loadingOverlay" class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-75" style="z-index: 10;">
-              <div class="text-dark d-flex fw-bold">
+            <div id="loadingOverlay" class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center bg-body-tertiary bg-opacity-75" style="z-index: 10;">
+              <div class="text-body d-flex fw-bold">
                 <div class="spinner-border me-2" role="status"></div> Loading...
               </div>
             </div>
           }
           
           <div id="print-section" class="table-responsive">
-            <table class="table table-hover align-middle mb-0 small text-nowrap">
-              <thead class="table-light text-uppercase small sticky-top">
+            <table class="table table-sm table-striped table-bordered table-hover align-middle mb-0 small text-nowrap">
+              <thead class="text-uppercase small sticky-top">
                 <tr>
                   <th>S.No</th>
                   <th>Zone</th>
@@ -180,7 +180,7 @@
                     <td>{{row.rectTime}}</td>
                     <td>{{row.duration}}</td>
                     <td>{{row.cause}}</td>
-                    <td><span class="badge border text-dark bg-light">{{row.feedback}}</span></td>
+                    <td><span class="badge border text-body bg-body-tertiary">{{row.feedback}}</span></td>
                   </tr>
                 }@empty {
                   <tr><td colspan="100" class="text-center">No records found.</td></tr>

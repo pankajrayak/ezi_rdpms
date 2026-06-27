@@ -1,4 +1,4 @@
-<div class="container-fluid p-3 bg-light">
+<div class="container-fluid p-3 bg-body-tertiary">
     <page-header 
         title="Asset Utilization" 
         subtitle="Efficiency metrics and uptime analytics for railway assets" 
@@ -13,7 +13,7 @@
           
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                          @let zoneCtrl = f.zone();
-                        <label class="small fw-bold text-muted">ZONE</label>
+                        <label class="small fw-bold text-body-secondary">ZONE</label>
                         <select [formField]="f.zone" class="form-select form-select-sm" (change)="onZoneChange()"
                             [class.is-invalid]="zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())" 
                             [class.is-valid]="zoneCtrl.valid() && (zoneCtrl.touched() || zoneCtrl.dirty())">
@@ -32,7 +32,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let divisionCtrl = f.division();
-                        <label class="small fw-bold text-muted">DIVISION</label>
+                        <label class="small fw-bold text-body-secondary">DIVISION</label>
                         <select [formField]="f.division" class="form-select form-select-sm" (change)="onDivisionChange()"
                             [class.is-invalid]="divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())" 
                             [class.is-valid]="divisionCtrl.valid() && (divisionCtrl.touched() || divisionCtrl.dirty())">
@@ -52,7 +52,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let stationCtrl = f.station();
-                        <label class="small fw-bold text-muted">STATION</label>
+                        <label class="small fw-bold text-body-secondary">STATION</label>
                         <select [formField]="f.station" class="form-select form-select-sm"
                             [class.is-invalid]="stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())" 
                             [class.is-valid]="stationCtrl.valid() && (stationCtrl.touched() || stationCtrl.dirty())">
@@ -72,7 +72,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let assetTypeCtrl = f.assetType();
-                        <label class="small fw-bold text-muted">ASSET TYPE</label>
+                        <label class="small fw-bold text-body-secondary">ASSET TYPE</label>
                         <select [formField]="f.assetType" class="form-select form-select-sm"
                             [class.is-invalid]="assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())" 
                             [class.is-valid]="assetTypeCtrl.valid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())">
@@ -93,7 +93,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let assetNumberCtrl = f.assetNumber();
-                        <label class="small fw-bold text-muted">ASSET NUMBER</label>
+                        <label class="small fw-bold text-body-secondary">ASSET NUMBER</label>
                         <select [formField]="f.assetNumber" class="form-select form-select-sm"
                             [class.is-invalid]="assetNumberCtrl.invalid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())" 
                             [class.is-valid]="assetNumberCtrl.valid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())">
@@ -114,7 +114,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let fromDtCtrl = f.fromDate();
-                        <label class="small fw-bold text-muted">FROM DATE</label>
+                        <label class="small fw-bold text-body-secondary">FROM DATE</label>
                         <input type="date" [formField]="f.fromDate" class="form-control form-control-sm" (input)="onDateTimeChange($event)"
                             [class.is-invalid]="fromDtCtrl.invalid() && (fromDtCtrl.touched() || fromDtCtrl.dirty())"
                             [class.is-valid]="fromDtCtrl.valid() && (fromDtCtrl.touched() || fromDtCtrl.dirty())">
@@ -131,7 +131,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let toDtCtrl = f.toDate();
-                        <label class="small fw-bold text-muted">TO DATE</label>
+                        <label class="small fw-bold text-body-secondary">TO DATE</label>
                         <input type="date" [formField]="f.toDate" class="form-control form-control-sm" (input)="onDateTimeChange($event)"
                             [class.is-invalid]="toDtCtrl.invalid() && (toDtCtrl.touched() || toDtCtrl.dirty())"
                             [class.is-valid]="toDtCtrl.valid() && (toDtCtrl.touched() || toDtCtrl.dirty())">
@@ -148,7 +148,7 @@
 
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xxxl">
                         @let viewCtrl = f.view();
-                        <label class="small fw-bold text-muted">VIEW</label>
+                        <label class="small fw-bold text-body-secondary">VIEW</label>
                         <select [formField]="f.view" class="form-select form-select-sm"
                             [class.is-invalid]="viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())" 
                             [class.is-valid]="viewCtrl.valid() && (viewCtrl.touched() || viewCtrl.dirty())">

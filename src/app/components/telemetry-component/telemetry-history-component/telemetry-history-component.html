@@ -1,4 +1,4 @@
-<div class="container-fluid p-3 bg-light">
+<div class="container-fluid p-3 bg-body-tertiary">
     <page-header 
         title="Telemetry History" 
         subtitle="Historical logs and communication performance analysis" 
@@ -12,7 +12,7 @@
                 <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
           
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">ZONE</label>
+                        <label class="small fw-bold text-body-secondary">ZONE</label>
                         <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
                             [class.is-invalid]="zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)"
                             [class.is-valid]="zoneCtrl.valid && (zoneCtrl.touched || zoneCtrl.dirty)">
@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">DIVISION</label>
+                        <label class="small fw-bold text-body-secondary">DIVISION</label>
                         <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
                             [class.is-invalid]="divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)"
                             [class.is-valid]="divisionCtrl.valid && (divisionCtrl.touched || divisionCtrl.dirty)">
@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">STATION</label>
+                        <label class="small fw-bold text-body-secondary">STATION</label>
                         <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
                             [class.is-invalid]="stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)"
                             [class.is-valid]="stationCtrl.valid && (stationCtrl.touched || stationCtrl.dirty)">
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">ASSET TYPE</label>
+                        <label class="small fw-bold text-body-secondary">ASSET TYPE</label>
                         <select class="form-select form-select-sm" formControlName="assetType"
                             [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
                             [class.is-valid]="assetTypeCtrl.valid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)">
@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">ASSET NUMBER</label>
+                        <label class="small fw-bold text-body-secondary">ASSET NUMBER</label>
                         <select class="form-select form-select-sm" formControlName="assetNumber"
                             [class.is-invalid]="assetNumberCtrl.invalid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)"
                             [class.is-valid]="assetNumberCtrl.valid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)">
@@ -87,7 +87,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">FROM DATE</label>
+                        <label class="small fw-bold text-body-secondary">FROM DATE</label>
                         <input type="date" class="form-control form-control-sm" formControlName="fromDate"
                             [class.is-invalid]="fromDateCtrl.invalid && (fromDateCtrl.touched || fromDateCtrl.dirty)"
                             [class.is-valid]="fromDateCtrl.valid && (fromDateCtrl.touched || fromDateCtrl.dirty)">
@@ -99,7 +99,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">FROM TIME</label>
+                        <label class="small fw-bold text-body-secondary">FROM TIME</label>
                         <input type="time" class="form-control form-control-sm" formControlName="fromTime"
                             [class.is-invalid]="fromTimeCtrl.invalid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)"
                             [class.is-valid]="fromTimeCtrl.valid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)">
@@ -111,7 +111,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">TO DATE</label>
+                        <label class="small fw-bold text-body-secondary">TO DATE</label>
                         <input type="date" class="form-control form-control-sm" formControlName="toDate"
                             [class.is-invalid]="toDateCtrl.invalid && (toDateCtrl.touched || toDateCtrl.dirty)"
                             [class.is-valid]="toDateCtrl.valid && (toDateCtrl.touched || toDateCtrl.dirty)">
@@ -123,7 +123,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">TO TIME</label>
+                        <label class="small fw-bold text-body-secondary">TO TIME</label>
                         <input type="time" class="form-control form-control-sm" formControlName="toTime"
                             [class.is-invalid]="toTimeCtrl.invalid && (toTimeCtrl.touched || toTimeCtrl.dirty)"
                             [class.is-valid]="toTimeCtrl.valid && (toTimeCtrl.touched || toTimeCtrl.dirty)">
@@ -135,7 +135,7 @@
                     </div>
 
                     <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-                        <label class="small fw-bold text-muted">VIEW</label>
+                        <label class="small fw-bold text-body-secondary">VIEW</label>
                         <select class="form-select form-select-sm" formControlName="view"
                             [class.is-invalid]="viewCtrl.invalid && (viewCtrl.touched || viewCtrl.dirty)"
                             [class.is-valid]="viewCtrl.valid && (viewCtrl.touched || viewCtrl.dirty)">

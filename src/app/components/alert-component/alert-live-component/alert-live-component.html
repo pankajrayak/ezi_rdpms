@@ -1,4 +1,4 @@
-<div class="container-fluid p-3 bg-light">
+<div class="container-fluid p-3 bg-body-tertiary">
   <page-header 
     title="Alert Live Status" 
     subtitle="Real-time active alerts for track circuits and signals" 
@@ -12,7 +12,7 @@
         <div class="row g-2 align-items-baseline">
           
           <div class="col-sm-6 col-md-4 col-lg-2">
-            <label class="small fw-bold text-muted">ZONE</label>
+            <label class="small fw-bold text-body-secondary">ZONE</label>
             <select class="form-select form-select-sm" formControlName="zone" (change)="onZoneChange()"
               [class.is-invalid]="zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)"
               [class.is-valid]="zoneCtrl.valid && (zoneCtrl.touched || zoneCtrl.dirty)">
@@ -27,7 +27,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2">
-            <label class="small fw-bold text-muted">DIVISION</label>
+            <label class="small fw-bold text-body-secondary">DIVISION</label>
             <select class="form-select form-select-sm" formControlName="division" (change)="onDivisionChange()"
               [class.is-invalid]="divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)"
               [class.is-valid]="divisionCtrl.valid && (divisionCtrl.touched || divisionCtrl.dirty)">
@@ -42,7 +42,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2">
-            <label class="small fw-bold text-muted">STATION</label>
+            <label class="small fw-bold text-body-secondary">STATION</label>
             <select class="form-select form-select-sm" formControlName="station" (change)="onStationChange()"
               [class.is-invalid]="stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)"
               [class.is-valid]="stationCtrl.valid && (stationCtrl.touched || stationCtrl.dirty)">
@@ -57,7 +57,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2">
-            <label class="small fw-bold text-muted">ALERT TYPE</label>
+            <label class="small fw-bold text-body-secondary">ALERT TYPE</label>
             <select class="form-select form-select-sm" formControlName="alertType" (change)="onAlertTypeChange()"
               [class.is-invalid]="alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)"
               [class.is-valid]="alertTypeCtrl.valid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)">
@@ -73,7 +73,7 @@
           </div>
 
           <div class="col-sm-6 col-md-4 col-lg-2">
-            <label class="small fw-bold text-muted">ASSET TYPE</label>
+            <label class="small fw-bold text-body-secondary">ASSET TYPE</label>
             <select class="form-select form-select-sm" formControlName="assetType"
               [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
               [class.is-valid]="assetTypeCtrl.valid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)">
@@ -117,14 +117,14 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-      <div class="card-header bg-white border-0 py-0">
+      <div class="card-header bg-body border-0 py-0">
         <div class="d-flex align-items-center justify-content-between border-bottom py-3">
           <div class="d-flex gap-2">
             <div class="d-flex align-items-center">
-              <h4 class="mb-0 fw-bold text-secondary">Records</h4>
+              <h4 class="mb-0 fw-bold text-body-secondary">Records</h4>
             </div>
             <div class="text-end d-none d-md-block">
-              <span class="badge bg-light text-dark border shadow-sm p-2">
+              <span class="badge bg-body-tertiary text-secondary border shadow-sm p-2">
                 <i class="bi bi-calendar-check me-1"></i> Generated: 19-Apr-2026
               </span>
             </div>
@@ -144,15 +144,15 @@
       <div class="card-body p-3">
         <div class="position-relative border rounded">
           
-          <!-- <div id="loadingOverlay" class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center bg-light bg-opacity-75" style="z-index: 10;">
-            <div class="text-dark d-flex fw-bold">
+          <!-- <div id="loadingOverlay" class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center bg-body-tertiary bg-opacity-75" style="z-index: 10;">
+            <div class="text-body d-flex fw-bold">
               <div class="spinner-border me-2" role="status"></div> Loading...
             </div>
           </div> -->
 
           <div id="print-section" class="table-responsive">
-            <table class="table table-sm table-bordered table-hover align-top mb-0 small">
-              <thead class="table-light text-uppercase small align-top sticky-top">
+            <table class="table table-sm table-striped table-bordered table-hover align-top mb-0 small">
+              <thead class="text-uppercase small align-top sticky-top">
                 <tr>
                   <th>S.No</th>
                   <th>Zone</th>
@@ -207,8 +207,8 @@
     <div class="d-flex align-items-center">
         <i class="bi bi-journal-check fs-1 me-2 text-primary"></i>
         <div>
-          <h4 class="mb-0 fw-bold text-dark">Feedback</h4>
-          <p class="text-muted small mb-0">Process and manage feedback/remarks</p>
+          <h4 class="mb-0 fw-bold text-body">Feedback</h4>
+          <p class="text-body-secondary small mb-0">Process and manage feedback/remarks</p>
         </div>
     </div>
     <button type="button" class="btn-close p-2" (click)="d('dismiss')" [disabled]="fbForm.disabled"></button>
@@ -216,7 +216,7 @@
   <form #fbForm="ngForm" autocomplete="off" class="modal-body">
     <div class="row g-3">
       <div class="col-12">
-        <label class="small fw-bold text-muted">FEEDBACK TYPE</label>
+        <label class="small fw-bold text-body-secondary">FEEDBACK TYPE</label>
         <select class="form-select form-select-sm" name="feedback" ngModel 
           #feedbackCtrl="ngModel" required [disabled]="fbForm.submitted" ngbAutofocus
           [class.is-valid]="feedbackCtrl.valid && (feedbackCtrl.touched || feedbackCtrl.dirty)"
@@ -232,7 +232,7 @@
       </div>
 
       <div class="col-12">
-        <label class="small fw-bold text-muted">REMARK</label>
+        <label class="small fw-bold text-body-secondary">REMARK</label>
         <textarea class="form-control form-control-sm" name="remark" ngModel 
           #remarkCtrl="ngModel" rows="5" maxlength="300" required [disabled]="fbForm.submitted"
           [class.is-valid]="remarkCtrl.valid && (remarkCtrl.touched || remarkCtrl.dirty)"
