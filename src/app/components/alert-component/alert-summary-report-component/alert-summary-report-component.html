@@ -246,8 +246,8 @@
         <div class="position-relative border rounded">
           
           <div id="print-section" class="table-responsive">
-            <table class="table table-sm table-striped table-bordered table-hover align-top mb-0 small">
-              <thead class="text-uppercase small align-top sticky-top">
+            <table class="table table-sm table-bordered table-hover align-top mb-0 small">
+              <thead class="table-light text-uppercase small align-top sticky-top">
                 <tr>
                   <th class="text-center">S.No</th>
                   <th class="text-center">Zone</th>
@@ -267,7 +267,7 @@
                   <th class="text-center">Maintainer Remark</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="table-group-divider">
                 @for (row of records; track row){
                   <tr>
                     <td class="text-center">{{row?.sNo}}</td>

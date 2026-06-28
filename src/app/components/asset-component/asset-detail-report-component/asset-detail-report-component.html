@@ -119,7 +119,7 @@
               <h4 class="mb-0 fw-bold text-body-secondary">Records</h4>
             </div>
             <div class="text-end d-none d-md-block">
-              <span class="badge bg-body-tertiary text-secondary border shadow-sm p-2">
+              <span class="badge text-body-emphasis bg-body-tertiary border shadow-sm p-2">
                 <i class="bi bi-calendar-check me-1"></i> Generated: 19-Apr-2026
               </span>
             </div>
@@ -150,8 +150,8 @@
           }
           
           <div id="print-section" class="table-responsive">
-            <table class="table table-sm table-striped table-bordered table-hover align-middle mb-0 small text-nowrap">
-              <thead class="text-uppercase small sticky-top">
+            <table class="table table-sm table-bordered table-hover align-middle mb-0 small">
+              <thead class="table-light text-uppercase small sticky-top">
                 <tr>
                   <th>S.No</th>
                   <th>Zone</th>
@@ -167,7 +167,7 @@
                   <th>Feedback</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="table-group-divider">
                 @for(row of results.data; track row) {
                   <tr>
                     <td>{{row.sNo}}</td>

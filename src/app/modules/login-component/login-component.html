@@ -1,17 +1,17 @@
-<section class="login-container min-vh-100 bg-body-inverse d-flex align-items-center justify-content-center overflow-auto">
+<section class="login-container min-vh-100 text-body-emphasis bg-body-tertiary bg-gradient d-flex align-items-center justify-content-center overflow-auto" data-bs-theme="dark">
   
   <div class="container">
     <div class="row justify-content-center m-3">
       <div class="col-md-6 col-lg-5 col-xxxl-4">
         
         <!-- Branding Header -->
-        <div class="text-center mb-4 text-white">
+        <div class="text-center mb-4 text-body">
           <div class="display-6 fw-bold text-info"><i class="bi bi-cpu"></i> RDPMS</div>
           <p class="small text-uppercase tracking-widest opacity-75">Predictive Maintenance Portal</p>
         </div>
 
         <!-- Glassmorphism Card -->
-        <div class="card bg-secondary bg-opacity-10 border-secondary shadow-lg text-white">
+        <div class="card bg-secondary bg-opacity-10 border-secondary shadow-lg text-body">
           <div class="card-body p-4">
             <h4 class="mb-4 text-center">System Authentication</h4>
             
@@ -22,12 +22,12 @@
                 <div class="input-group border-bottom border-secondary bg-transparent">
 
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-badge"></i></span>
-                  <input type="text" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75" 
+                  <input type="text" class="form-control bg-transparent text-body border-0 shadow-none placeholder-opacity-75" 
                     formControlName="username" placeholder="EMP-XXXX" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
                 </div>
 
                 @if(usernameCtrl.invalid && (usernameCtrl.touched || usernameCtrl.dirty)){
-                  <div class="text-danger small m-0">
+                  <div class="text-danger-emphasis small m-0">
                     @if(usernameCtrl.hasError('required')){ required field }
                   </div>
                 }
@@ -39,24 +39,24 @@
                 <div class="input-group border-bottom border-secondary bg-transparent">
 
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-shield-lock"></i></span>
-                  <input type="password" class="form-control bg-transparent text-white border-0 shadow-none placeholder-opacity-75"
+                  <input type="password" class="form-control bg-transparent text-body border-0 shadow-none placeholder-opacity-75"
                     formControlName="password" placeholder="••••••••" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
                 </div>
 
                 @if(passwordCtrl.invalid && (passwordCtrl.touched || passwordCtrl.dirty)){
-                  <div class="text-danger small m-0">
+                  <div class="text-danger-emphasis small m-0">
                     @if(passwordCtrl.hasError('required')){ required field }
                   </div>
                 }
               </div>
 
               <!-- Security Options -->
-              <div class="d-flex justify-content-end  mb-4 small">
+              <div class="d-flex flex-row-reverse justify-content-between mb-4 small">
+                <a href="javascript:void(0)" class="text-info text-decoration-none">Reset Access</a>
                 <!-- <div class="form-check">
-                  <input class="form-check-input bg-body-inverse border-secondary" type="checkbox" id="remember">
+                  <input class="form-check-input text-body-emphasis bg-body-tertiary border-secondary" type="checkbox" id="remember">
                   <label class="form-check-label" for="remember">Keep Logged In</label>
                 </div> -->
-                <a href="#" class="text-info text-decoration-none">Reset Access</a>
               </div>
 
               <!-- Action Button -->

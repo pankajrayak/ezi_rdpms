@@ -1,9 +1,10 @@
 @use '../public//css//bootstrap.scss';
 @use '../public/css/print.scss';
 
-$track-color: #f8f9fa;
-$thumb-color: #ced4da;
-$radius-full: 10px;
+$track-color: var(--bs-tertiary-bg);
+$hover-color: var(--bs-secondary-color);
+$thumb-color: var(--bs-secondary-border-subtle);
+$radius-full: 20px;
 
 .text {
   &-vertical {
@@ -21,11 +22,6 @@ $radius-full: 10px;
   }
 }
 
-html, body {
-  scrollbar-width: thin;
-  scrollbar-color: $thumb-color $track-color; /* thumb | track */
-}
-
 body {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -34,8 +30,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 12px;
+  height: 12px;
 
   &-track {
     background: $track-color;
@@ -43,8 +39,11 @@ body {
   }
   &-thumb {
     background-color: $thumb-color;
-    border-radius: $radius-full;
     border: 2px solid $track-color;
-    &:hover { background-color: #adb5bd; }
+    border-radius: $radius-full;
+
+    &:hover { 
+      background-color: $hover-color
+    }
   }
 }
