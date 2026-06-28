@@ -1,51 +1,12 @@
 .sidebar {
-  &-wrapper{
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  }
-  
   &-scroll {
     direction: rtl;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
   }
 
   &-content {
     direction: ltr;
-    @media (min-width: 992px) {
-      .dropdown-menu.show {
-        display: flex;
-        flex-direction: row;
-        padding: 0.5rem;
-        min-width: max-content;
-      }
-    }
-  }
-}
-
-.main-menu {
-  &.dropdown-link, &.list-group-item {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: #fff !important;
-    border: none !important;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.25) !important;
-      cursor: pointer;
-    }
-  }
-}
-
-.active-mode {
-  > .main-menu {
-    color: #0d6efd !important;
-    font-weight: bold;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.25) !important;
-      cursor: pointer;
-    }
   }
 }
 
