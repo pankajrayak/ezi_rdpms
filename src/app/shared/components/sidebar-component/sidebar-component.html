@@ -47,7 +47,7 @@
                             <div class="d-flex flex-column gap-1 small">
 
                                 @for(child of menu.children; track child){
-                                    <a class="nav-link p-2 rounded-3" [routerLink]="child.path" routerLinkActive="bg-primary text-white fw-semibold" [routerLinkActiveOptions]="{ exact: true }">
+                                    <a class="nav-link p-2 rounded-pill" [routerLink]="child.path" routerLinkActive="bg-primary text-white fw-semibold" [routerLinkActiveOptions]="{ exact: true }">
                                         <span><i class="bi {{child.icon}} me-3"></i>{{child.title}}</span>
                                     </a>
                                 }
