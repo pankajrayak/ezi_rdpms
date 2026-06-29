@@ -1,17 +1,17 @@
-<section class="login-container min-vh-100 text-body-emphasis bg-body-tertiary bg-gradient d-flex align-items-center justify-content-center overflow-auto" data-bs-theme="dark">
+<section class="login-container min-vh-100 bg-body-tertiary text-body d-flex align-items-center justify-content-center overflow-auto" data-bs-theme="dark">
   
   <div class="container">
     <div class="row justify-content-center m-3">
       <div class="col-md-6 col-lg-5 col-xxxl-4">
         
         <!-- Branding Header -->
-        <div class="text-center mb-4 text-body">
+        <div class="text-center mb-4">
           <div class="display-6 fw-bold text-info"><i class="bi bi-cpu"></i> RDPMS</div>
-          <p class="small text-uppercase tracking-widest opacity-75">Predictive Maintenance Portal</p>
+          <p class="small text-uppercase">Predictive Maintenance Portal</p>
         </div>
 
         <!-- Glassmorphism Card -->
-        <div class="card bg-secondary bg-opacity-10 border-secondary shadow-lg text-body">
+        <div class="card bg-body-secondary border-secondary shadow-lg">
           <div class="card-body p-4">
             <h4 class="mb-4 text-center">System Authentication</h4>
             
@@ -22,8 +22,8 @@
                 <div class="input-group border-bottom border-secondary bg-transparent">
 
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-badge"></i></span>
-                  <input type="text" class="form-control bg-transparent text-body border-0 shadow-none placeholder-opacity-75" 
-                    formControlName="username" placeholder="EMP-XXXX" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
+                  <input type="text" class="form-control bg-transparent border-0 shadow-none"formControlName="username" 
+                    placeholder="EMP-XXXX" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
                 </div>
 
                 @if(usernameCtrl.invalid && (usernameCtrl.touched || usernameCtrl.dirty)){
@@ -39,8 +39,8 @@
                 <div class="input-group border-bottom border-secondary bg-transparent">
 
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-shield-lock"></i></span>
-                  <input type="password" class="form-control bg-transparent text-body border-0 shadow-none placeholder-opacity-75"
-                    formControlName="password" placeholder="••••••••" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
+                  <input type="password" class="form-control bg-transparent border-0 shadow-none" formControlName="password" 
+                    placeholder="••••••••" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
                 </div>
 
                 @if(passwordCtrl.invalid && (passwordCtrl.touched || passwordCtrl.dirty)){
@@ -70,7 +70,7 @@
           </div>
           
           <!-- System Status Footer -->
-          <div class="card-footer border-secondary py-3 bg-black bg-opacity-25">
+          <div class="card-footer border-secondary py-3 bg-success-emphasis bg-success-subtle">
             <div class="d-flex align-items-center justify-content-center text-success fw-bold">
                 <span class="spinner-grow spinner-grow-sm me-2"></span>
                 <small class="">Global Diagnostics Server Online</small>
