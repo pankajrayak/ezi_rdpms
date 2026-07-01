@@ -1,7 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
