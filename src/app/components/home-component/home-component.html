@@ -128,21 +128,27 @@
       <i class="bi bi-layers text-primary fs-5"></i>
     </div>
     
-    <div class="d-flex flex-column gap-2">
+    <div class="row g-2 text-center">
       <!-- Healthy Row -->
-      <div class="d-flex justify-content-between align-items-center p-2 rounded bg-success-subtle border-start border-4 border-success">
-        <span class="small fw-medium text-success-emphasis"><i class="bi bi-check-circle-fill me-2"></i>Healthy</span>
-        <span class="small fw-bold text-success-emphasis">{{asset.healthy}}</span>
+      <div class="col">
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-success-subtle bg-opacity-50 border border-success-subtle h-100">
+          <span class="text-success-emphasis small fw-medium mb-1"><i class="bi bi-check-circle-fill mx-2"></i>Healthy</span>
+          <h4 class="m-0 fw-extrabold text-success-emphasis">{{asset.healthy}}</h4>
+        </div>
       </div>
       <!-- Predictive Row -->
-      <div class="d-flex justify-content-between align-items-center p-2 rounded bg-warning-subtle border-start border-4 border-warning">
-        <span class="small fw-medium text-warning-emphasis"><i class="bi bi-exclamation-triangle-fill me-2"></i>Predictive</span>
-        <span class="small fw-bold text-warning-emphasis">{{asset.predictive}}</span>
+      <div class="col">
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-warning-subtle bg-opacity-50 border border-warning-subtle h-100">
+          <span class="text-warning-emphasis small fw-medium mb-1"><i class="bi bi-exclamation-triangle-fill mx-2"></i>Warning</span>
+          <h4 class="m-0 fw-extrabold text-warning-emphasis">{{asset.predictive}}</h4>
+        </div>
       </div>
       <!-- Failure Row -->
-      <div class="d-flex justify-content-between align-items-center p-2 rounded bg-danger-subtle border-start border-4 border-danger">
-        <span class="small fw-medium text-danger-emphasis"><i class="bi bi-x-circle-fill me-2"></i>Failure</span>
-        <span class="small fw-bold text-danger-emphasis">{{asset.failure}}</span>
+      <div class="col">
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-danger-subtle bg-opacity-50 border border-danger-subtle h-100">
+          <span class="text-danger-emphasis small fw-medium mb-1"><i class="bi bi-x-circle-fill mx-2"></i>Failure</span>
+          <h4 class="m-0 fw-extrabold text-danger-emphasis">{{asset.failure}}</h4>
+        </div>
       </div>
     </div>
   </div>
