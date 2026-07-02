@@ -24,3 +24,15 @@ body {
   -ms-user-select: none; /* IE 10+ */
   user-select: none; /* Standard */  
 }
+
+.collapse-icon-animated {
+  transition: transform 0.2s ease-in-out;
+
+  [aria-expanded="true"] & {
+    transform: rotate(180deg);
+  }
+
+  [aria-expanded="false"] & {
+    transform: rotate(0deg);
+  }
+}

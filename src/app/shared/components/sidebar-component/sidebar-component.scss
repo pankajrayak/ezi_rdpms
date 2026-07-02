@@ -9,21 +9,3 @@
     direction: ltr;
   }
 }
-
-[aria-expanded] {
-  [class*='bi-chevron'] {
-    transition: transform 0.3s ease;
-  }
-
-  &[aria-expanded='true'] {
-    [class*='bi-chevron'] {
-      transform: rotate(180deg) !important;
-    }
-  }
-
-  &[aria-expanded='false'] {
-    [class*='bi-chevron'] {
-      transform: rotate(0deg) !important;
-    }
-  }
-}
