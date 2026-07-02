@@ -76,14 +76,14 @@
   </div>
 
   <!-- 1. Main Dashboard Layout -->
-  <div class="container-fluid p-0 bg-body-tertiary">
+  <div class="container-fluid p-0">
     <div class="row g-3">
       <!-- 1. TOP HORIZONTAL CARDS -->
       <div class="col-12 order-1">
           <div class="row g-3 top-card-row">
               @for (card of topCards; track $index) {
               <div class="col-12 col-md-6 top-card-item">
-                  <div class="card data-card shadow-sm bg-body h-100 border-0 border-start border-5 border-primary" [class.border-success]="card.name === 'Total Assets'">
+                  <div class="card data-card shadow-sm h-100 border-0 border-start border-5 border-primary" [class.border-success]="card.name === 'Total Assets'">
                       <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
                   </div>
               </div>
@@ -131,23 +131,23 @@
     <div class="row g-2 text-center">
       <!-- Healthy Row -->
       <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-success-subtle bg-opacity-50 border border-success-subtle h-100">
-          <span class="text-success-emphasis small fw-medium mb-1"><i class="bi bi-check-circle-fill mx-2"></i>Healthy</span>
-          <h4 class="m-0 fw-extrabold text-success-emphasis">{{asset.healthy}}</h4>
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-success-subtle text-success-emphasis border border-success-subtle h-100">
+          <span class="small fw-medium mb-1"><i class="bi bi-check-circle-fill mx-2"></i>Healthy</span>
+          <h4 class="m-0 fw-extrabold">{{asset.healthy}}</h4>
         </div>
       </div>
       <!-- Predictive Row -->
       <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-warning-subtle bg-opacity-50 border border-warning-subtle h-100">
-          <span class="text-warning-emphasis small fw-medium mb-1"><i class="bi bi-exclamation-triangle-fill mx-2"></i>Warning</span>
-          <h4 class="m-0 fw-extrabold text-warning-emphasis">{{asset.predictive}}</h4>
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-warning-subtle text-warning-emphasis border border-warning-subtle h-100">
+          <span class="small fw-medium mb-1"><i class="bi bi-exclamation-triangle-fill mx-2"></i>Warning</span>
+          <h4 class="m-0 fw-extrabold">{{asset.predictive}}</h4>
         </div>
       </div>
       <!-- Failure Row -->
       <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-danger-subtle bg-opacity-50 border border-danger-subtle h-100">
-          <span class="text-danger-emphasis small fw-medium mb-1"><i class="bi bi-x-circle-fill mx-2"></i>Failure</span>
-          <h4 class="m-0 fw-extrabold text-danger-emphasis">{{asset.failure}}</h4>
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-danger-subtle text-danger-emphasis border border-danger-subtle h-100">
+          <span class="small fw-medium mb-1"><i class="bi bi-x-circle-fill mx-2"></i>Failure</span>
+          <h4 class="m-0 fw-extrabold">{{asset.failure}}</h4>
         </div>
       </div>
     </div>

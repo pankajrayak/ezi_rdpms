@@ -206,12 +206,11 @@
   @if(records.length){
     <div class="row g-3 mb-4">
       <div class="col-12">
-        <div class="card border-0 shadow-sm border-start border-4 border-primary bg-primary bg-opacity-10">
+        <div class="card shadow-sm border-4 border-start border-0 border-primary bg-primary-subtle text-primary-emphasis fw-bold">
           <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center">
-            <span class="fw-bold text-primary-emphasis text-uppercase small">Reporting Period Summary</span>
-            <span class="fw-bold text-primary">
-              Start: {{ searchForm.value.fromDate | date : 'dd-MM-yyyy' }} {{ searchForm.value.fromTime }} — End: {{ searchForm.value.toDate | date : 'dd-MM-yyyy' }} {{ searchForm.value.toTime }}
-            </span>
+            <span>Reporting Period Summary</span>
+            @let sfValue = searchForm.value;
+            <span>Start: {{ sfValue?.fromDate | date : 'dd-MM-yyyy' }} {{ sfValue?.fromTime }} — End: {{ sfValue?.toDate | date : 'dd-MM-yyyy' }} {{ sfValue?.toTime }}</span>
           </div>
         </div>
       </div>
@@ -227,7 +226,7 @@
               <h4 class="mb-0 fw-bold text-body-secondary">Records</h4>
             </div>
             <div class="text-end d-none d-md-block">
-              <span class="badge text-body-emphasis bg-body-tertiary border shadow-sm p-2">
+              <span class="badge text-body-emphasis bg-body-tertiary border border-secondary-subtle shadow-sm p-2">
                 <i class="bi bi-calendar-check me-1"></i> Generated: 19-Apr-2026
               </span>
             </div>

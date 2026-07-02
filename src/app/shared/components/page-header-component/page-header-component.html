@@ -1,18 +1,14 @@
 <!-- Option 1: Modern Minimalist (Matches your snippet) -->
 <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-4">
     <div class="d-flex align-items-center">
-        <!-- Dynamic Icon Color -->
         <i class="bi bi-{{icon()}} text-primary fs-1 me-2"></i>
         <div>
-            <h4 class="text-body fw-bold mb-0">
-               {{title()}}
-            </h4>
+            <h4 class="fw-bold mb-0">{{title()}}</h4>
             <p class="text-body-secondary small mb-0">{{subtitle()}}</p>
         </div>
     </div>
-    <!-- Live Status Pulse Indicator -->
      @if(isLive()){
-        <div class="d-flex align-items-center bg-success-subtle text-success-emphasis px-3 py-1 rounded-pill shadow-sm border border-success">
+        <div class="d-flex align-items-center bg-success-subtle text-success-emphasis px-3 py-1 rounded-pill border border-success">
             <span class="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span>
             <span class="small fw-bold text-uppercase">Live Connection</span>
         </div>

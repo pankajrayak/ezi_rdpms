@@ -1,13 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, TemplateRef } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  NgForm,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { NgxPrintDirective } from 'ngx-print';
 import { NgbActiveModal, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
