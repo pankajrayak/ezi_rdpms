@@ -215,13 +215,16 @@
 
 <ng-template #feedbackModal let-modal let-c="close" let-d="dismiss">
   <div class="modal-header d-flex align-items-start justify-content-between">
-    <div class="d-flex align-items-center">
-        <i class="bi bi-journal-check fs-1 me-2 text-primary"></i>
-        <div>
-          <h4 class="mb-0 fw-bold">Feedback</h4>
-          <p class="text-body-secondary small mb-0">Process and manage feedback/remarks</p>
-        </div>
+    <div class="d-flex flex-column">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-journal-check text-primary fs-2 me-2 lh-1"></i>
+        <h4 class="fw-bold mb-0">Feedback</h4>
+      </div>
+    <div>
+        <p class="text-body-secondary small mb-0">Process and manage feedback/remarks</p>
+      </div>
     </div>
+    
     <button type="button" class="btn-close p-2" (click)="d('dismiss')" [disabled]="fbForm.disabled"></button>
   </div>
   <form #fbForm="ngForm" autocomplete="off" class="modal-body">
