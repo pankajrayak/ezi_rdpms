@@ -5,7 +5,7 @@ import { ERROR_MESSAGES } from './constants/error-message.constant';
 @Injectable({
   providedIn: 'root',
 })
-export class GlobalUtil {
+export class GlobalUtility {
 
   constructor(@Inject(DOCUMENT) private readonly document: Document, private toastService: ToastService) {}
 

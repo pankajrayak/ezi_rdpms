@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { finalize, of } from 'rxjs';
-import { apply, disabled, form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
+import { apply, applyWhen, disabled, form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService, GlobalUtil } from '@rdpms/shared/utility';
+import { DataService, debounceResource, GlobalUtility } from '@rdpms/shared/utility';
 
 interface SensorFormModel {
   zone: string;
@@ -25,7 +25,7 @@ interface SensorFormModel {
 })
 export class AssetUtilizationComponent {
   private dataService = inject(DataService);
-  public globalUtility = inject(GlobalUtil);
+  public globalUtility = inject(GlobalUtility);
 
   formModel: SensorFormModel = {
     zone: '',
@@ -38,40 +38,42 @@ export class AssetUtilizationComponent {
     view: 'Table',
   };
 
+  records = signal(<any>[]);
+  isSubmitting = signal(false);
   model = signal(this.formModel);
 
-  formSchema = schema<SensorFormModel>((schemaPath) => {
-    required(schemaPath.zone, { message: 'required field' });
-    required(schemaPath.division, { message: 'required field' });
-    required(schemaPath.station, { message: 'required field' });
-    required(schemaPath.assetType, { message: 'required field' });
-    required(schemaPath.assetNumber, { message: 'required field' });
-    required(schemaPath.fromDate, { message: 'required field' });
-    required(schemaPath.view, { message: 'required field' });
-    // required(schemaPath.toDate, { message: 'required field', when: () => !!this.model().fromDate });
+  formSchema = schema<SensorFormModel>((fieldPath) => {
+    required(fieldPath.zone, { message: 'required field' });
+    required(fieldPath.division, { message: 'required field' });
+    required(fieldPath.station, { message: 'required field' });
+    required(fieldPath.assetType, { message: 'required field' });
+    required(fieldPath.assetNumber, { message: 'required field' });
+    required(fieldPath.fromDate, { message: 'required field' });
+    required(fieldPath.view, { message: 'required field' });
+    // required(fieldPath.toDate, { message: 'required field', when: (ctx) => !!ctx.valueOf(fieldPath.fromDate) });
   });
 
-  f = form(this.model, (schemaPath) => {
-    apply(schemaPath, this.formSchema);
-    disabled(schemaPath, () => this.isSubmitting());
-    disabled(schemaPath.division, () => !this.model().zone || this.divisionsRes.isLoading());
-    disabled(schemaPath.station, ({ valueOf }) => !valueOf(schemaPath.division) || this.stationsRes.isLoading());
+  f = form(this.model, (s) => {
+    apply(s, this.formSchema);
+    disabled(s, () => this.isSubmitting());
+    disabled(s.division, (ctx) => !ctx.valueOf(s.zone) || this.divisionsRes.isLoading());
+    disabled(s.station, (ctx) => !ctx.valueOf(s.division) || this.stationsRes.isLoading());
 
     // applyWhen(s.toDate, () => !!this.model().fromDate,
     //   schema((ss) => { required(ss, { message: 'required field' }); })
     // );
 
-    // validate(schemaPath.fromDate, () => {
-    //   const state = this.model();
-    //   return new Date(state.fromDate)?.getTime() > new Date(state.toDate)?.getTime()
-    //     ? { kind: 'maxDate', message: `date can not be more than ${state.toDate}` }
+    // validate(s.fromDate, (ctx) => {
+    //   const fromVal = ctx.value(), toVal = ctx.valueOf(s.toDate);
+    //   return new Date(fromVal)?.getTime() > new Date(toVal)?.getTime()
+    //     ? { kind: 'maxDate', message: `date can not be more than ${toVal}` }
     //     : null;
     // });
 
-    // validate(schemaPath.toDate, () => {
-    //   const state = this.model();
-    //   return new Date(state.toDate)?.getTime() < new Date(state.fromDate)?.getTime()
-    //     ? { kind: 'minDate', message: `date can not be less than ${state.fromDate}` }
+    // validate(s.toDate, (ctx) => {
+    //   const toVal = ctx.value(), fromVal = ctx.valueOf(s.fromDate);
+    //   return new Date(toVal)?.getTime() < new Date(fromVal)?.getTime()
+    //     ? { kind: 'minDate', message: `date can not be less than ${fromVal}` }
     //     : null;
     // });
 
@@ -116,9 +118,6 @@ export class AssetUtilizationComponent {
     const error = this.stationsRes.error();
     if (error) { console.error('station not found', error); }
   });
-
-  isSubmitting = signal(false);
-  records = signal(<any>[]);
 
   onZoneChange() {
     this.f.division().reset();

@@ -5,7 +5,7 @@ import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HasUnsavedChanges } from '@rdpms/core/interfaces';
 import { PageHeaderComponent, MultiSelectDirectiveModule } from '@rdpms/shared/components';
-import { DataService, GlobalUtil } from '@rdpms/shared/utility';
+import { DataService, GlobalUtility } from '@rdpms/shared/utility';
 
 @Component({
   selector: 'home-component',
@@ -16,7 +16,7 @@ import { DataService, GlobalUtil } from '@rdpms/shared/utility';
 export class HomeComponent implements HasUnsavedChanges {
   private fb = inject(NonNullableFormBuilder);
   private dataService = inject(DataService);
-  public globalUtility = inject(GlobalUtil);
+  public globalUtility = inject(GlobalUtility);
   private destroyRef = inject(DestroyRef);
 
   lists = {
