@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
   selector: 'app-asset-detail-report-component',
   imports: [CommonModule, FormsModule, PageHeaderComponent, NgbPaginationModule, NgxPrintDirective],
   templateUrl: './asset-detail-report-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './asset-detail-report-component.scss',
 })
 export class AssetDetailReportComponent implements OnInit, AfterViewInit {
@@ -39,18 +40,20 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataService.getZones().subscribe((res) => {
-      this.lists.zones = res; this.zoneCtrl.enable(); 
+      this.lists.zones = res;
+      this.zoneCtrl.enable();
     });
 
     this.dataService.getAssetTypes().subscribe((res) => {
-      this.lists.assetTypes = res; this.assetTypectrl.enable(); 
+      this.lists.assetTypes = res;
+      this.assetTypectrl.enable();
     });
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
       this.searchForm.setValue(this.form);
-      this.zoneCtrl?.disable(); 
+      this.zoneCtrl?.disable();
       this.divisionCtrl?.disable();
       this.stationCtrl?.disable();
       this.assetTypectrl?.disable();
@@ -65,7 +68,8 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl?.value) {
       this.dataService.getDivisions(this.zoneCtrl?.value).subscribe((res) => {
-        this.lists.divisions = res; this.divisionCtrl?.enable();
+        this.lists.divisions = res;
+        this.divisionCtrl?.enable();
       });
     }
   }
@@ -76,7 +80,8 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl?.value) {
       this.dataService.getStations(this.divisionCtrl?.value).subscribe((res) => {
-        this.lists.stations = res; this.stationCtrl?.enable();
+        this.lists.stations = res;
+        this.stationCtrl?.enable();
       });
     }
   }
@@ -92,15 +97,12 @@ export class AssetDetailReportComponent implements OnInit, AfterViewInit {
   }
 
   getData() {
-    this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }).pipe(
-      finalize(() => this.searchForm.control.enable())
-    ).subscribe({
-      next: (results) => {
-        this.results = results || {};
-        this.resetForm();
-      },
-      error: (err) => console.error('Search failed:', err),
-    });
+    this.dataService.getPagedRecord(1, 10, { station: 'CSMT' })
+      .pipe(finalize(() => this.searchForm.control.enable()))
+      .subscribe({
+        next: (results) => { this.results = results || {}; this.resetForm(); },
+        error: (err) => console.error('Search failed:', err),
+      });
   }
 
   resetForm() {

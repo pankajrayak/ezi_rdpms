@@ -1,4 +1,4 @@
-import { Component, ElementRef, Pipe, PipeTransform, HostBinding, Input, Optional, Self, ContentChildren, QueryList, AfterContentInit, Directive, NgModule, signal, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, Pipe, PipeTransform, HostBinding, Input, Optional, Self, ContentChildren, QueryList, AfterContentInit, Directive, NgModule, signal, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -46,6 +46,7 @@ export class MultiSelectOptionDirective {
   selector: 'multi-select',
   templateUrl: './multi-select-component.html',
   styleUrl: './multi-select-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule],
   // providers: [
   //   {

@@ -1,51 +1,51 @@
-<section class="login-container min-vh-100 bg-body-tertiary text-body d-flex align-items-center justify-content-center overflow-auto" data-bs-theme="dark">
+<section class="login-container min-vh-100 bg-body-tertiary text-body-emphasis d-flex align-items-center justify-content-center overflow-auto" data-bs-theme="dark">
   
   <div class="container">
     <div class="row justify-content-center m-3">
       <div class="col-md-6 col-lg-5 col-xxxl-4">
         
-        <!-- Branding Header -->
         <div class="text-center mb-4">
           <div class="display-6 fw-bold text-info"><i class="bi bi-cpu"></i> RDPMS</div>
           <p class="small text-uppercase">Predictive Maintenance Portal</p>
         </div>
 
-        <!-- Glassmorphism Card -->
         <div class="card bg-body-secondary border-secondary shadow-lg">
           <div class="card-body p-4">
             <h4 class="mb-4 text-center">System Authentication</h4>
             
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
-              <!-- Employee ID / Terminal ID -->
-              <div class="mb-3">
+            <form [formRoot]="f" autocomplete="none" novalidate>
+              <div class="mb-4">
+                @let userCtrl = f.username();
                 <label class="form-label text-info small fw-bold">User / Employee ID</label>
                 <div class="input-group border-bottom border-secondary bg-transparent">
-
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-badge"></i></span>
-                  <input type="text" class="form-control bg-transparent border-0 shadow-none"formControlName="username" 
-                    placeholder="EMP-XXXX" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
+                  <input type="text" [formField]="f.username" class="form-control bg-transparent border-0 shadow-none"
+                    placeholder="EMP-XXXX" (cut)="false" (copy)="false" (paste)="false" autocomplete="none">
                 </div>
-
-                @if(usernameCtrl.invalid && (usernameCtrl.touched || usernameCtrl.dirty)){
+                @if (userCtrl.invalid() && (userCtrl.touched() || userCtrl.dirty())) {
                   <div class="text-danger-emphasis small m-0">
-                    @if(usernameCtrl.hasError('required')){ required field }
+                    @for (err of userCtrl.errors(); track err.kind) {
+                      @if (err?.kind === 'required') { {{ err?.message }} }
+                      @else { {{err?.kind }} error }
+                    }
                   </div>
                 }
               </div>
 
-              <!-- Password -->
               <div class="mb-4">
+                @let passCtrl = f.password();
                 <label class="form-label text-info small fw-bold">Secure Key</label>
                 <div class="input-group border-bottom border-secondary bg-transparent">
-
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-shield-lock"></i></span>
-                  <input type="password" class="form-control bg-transparent border-0 shadow-none" formControlName="password" 
-                    placeholder="••••••••" required (cut)="false" (copy)="false" (paste)="false" autocomplete="off">
+                  <input type="password" [formField]="f.password" class="form-control bg-transparent border-0 shadow-none"
+                    placeholder="••••••••" (cut)="false" (copy)="false" (paste)="false" autocomplete="none">
                 </div>
-
-                @if(passwordCtrl.invalid && (passwordCtrl.touched || passwordCtrl.dirty)){
+                @if (passCtrl.invalid() && (passCtrl.touched() || passCtrl.dirty())) {
                   <div class="text-danger-emphasis small m-0">
-                    @if(passwordCtrl.hasError('required')){ required field }
+                    @for (err of passCtrl.errors(); track err.kind) {
+                      @if (err?.kind === 'required') { {{ err?.message }} }
+                      @else { {{err?.kind }} error }
+                    }
                   </div>
                 }
               </div>
@@ -54,15 +54,15 @@
               <div class="d-flex flex-row-reverse justify-content-between mb-4 small">
                 <a href="javascript:void(0)" class="text-info text-decoration-none">Reset Access</a>
                 <!-- <div class="form-check">
-                  <input class="form-check-input text-body-emphasis bg-body-tertiary border-secondary" type="checkbox" id="remember">
+                  <input class="form-check-input bg-body-tertiary text-body-emphasis border-secondary" type="checkbox" id="remember">
                   <label class="form-check-label" for="remember">Keep Logged In</label>
                 </div> -->
               </div>
 
               <!-- Action Button -->
               <div class="d-grid">
-                <button type="submit" class="btn btn-info fw-bold py-2 shadow-sm text-uppercase" [disabled]="loginForm.disabled">
-                  @if(loginForm.disabled) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
+                <button type="submit" class="btn btn-info fw-bold py-2 shadow-sm text-uppercase" [disabled]="f().submitting()">
+                  @if(f().submitting()) { <span class="spinner-border spinner-border-sm"></span> Processing... } 
                   @else { Initialize Session }
                 </button>
               </div>

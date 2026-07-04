@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService } from '@rdpms/shared/utility';
@@ -10,6 +10,7 @@ import { finalize } from 'rxjs';
   selector: 'alert-detail-report-component',
   imports: [CommonModule, ReactiveFormsModule, NgxPrintDirective, PageHeaderComponent],
   templateUrl: './alert-detail-report-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './alert-detail-report-component.scss',
 })
 export class AlertDetailReportComponent {
@@ -55,17 +56,19 @@ export class AlertDetailReportComponent {
 
   ngOnInit() {
     this.dataService.getZones().subscribe((data: any) => {
-      this.lists.zones = data; this.zoneCtrl.enable();
+      this.lists.zones = data;
+      this.zoneCtrl.enable();
     });
 
     this.dataService.getAlertTypes().subscribe((data: any) => {
-      this.lists.alertTypes = data; this.alertTypeCtrl.enable();
+      this.lists.alertTypes = data;
+      this.alertTypeCtrl.enable();
     });
 
     this.dataService.getAssetTypes().subscribe((data: any) => {
-      this.lists.assetTypes = data; this.assetTypeCtrl.enable();
+      this.lists.assetTypes = data;
+      this.assetTypeCtrl.enable();
     });
-
   }
 
   onZoneChange(): void {
@@ -76,7 +79,8 @@ export class AlertDetailReportComponent {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data; this.divisionCtrl?.enable();
+        this.lists.divisions = data;
+        this.divisionCtrl?.enable();
       });
     }
   }
@@ -87,7 +91,8 @@ export class AlertDetailReportComponent {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data; this.stationCtrl?.enable();
+        this.lists.stations = data;
+        this.stationCtrl?.enable();
       });
     }
   }
@@ -110,12 +115,12 @@ export class AlertDetailReportComponent {
 
     this.searchForm.disable();
     const payload = this.searchForm.getRawValue();
-    this.dataService.searchData(payload).pipe(
-      finalize(() => this.searchForm.enable())
-    ).subscribe({
-      next: (res) => console.log('Search complete', res),
-      error: (err) => console.error('Search failed', err),
-    });
+    this.dataService.searchData(payload)
+      .pipe(finalize(() => this.searchForm.enable()))
+      .subscribe({
+        next: (res) => console.log('Search complete', res),
+        error: (err) => console.error('Search failed', err),
+      });
   }
 
   records = [

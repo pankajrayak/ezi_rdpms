@@ -1,7 +1,7 @@
 <div class="d-flex flex-column h-100 border-end bg-body text-body" data-bs-theme="dark">
     
     <!-- Header (Fixed) -->
-    <div class="offcanvas-header d-flex flex-column flex-shrink-0 bg-body-tertiary">
+    <div class="offcanvas-header d-flex flex-column flex-shrink-0 bg-body-tertiary text-body-emphasis">
         <!-- Close Button (Mobile Only) -->
         <div class="d-flex justify-content-between align-items-center w-100 mb-3 d-xl-none">
             <h5 class="offcanvas-title">Menu</h5>
@@ -25,7 +25,7 @@
         <div class="sidebar-content accordion d-flex flex-column gap-2" id="accordionGroup">
             
             @for(menu of menus; track menu; let index = $index){
-                <div class="rounded-3 overflow-hidden bg-secondary bg-opacity-25" routerLinkActive="" #rla="routerLinkActive"
+                <div class="rounded-3 overflow-hidden bg-secondary bg-opacity-50" routerLinkActive="" #rla="routerLinkActive"
                      [routerLinkActiveOptions]="{ paths: 'subset', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' }">
 
                     @if(!menu.children?.length){
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Logout Block (Fixed at bottom) -->
-    <div class="p-2 mt-auto flex-shrink-0 bg-body-tertiary">
+    <div class="p-2 mt-auto flex-shrink-0 bg-body-tertiary text-body-emphasis">
         <a class="nav-link text-danger fw-semibold d-flex align-items-center p-2" routerLink="/login">
             <i class="bi bi-box-arrow-right me-3"></i> <span>Logout</span>
         </a>

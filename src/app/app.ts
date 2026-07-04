@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { ToastComponent } from './shared/components';
@@ -8,6 +8,7 @@ import { InactivityService, LoadingService } from './core/services';
   selector: 'app-root',
   imports: [RouterOutlet, AsyncPipe, ToastComponent],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss',
 })
 export class App {

@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, TemplateRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, OnInit, TemplateRef, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { NonNullableFormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { NgxPrintDirective } from 'ngx-print';
 import { NgbActiveModal, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import { PageHeaderComponent } from '@rdpms/shared/components';
+import { MultiSelectDirectiveModule, PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService } from '@rdpms/shared/utility';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'alert-live-component',
@@ -16,15 +17,18 @@ import { DataService } from '@rdpms/shared/utility';
     PageHeaderComponent,
     NgxPrintDirective,
     NgbModalModule,
+    MultiSelectDirectiveModule
   ],
   templateUrl: './alert-live-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './alert-live-component.scss',
 })
 export class AlertLiveComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private modalService = inject(NgbModal);
+  private fb = inject(NonNullableFormBuilder);
   private dataService = inject(DataService);
-
+  private modalService = inject(NgbModal);
+  private destroyRef = inject(DestroyRef);
+  
   lists = {
     zones: [] as any[],
     divisions: [] as any[],
@@ -34,7 +38,7 @@ export class AlertLiveComponent implements OnInit {
     feedbackList: [] as any[],
   };
 
-  searchForm: FormGroup = this.fb.nonNullable.group({
+  searchForm: FormGroup = this.fb.group({
     zone: [{ value: '', disabled: true }, Validators.required],
     division: [{ value: '', disabled: true }, Validators.required],
     station: [{ value: '', disabled: true }, Validators.required],
@@ -53,16 +57,21 @@ export class AlertLiveComponent implements OnInit {
   get assetTypeCtrl() { return this.form['assetType']; }
 
   ngOnInit() {
-    this.dataService.getZones().subscribe((data: any) => {
-      this.lists.zones = data; this.zoneCtrl.enable();
+    this.dataService.getZones()
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe((data: any) => {
+      this.lists.zones = data;
+      this.zoneCtrl.enable();
     });
 
     this.dataService.getAlertTypes().subscribe((data: any) => {
-      this.lists.alertTypes = data; this.alertTypeCtrl.enable();
+      this.lists.alertTypes = data;
+      this.alertTypeCtrl.enable();
     });
 
     this.dataService.getAssetTypes().subscribe((data: any) => {
-      this.lists.assetTypes = data; this.assetTypeCtrl.enable();
+      this.lists.assetTypes = data;
+      this.assetTypeCtrl.enable();
     });
 
     this.lists.feedbackList = [
@@ -81,7 +90,8 @@ export class AlertLiveComponent implements OnInit {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data; this.divisionCtrl?.enable();
+        this.lists.divisions = data;
+        this.divisionCtrl?.enable();
       });
     }
   }
@@ -92,7 +102,8 @@ export class AlertLiveComponent implements OnInit {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data; this.stationCtrl?.enable();
+        this.lists.stations = data;
+        this.stationCtrl?.enable();
       });
     }
   }
@@ -122,7 +133,7 @@ export class AlertLiveComponent implements OnInit {
     const modalRef = this.modalService.open(templateRef, { keyboard: false, centered: true, scrollable: true, fullscreen: false, animation: true, backdrop: 'static', size: 'md', role: 'alertdialog', });
     modalRef.result.then(
         (result: any) => { console.log(result); },
-        (reason: any) => { console.log(reason); }
+        (reason: any) => { console.log(reason); },
       )
       .catch((reason: any) => { console.log(reason); });
   }

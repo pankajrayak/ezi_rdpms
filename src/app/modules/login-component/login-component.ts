@@ -1,59 +1,63 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '@rdpms/services';
+import { schema, required, form, apply, disabled, FormField, FormRoot } from '@angular/forms/signals';
+
+export type LoginFormModel = {
+  username: string;
+  password: string;
+}
 
 @Component({
   selector: 'login-component',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormRoot, FormField],
   templateUrl: './login-component.html',
   styleUrl: './login-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class LoginComponent {
-  private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
 
-  sessionExpired = signal(false);
+  readonly formModel: LoginFormModel = {
+    username: '',
+    password: '',
+  };
 
-  loginForm: FormGroup = this.fb.nonNullable.group({
-    username: ['', Validators.required],
-    password: ['', Validators.required],
+  readonly formSchema = schema<LoginFormModel>((fieldPath) => {
+    required(fieldPath.username, { message: 'required field' });
+    required(fieldPath.password, { message: 'required field' });
   });
 
-  constructor() {
-    if (this.route.snapshot.queryParams['reason'] === 'session-expired') {
-      this.sessionExpired.set(true);
+  readonly model = signal(this.formModel);
+  
+  readonly f = form(this.model, (s) => {
+    apply(s, this.formSchema);
+    disabled(s, { when: () => this.f().submitting() });
+  }, {
+    submission: {
+      action: async (formInstance) => {
+        const payload = formInstance().value();
+        try {
+          const response = await firstValueFrom(this.authService.login(payload));
+          console.log('Login successful! User details:', response);
+          this.navigateToReturnUrl();
+        } catch (error) {
+          this.navigateToReturnUrl();
+          console.log("failed:", error);
+        }
+      },
     }
-  }
+  });
 
-  get form() { return this.loginForm.controls; }
-  get usernameCtrl() { return this.form['username']; }
-  get passwordCtrl() { return this.form['password']; }
+  readonly isSessionExpired = computed(() => 
+    this.route.snapshot.queryParams['reason'] === 'session-expired'
+  );
 
-  onSubmit() {
-    if (!this.loginForm.valid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
-    this.routeChange();
-    return;
-
-    this.loginForm.disable();
-    const payload = this.loginForm.getRawValue();
-
-    this.authService.login(payload)
-      .pipe(finalize(() => this.loginForm.enable()))
-      .subscribe({
-        next: (res) => { this.routeChange(); },
-        error: (err) => console.error('failed', err),
-      });
-  }
-
-  routeChange() {
+  navigateToReturnUrl() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';
     this.router.navigateByUrl(returnUrl);
   }

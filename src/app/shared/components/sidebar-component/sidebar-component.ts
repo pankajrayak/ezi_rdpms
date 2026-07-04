@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
 
 @Component({
@@ -7,6 +7,7 @@ import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar-component.html',
   styleUrl: './sidebar-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [``],
 })
 export class SidebarComponent implements OnInit {

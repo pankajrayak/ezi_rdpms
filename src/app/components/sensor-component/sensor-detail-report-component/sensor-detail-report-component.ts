@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { finalize } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -9,6 +9,7 @@ import { DataService } from '@rdpms/shared/utility';
   selector: 'app-sensor-detail-report-component',
   imports: [CommonModule, ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './sensor-detail-report-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sensor-detail-report-component.scss',
 })
 export class SensorDetailReportComponent implements OnInit {
@@ -50,11 +51,13 @@ export class SensorDetailReportComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.getZones().subscribe((res) => {
-      this.lists.zones = res; this.zoneCtrl.enable();
+      this.lists.zones = res;
+      this.zoneCtrl.enable();
     });
 
     this.dataService.getAssetTypes().subscribe((res) => {
-      this.lists.assetTypes = res; this.assetTypeCtrl.enable();
+      this.lists.assetTypes = res;
+      this.assetTypeCtrl.enable();
     });
   }
   onZoneChange() {
@@ -65,7 +68,8 @@ export class SensorDetailReportComponent implements OnInit {
 
     if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
       this.dataService.getDivisions(this.zoneCtrl.value).subscribe((res) => {
-        this.lists.divisions = res; this.divisionCtrl?.enable();
+        this.lists.divisions = res;
+        this.divisionCtrl?.enable();
       });
     }
   }
@@ -76,7 +80,8 @@ export class SensorDetailReportComponent implements OnInit {
 
     if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
       this.dataService.getStations(this.divisionCtrl.value).subscribe((res) => {
-        this.lists.stations = res; this.stationCtrl?.enable();
+        this.lists.stations = res;
+        this.stationCtrl?.enable();
       });
     }
   }
@@ -95,12 +100,12 @@ export class SensorDetailReportComponent implements OnInit {
 
   getData() {
     const formValue = this.searchForm.getRawValue();
-    this.dataService.getPagedRecord(1, 10, formValue).pipe(
-      finalize(() => this.searchForm.enable())
-    ).subscribe({
-      next: (results) => { this.results = results || {}; },
-      error: (err) => console.error('Search failed:', err),
-    });
+    this.dataService.getPagedRecord(1, 10, formValue)
+      .pipe(finalize(() => this.searchForm.enable()))
+      .subscribe({
+        next: (results) => { this.results = results || {}; },
+        error: (err) => console.error('Search failed:', err),
+      });
   }
 
   resetForm() {

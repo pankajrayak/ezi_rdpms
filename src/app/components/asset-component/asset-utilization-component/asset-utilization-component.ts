@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, ChangeDetectionStrategy, debounced } from '@angular/core';
 import { finalize, of } from 'rxjs';
 import { apply, applyWhen, disabled, form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService, debounceResource, GlobalUtility } from '@rdpms/shared/utility';
+import { DataService, GlobalUtility } from '@rdpms/shared/utility';
 
 interface SensorFormModel {
   zone: string;
@@ -12,8 +12,8 @@ interface SensorFormModel {
   station: string;
   assetType: string;
   assetNumber: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: string | null;
+  toDate: string | null;
   view: string;
 }
 
@@ -21,28 +21,29 @@ interface SensorFormModel {
   selector: 'app-asset-utilization-component',
   imports: [CommonModule, FormField, PageHeaderComponent],
   templateUrl: './asset-utilization-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './asset-utilization-component.scss',
 })
 export class AssetUtilizationComponent {
   private dataService = inject(DataService);
   public globalUtility = inject(GlobalUtility);
 
-  formModel: SensorFormModel = {
+  readonly formModel: SensorFormModel = {
     zone: '',
     division: '',
     station: '',
     assetType: 'All',
     assetNumber: '',
-    fromDate: '',
-    toDate: '',
+    fromDate: null,
+    toDate: null,
     view: 'Table',
   };
 
-  records = signal(<any>[]);
-  isSubmitting = signal(false);
-  model = signal(this.formModel);
+  readonly records = signal(<any>[]);
+  readonly isSubmitting = signal(false);
+  readonly model = signal(this.formModel);
 
-  formSchema = schema<SensorFormModel>((fieldPath) => {
+  readonly formSchema = schema<SensorFormModel>((fieldPath) => {
     required(fieldPath.zone, { message: 'required field' });
     required(fieldPath.division, { message: 'required field' });
     required(fieldPath.station, { message: 'required field' });
@@ -53,11 +54,11 @@ export class AssetUtilizationComponent {
     // required(fieldPath.toDate, { message: 'required field', when: (ctx) => !!ctx.valueOf(fieldPath.fromDate) });
   });
 
-  f = form(this.model, (s) => {
+  readonly f = form(this.model, (s) => {
     apply(s, this.formSchema);
-    disabled(s, () => this.isSubmitting());
-    disabled(s.division, (ctx) => !ctx.valueOf(s.zone) || this.divisionsRes.isLoading());
-    disabled(s.station, (ctx) => !ctx.valueOf(s.division) || this.stationsRes.isLoading());
+    disabled(s, { when: () => this.isSubmitting() });
+    disabled(s.division, { when: (ctx) => !ctx.valueOf(s.zone) || this.divisionsRes.isLoading() });
+    disabled(s.station, { when: (ctx) => !ctx.valueOf(s.division) || this.stationsRes.isLoading() });
 
     // applyWhen(s.toDate, () => !!this.model().fromDate,
     //   schema((ss) => { required(ss, { message: 'required field' }); })
@@ -84,8 +85,11 @@ export class AssetUtilizationComponent {
   minDateValidation(minValuePath: SchemaPath<string>) {
     return (ctx: any) => {
       const maxVal = ctx.value(), minVal = ctx.valueOf(minValuePath);
-      return maxVal && minVal && new Date(maxVal).getTime() < new Date(minVal).getTime()
-        ? { kind: 'minDate' }
+
+      if (!minVal || !maxVal) return null;
+
+      return new Date(maxVal).getTime() < new Date(minVal).getTime()
+        ? { kind: 'minDate', message: 'to date cannot be earlier than start date' }
         : null;
     };
   }
@@ -93,8 +97,11 @@ export class AssetUtilizationComponent {
   maxDateValidation(maxValuePath: SchemaPath<string>) {
     return (ctx: any) => {
       const minVal = ctx.value(), maxVal = ctx.valueOf(maxValuePath);
-      return minVal && maxVal && new Date(minVal).getTime() > new Date(maxVal).getTime()
-        ? { kind: 'maxDate' }
+
+      if (!minVal || !maxVal) return null;
+
+      return new Date(minVal).getTime() > new Date(maxVal).getTime()
+        ? { kind: 'maxDate', message: 'from date cannot be later than end date' }
         : null;
     };
   }
@@ -104,13 +111,15 @@ export class AssetUtilizationComponent {
   assetNumbersRes = rxResource({ stream: () => of(['001', '002', '003', '004']) });
   viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
 
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
   divisionsRes = rxResource({
-    params: () => this.model().zone,
+    params: () =>  this.debouncedZone.value(),
     stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
   });
 
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
   stationsRes = rxResource({
-    params: () => this.model().division,
+    params: () => this.debouncedDivision.value(),
     stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
   });
 
@@ -141,29 +150,18 @@ export class AssetUtilizationComponent {
 
   onSubmit() {
     if (this.f().invalid()) {
-      this.markAllTouched();
+      this.f().markAsTouched();
       return;
     }
 
     console.log(this.f().value(), this.model());
     this.isSubmitting.set(true);
     this.dataService.searchData(this.model())
-      .pipe( finalize(() => { this.isSubmitting.set(false); }), )
+      .pipe(finalize(() => { this.isSubmitting.set(false); }))
       .subscribe({
         next: (res) => console.log('Search complete', res),
         error: (err) => { this.resetForm(); },
       });
-  }
-
-  markAllTouched() {
-    this.f.zone().markAsTouched();
-    this.f.division().markAsTouched();
-    this.f.station().markAsTouched();
-    this.f.assetType().markAsTouched();
-    this.f.assetNumber().markAsTouched();
-    this.f.fromDate().markAsTouched();
-    this.f.toDate().markAsTouched();
-    this.f.view().markAsTouched();
   }
 
   resetForm() {
@@ -177,3 +175,4 @@ export class AssetUtilizationComponent {
     });
   }
 }
+

@@ -1,21 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BsThemeService } from '@rdpms/services';
 
 @Component({
   selector: 'header-component',
   imports: [],
   templateUrl: './header-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './header-component.scss',
 })
 export class HeaderComponent {
-
   themeService = inject(BsThemeService);
 
-  toggleTheme(){
+  toggleTheme() {
     this.themeService.toggleTheme();
   }
 
-  get currentTheme(){
+  get currentTheme() {
     return this.themeService.getCurrentTheme();
   }
 }

@@ -1,6 +1,6 @@
 import { inject, NgZone, ResourceRef, Signal } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, debounceTime, distinctUntilChanged, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, Observable, tap, throwError } from 'rxjs';
 
 export interface RxResourceConfigOptions<T, P> {
   params: () => P | undefined | null;
@@ -9,15 +9,14 @@ export interface RxResourceConfigOptions<T, P> {
   onError?: (err: unknown) => void;
 }
 
-export function debounceResource<T, K extends keyof T>(sourceSignal: Signal<T>, key: K, time: number = 400): Signal<T[K]>{
+export function debouncedResource<T>(source: Signal<T>, time: number = 400): Signal<T>{
   return toSignal(
-    toObservable(sourceSignal).pipe(
+    toObservable(source).pipe(
       debounceTime(time),
       distinctUntilChanged(),
-      map((state) => state[key])
     ), 
-    { initialValue: sourceSignal()[key] }
-  );
+    { initialValue: source() }
+  ) as Signal<T>;
 }
 
 export function createRxResource<T, P>(options: RxResourceConfigOptions<T, P>): ResourceRef<T | undefined> {
