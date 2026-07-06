@@ -1,127 +1,137 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { Component, inject, ChangeDetectionStrategy, AfterViewInit, signal, computed, debounced } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { apply, disabled, form, FormField, FormRoot, required, schema, submit } from '@angular/forms/signals';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService } from '@rdpms/shared/utility';
 import { NgxPrintDirective } from 'ngx-print';
-import { finalize } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+
+interface SearchFormModel {
+  zone: string;
+  division: string;
+  station: string;
+  alertType: string;
+  assetType: string;
+  assetNumber: string;
+  cause: string;
+  fromDate: string;
+  fromTime: string;
+  toDate: string;
+  toTime: string;
+  view: string;
+}
 
 @Component({
   selector: 'alert-summary-report-component',
-  imports: [CommonModule, ReactiveFormsModule, PageHeaderComponent, NgxPrintDirective],
+  imports: [DatePipe, FormField, FormRoot, PageHeaderComponent, NgxPrintDirective],
   templateUrl: './alert-summary-report-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './alert-summary-report-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class AlertSummaryReportComponent {
-  private fb = inject(FormBuilder);
-  private dataService = inject(DataService);
+export class AlertSummaryReportComponent implements AfterViewInit {
 
-  lists = {
-    zones: [] as any[],
-    divisions: [] as any[],
-    stations: [] as any[],
-    alertTypes: [] as any[],
-    assetTypes: [] as any[],
-  };
-
-  searchForm: FormGroup = this.fb.nonNullable.group({
-    zone: [{ value: '', disabled: true }, Validators.required],
-    division: [{ value: '', disabled: true }, Validators.required],
-    station: [{ value: '', disabled: true }, Validators.required],
-    alertType: [{ value: 'All', disabled: true }, Validators.required],
-    assetType: [{ value: 'All', disabled: true }, Validators.required],
-    assetNumber: ['All', Validators.required],
-    cause: ['All', Validators.required],
-    view: ['Table', Validators.required],
-    fromDate: ['', Validators.required],
-    fromTime: ['', Validators.required],
-    toDate: [''],
-    toTime: [''],
-  });
-
-  get form() { return this.searchForm.controls; }
-  get zoneCtrl() { return this.form['zone']; }
-  get divisionCtrl() { return this.form['division']; }
-  get stationCtrl() { return this.form['station']; }
-  get alertTypeCtrl() { return this.form['alertType']; }
-  get assetTypeCtrl() { return this.form['assetType']; }
-  get assetNumberCtrl() { return this.form['assetNumber']; }
-  get causeCtrl() { return this.form['cause']; }
-  get viewCtrl() { return this.form['view']; }
-  get fromDateCtrl() { return this.form['fromDate']; }
-  get fromTimeCtrl() { return this.form['fromTime']; }
-  get toDateCtrl() { return this.form['toDate']; }
-  get toTimeCtrl() { return this.form['toTime']; }
-
-  ngOnInit() {
-    this.dataService.getZones().subscribe((data: any) => {
-      this.lists.zones = data;
-      this.zoneCtrl.enable();
-    });
-
-    this.dataService.getAlertTypes().subscribe((data: any) => {
-      this.lists.alertTypes = data;
-      this.alertTypeCtrl.enable();
-    });
-
-    this.dataService.getAssetTypes().subscribe((data: any) => {
-      this.lists.assetTypes = data;
-      this.assetTypeCtrl.enable();
-    });
+  ngAfterViewInit(): void {
+    setTimeout(() => { this.f().reset(); }, 100);
   }
 
-  onZoneChange(): void {
-    this.lists.divisions = [];
-    this.lists.stations = [];
-    this.divisionCtrl?.reset({ value: '', disabled: true });
-    this.stationCtrl?.reset({ value: '', disabled: true });
+  private dataService = inject(DataService);
 
-    if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
-      this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data;
-        this.divisionCtrl?.enable();
-      });
-    }
+  readonly formModel: SearchFormModel = {
+    zone: '',
+    division: '',
+    station: '',
+    alertType: 'All',
+    assetType: 'All',
+    assetNumber: 'All',
+    cause: 'All',
+    fromDate: '',
+    fromTime: '',
+    toDate: '',
+    toTime: '',
+    view: 'Table',
+  }
+
+  readonly records = signal(<any>[]);
+  readonly model = signal(this.formModel);
+
+  readonly formSchema = schema<SearchFormModel>((fieldPath) => {
+    required(fieldPath.zone, { message: 'required field' });
+    required(fieldPath.division, { message: 'required field' });
+    required(fieldPath.station, { message: 'required field' });
+    required(fieldPath.alertType, { message: 'required field' });
+    required(fieldPath.assetType, { message: 'required field' });
+    required(fieldPath.assetNumber, { message: 'required field' });
+    required(fieldPath.cause, { message: 'required field' });
+    required(fieldPath.fromDate, { message: 'required field' });
+    required(fieldPath.fromTime, { message: 'required field' });
+    required(fieldPath.view, { message: 'required field' });
+  });
+
+  readonly f = form(this.model, (s) => {
+    apply(s, this.formSchema);
+    disabled(s, { when: () => this.f().submitting() });
+    disabled(s.division, { 
+      when: (ctx) => {
+        const currZone = ctx.valueOf(s.zone);
+        return !currZone || this.divisionsRes.isLoading() || this.debouncedZone.value() !== currZone;
+      } 
+    });
+    disabled(s.station, 
+      { when: (ctx) => {
+        const currDivision = ctx.valueOf(s.division);
+        return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
+      }
+    });
+  });
+  
+  zonesRes = rxResource({ stream: () => this.dataService.getZones() ?? of([]) });
+  alertTypesRes = rxResource({ stream: () => this.dataService.getAlertTypes() ?? of([]) });
+  assetTypesRes = rxResource({ stream: () => this.dataService.getAssetTypes() ?? of([]) });
+  assetNumbersRes = rxResource({ stream: () => of(['001', '002', '003', '004']) });
+  causesRes = rxResource({ stream: () => of(['PT-OBS']) });
+  viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
+  
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
+  divisionsRes = rxResource({
+    params: () => {
+      const z = this.debouncedZone.value();
+      return z && z.trim() !== '' ? z : undefined; 
+    },
+    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
+  });
+
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
+  stationsRes = rxResource({
+    params: () => {
+      const d = this.debouncedDivision.value();
+      return d && d.trim() !== '' ? d : undefined;
+    },
+    stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
+  });
+
+  onZoneChange() {
+    this.f.division().reset();
+    this.f.station().reset();
+    this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
-    this.lists.stations = [];
-    this.stationCtrl?.reset({ value: '', disabled: true });
-
-    if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
-      this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data;
-        this.stationCtrl?.enable();
-      });
-    }
+    this.f.station().reset();
+    this.model.update((m) => ({ ...m, station: '' }));
   }
 
-  onStationChange() {}
-
-  onAlertTypeChange() {}
-
-  onAssetTypeChange() {}
-
-  onAssetNumberChange() {}
-
-  onCauseChange() {}
-
-  onSubmit() {
-    if (!this.searchForm.valid) {
-      this.searchForm.markAllAsTouched();
-      return;
-    }
-
-    this.searchForm.disable();
-    const payload = this.searchForm.getRawValue();
-    this.dataService.searchData(payload)
-      .pipe(finalize(() => this.searchForm.enable()))
-      .subscribe({
-        next: (res) => console.log('Search complete', res),
-        error: (err) => console.error('Search failed', err),
-      });
+  async onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    await submit(this.f, async (formInstance) => {
+      try {
+        const payload = formInstance().value();
+        const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
+        console.log('Search complete:', response);
+        this.records.set(response.data);
+      } catch (error) {
+        console.log("Search failed:", error);
+      }
+    });
   }
-
-  records: any[] = [];
 }

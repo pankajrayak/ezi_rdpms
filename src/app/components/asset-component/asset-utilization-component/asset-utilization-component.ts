@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, signal, ChangeDetectionStrategy, debounced } from '@angular/core';
+import { Component, computed, effect, inject, signal, ChangeDetectionStrategy, debounced, AfterViewInit } from '@angular/core';
 import { finalize, of } from 'rxjs';
 import { apply, applyWhen, disabled, form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -18,13 +18,18 @@ interface SensorFormModel {
 }
 
 @Component({
-  selector: 'app-asset-utilization-component',
+  selector: 'asset-utilization-component',
   imports: [CommonModule, FormField, PageHeaderComponent],
   templateUrl: './asset-utilization-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './asset-utilization-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class AssetUtilizationComponent {
+export class AssetUtilizationComponent implements AfterViewInit {
+
+  ngAfterViewInit(): void {
+    setTimeout(() => { this.f().reset(); }, 100);
+  }
+
   private dataService = inject(DataService);
   public globalUtility = inject(GlobalUtility);
 
@@ -57,8 +62,18 @@ export class AssetUtilizationComponent {
   readonly f = form(this.model, (s) => {
     apply(s, this.formSchema);
     disabled(s, { when: () => this.isSubmitting() });
-    disabled(s.division, { when: (ctx) => !ctx.valueOf(s.zone) || this.divisionsRes.isLoading() });
-    disabled(s.station, { when: (ctx) => !ctx.valueOf(s.division) || this.stationsRes.isLoading() });
+    disabled(s.division, { 
+      when: (ctx) => {
+        const currZone = ctx.valueOf(s.zone);
+        return !currZone || this.divisionsRes.isLoading() || this.debouncedZone.value() !== currZone;
+      } 
+    });
+    disabled(s.station, 
+      { when: (ctx) => {
+        const currDivision = ctx.valueOf(s.division);
+        return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
+      }
+    });
 
     // applyWhen(s.toDate, () => !!this.model().fromDate,
     //   schema((ss) => { required(ss, { message: 'required field' }); })

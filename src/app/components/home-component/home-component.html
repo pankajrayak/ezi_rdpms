@@ -23,7 +23,7 @@
             
             <div class="col-sm-6 col-md-4 col-lg-3">
               @let zoneCtrl = f.zone();
-              <label class="small fw-bold text-body-secondary">ZONE</label>
+              <label class="small fw-bold text-body-secondary text-nowrap">ZONE</label>
               <select 
                 [formField]="f.zone"
                 (change)="onZoneChange()"
@@ -39,13 +39,14 @@
               @if (zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())) {
                 @for (err of divisionCtrl.errors(); track err.kind) {
                   @if (err?.kind === 'required') { {{ err?.message }} }
+                  @else { {{ err.kind }} error }
                 }
               }
             </div>
 
             <div class="col-sm-6 col-md-4 col-lg-3">
               @let divisionCtrl = f.division();
-              <label class="small fw-bold text-body-secondary">DIVISION</label>
+              <label class="small fw-bold text-body-secondary text-nowrap">DIVISION</label>
               <select
                 [formField]="f.division"
                 (change)="onDivisionChange()"
@@ -62,6 +63,7 @@
                 <div class="invalid-feedback small m-0">
                   @for (err of divisionCtrl.errors(); track err.kind) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
                   }
                 </div>
               }
@@ -69,7 +71,7 @@
 
             <div class="col-sm-6 col-md-4 col-lg-3">
               @let stationCtrl = f.station();
-              <label class="small fw-bold text-body-secondary">STATION</label>
+              <label class="small fw-bold text-body-secondary text-nowrap">STATION</label>
               <select
                 [formField]="f.station"
                 class="form-select form-select-sm"
@@ -85,6 +87,7 @@
                 <div class="invalid-feedback small m-0">
                   @for (err of stationCtrl.errors(); track err.kind) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
                   }
                 </div>
               }
@@ -92,7 +95,7 @@
 
             <div class="col">
               <label class="small invisible d-block">Search</label>
-              <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold shadow-sm" [disabled]="f().submitting()">
+              <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold text-nowrap" [disabled]="f().submitting()">
                 @if(f().submitting()) { <span class="spinner-border spinner-border-sm"></span> Searching... } 
                 @else { <span class="bi bi-search"></span> Search }
               </button>
@@ -161,21 +164,21 @@
       <!-- Healthy Row -->
       <div class="col">
         <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-success-subtle text-success-emphasis border border-success-subtle h-100">
-          <span class="small fw-medium mb-1"><i class="bi bi-check-circle-fill mx-2"></i>Healthy</span>
+          <span class="small fw-medium mb-1"><i class="bi bi-check-circle-fill px-1"></i>Healthy</span>
           <h4 class="m-0 fw-extrabold">{{asset.healthy}}</h4>
         </div>
       </div>
       <!-- Predictive Row -->
       <div class="col">
         <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-warning-subtle text-warning-emphasis border border-warning-subtle h-100">
-          <span class="small fw-medium mb-1"><i class="bi bi-exclamation-triangle-fill mx-2"></i>Warning</span>
+          <span class="small fw-medium mb-1"><i class="bi bi-exclamation-triangle-fill px-1"></i>Warning</span>
           <h4 class="m-0 fw-extrabold">{{asset.predictive}}</h4>
         </div>
       </div>
       <!-- Failure Row -->
       <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-danger-subtle text-danger-emphasis border border-danger-subtle h-100">
-          <span class="small fw-medium mb-1"><i class="bi bi-x-circle-fill mx-2"></i>Failure</span>
+        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-danger-subtle text-danger-emphasis text-center border border-danger-subtle h-100">
+          <span class="small fw-medium mb-1"><i class="bi bi-x-circle-fill px-1"></i>Failure</span>
           <h4 class="m-0 fw-extrabold">{{asset.failure}}</h4>
         </div>
       </div>

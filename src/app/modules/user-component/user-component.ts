@@ -7,8 +7,8 @@ import { HeaderComponent, SidebarComponent } from '@rdpms/shared/components';
   selector: 'user-component',
   imports: [RouterOutlet, SidebarComponent, HeaderComponent],
   templateUrl: './user-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './user-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class UserComponent {
   routeConfig = USER_ROUTES[0]?.children || [];

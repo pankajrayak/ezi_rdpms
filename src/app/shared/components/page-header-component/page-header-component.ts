@@ -5,8 +5,8 @@ import { Component, input, output, ChangeDetectionStrategy } from '@angular/core
   selector: 'page-header',
   imports: [CommonModule],
   templateUrl: './page-header-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './page-header-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class PageHeaderComponent {
   title = input.required<string>();

@@ -24,256 +24,304 @@
 
     <div class="collapse show" id="searchFiltersCollapse">
       <div class="card-body p-3 pt-1">
-        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
-          <div class="row g-2 align-items-baseline flex-xxxl-nowrap">
+        <form [formRoot]="f" autocomplete="none" novalidate (submit)="onSubmit($event)">
+          <div class="row g-2 align-items-baseline flex-xxxl-wrap">
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">ZONE</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="zone"
+              @let zoneCtrl = f.zone();
+              <label class="small fw-bold text-body-secondary text-nowrap">ZONE</label>
+              <select 
+                [formField]="f.zone"
                 (change)="onZoneChange()"
-                [class.is-invalid]="zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)"
-                [class.is-valid]="zoneCtrl.valid && (zoneCtrl.touched || zoneCtrl.dirty)"
+                class="form-select form-select-sm"
+                [class.is-valid]="zoneCtrl.valid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
+                [class.is-invalid]="zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Zone</option>
                 <option value="All">All</option>
-                @for (z of lists.zones; track z) {
-                  <option [value]="z.zone">{{ z.zone }}</option>
+                @for (zone of zonesRes.value(); track zone) {
+                  <option [value]="zone.zone">{{ zone.zone }}</option>
                 }
               </select>
-              @if (zoneCtrl.invalid && (zoneCtrl.touched || zoneCtrl.dirty)) {
+              @if (zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (zoneCtrl.hasError('required')) { required field }
+                  @for (err of zoneCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">DIVISION</label>
+               @let divisionCtrl = f.division();
+              <label class="small fw-bold text-body-secondary text-nowrap">DIVISION</label>
               <select
-                class="form-select form-select-sm"
-                formControlName="division"
+                [formField]="f.division"
                 (change)="onDivisionChange()"
-                [class.is-invalid]="divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)"
-                [class.is-valid]="divisionCtrl.valid && (divisionCtrl.touched || divisionCtrl.dirty)"
+                class="form-select form-select-sm"
+                [class.is-valid]="divisionCtrl.valid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
+                [class.is-invalid]="divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Division</option>
                 <option value="All">All</option>
-                @for (d of lists.divisions; track d) {
-                  <option [value]="d">{{ d }}</option>
+                @for (division of divisionsRes.value(); track division) {
+                  <option [value]="division">{{ division }}</option>
                 }
               </select>
-              @if (divisionCtrl.invalid && (divisionCtrl.touched || divisionCtrl.dirty)) {
+              @if (divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (divisionCtrl.hasError('required')) { required field }
+                  @for (err of divisionCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">STATION</label>
+              @let stationCtrl = f.station();
+              <label class="small fw-bold text-body-secondary text-nowrap">STATION</label>
               <select
+                [formField]="f.station"
                 class="form-select form-select-sm"
-                formControlName="station"
-                (change)="onStationChange()"
-                [class.is-invalid]="stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)"
-                [class.is-valid]="stationCtrl.valid && (stationCtrl.touched || stationCtrl.dirty)"
+                [class.is-valid]="stationCtrl.valid() && (stationCtrl.touched() || stationCtrl.dirty())"
+                [class.is-invalid]="stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Station</option>
                 <option value="All">All</option>
-                @for (s of lists.stations; track s) {
-                  <option [value]="s">{{ s }}</option>
+                @for (station of stationsRes.value(); track station) {
+                  <option [value]="station">{{ station }}</option>
                 }
               </select>
-              @if (stationCtrl.invalid && (stationCtrl.touched || stationCtrl.dirty)) {
+              @if (stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (stationCtrl.hasError('required')) { required field }
+                  @for (err of stationCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">ALERT TYPE</label>
+              @let alertTypeCtrl = f.alertType();
+              <label class="small fw-bold text-body-secondary text-nowrap">ALERT TYPE</label>
               <select
+                [formField]="f.alertType"
                 class="form-select form-select-sm"
-                formControlName="alertType"
-                (change)="onAlertTypeChange()"
-                [class.is-invalid]="alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)"
-                [class.is-valid]="alertTypeCtrl.valid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)"
+                [class.is-valid]="alertTypeCtrl.valid() && (alertTypeCtrl.touched() || alertTypeCtrl.dirty())"
+                [class.is-invalid]="alertTypeCtrl.invalid() && (alertTypeCtrl.touched() || alertTypeCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Alert Type</option>
                 <option value="All">All</option>
-                @for (at of lists.alertTypes; track at) {
-                  <option [value]="at">{{ at }}</option>
+                @for (alertType of alertTypesRes.value(); track alertType) {
+                  <option [value]="alertType">{{ alertType }}</option>
                 }
               </select>
-              @if (alertTypeCtrl.invalid && (alertTypeCtrl.touched || alertTypeCtrl.dirty)) {
-                <div class="invalid-feedback small m-0">
-                  @if (alertTypeCtrl.hasError('required')) { required field }
-                </div>
+              @if (alertTypeCtrl.invalid() && (alertTypeCtrl.touched() || alertTypeCtrl.dirty())) {
+              <div class="invalid-feedback small m-0">
+                @for (err of alertTypeCtrl.errors(); track err.kind) {
+                  @if (err?.kind === 'required') { {{ err?.message }} }
+                  @else { {{ err.kind }} error }
+                }
+              </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">ASSET TYPE</label>
+              @let assetTypeCtrl = f.assetType();
+              <label class="small fw-bold text-body-secondary text-nowrap">ASSET TYPE</label>
               <select
+                [formField]="f.assetType"
                 class="form-select form-select-sm"
-                formControlName="assetType"
-                (change)="onAssetTypeChange()"
-                [class.is-invalid]="assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
-                [class.is-valid]="assetTypeCtrl.valid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)"
+                [class.is-valid]="assetTypeCtrl.valid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())"
+                [class.is-invalid]="assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Asset Type</option>
                 <option value="All">All</option>
-                @for (at of lists.assetTypes; track at) {
-                  <option [value]="at">{{ at }}</option>
+                @for (assetType of assetTypesRes.value(); track assetType) {
+                  <option [value]="assetType">{{ assetType }}</option>
                 }
               </select>
-              @if (assetTypeCtrl.invalid && (assetTypeCtrl.touched || assetTypeCtrl.dirty)) {
+              @if (assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (assetTypeCtrl.hasError('required')) { required field }
+                  @for (err of assetTypeCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">ASSET NUMBER</label>
+              @let assetNumberCtrl = f.assetNumber();
+              <label class="small fw-bold text-body-secondary text-nowrap">ASSET NUMBER</label>
               <select
+                [formField]="f.assetNumber"
                 class="form-select form-select-sm"
-                formControlName="assetNumber"
-                (change)="onAssetNumberChange()"
-                [class.is-invalid]="assetNumberCtrl.invalid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)"
-                [class.is-valid]="assetNumberCtrl.valid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)"
+                [class.is-valid]="assetNumberCtrl.valid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())"
+                [class.is-invalid]="assetNumberCtrl.invalid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Asset Number</option>
                 <option value="All">All</option>
-                <option value="PM-101">PM-101</option>
-                <option value="TC-502">TC-502</option>
+                @for (assetNumber of assetNumbersRes.value(); track assetNumber) {
+                  <option [value]="assetNumber">{{ assetNumber }}</option>
+                }
               </select>
-              @if (assetNumberCtrl.invalid && (assetNumberCtrl.touched || assetNumberCtrl.dirty)) {
-                <div class="invalid-feedback small m-0">
-                  @if (assetNumberCtrl.hasError('required')) { required field }
-                </div>
+              @if (assetNumberCtrl.invalid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())) {
+              <div class="invalid-feedback small m-0">
+                @for (err of assetNumberCtrl.errors(); track err.kind) {
+                  @if (err?.kind === 'required') { {{ err?.message }} }
+                  @else { {{ err.kind }} error }
+                }
+              </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">CAUSE</label>
+              @let causeCtrl = f.cause();
+              <label class="small fw-bold text-body-secondary text-nowrap">CAUSE</label>
               <select
+                [formField]="f.cause"
                 class="form-select form-select-sm"
-                formControlName="cause"
-                (change)="onCauseChange()"
-                [class.is-invalid]="causeCtrl.invalid && (causeCtrl.touched || causeCtrl.dirty)"
-                [class.is-valid]="causeCtrl.valid && (causeCtrl.touched || causeCtrl.dirty)"
+                [class.is-invalid]="causeCtrl.invalid() && (causeCtrl.touched() || causeCtrl.dirty())"
+                [class.is-valid]="causeCtrl.valid() && (causeCtrl.touched() || causeCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
+                <option value="" disabled selected>Select Cause</option>
                 <option value="All">All</option>
-                <option value="PT-OBS">PT-OBS</option>
+                @for (assetType of causesRes.value(); track assetType) {
+                  <option [value]="assetType">{{ assetType }}</option>
+                }
               </select>
-              @if (causeCtrl.invalid && (causeCtrl.touched || causeCtrl.dirty)) {
+              @if (causeCtrl.invalid() && (causeCtrl.touched() || causeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (causeCtrl.hasError('required')) { required field }
+                  @for (err of causeCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">FROM DATE</label>
+              @let fromDateCtrl = f.fromDate();
+              <label class="small fw-bold text-body-secondary text-nowrap">FROM DATE</label>
               <input
                 type="date"
+                [formField]="f.fromDate"
                 class="form-control form-control-sm"
-                formControlName="fromDate"
-                [class.is-invalid]="fromDateCtrl.invalid && (fromDateCtrl.touched || fromDateCtrl.dirty)"
-                [class.is-valid]="fromDateCtrl.valid && (fromDateCtrl.touched || fromDateCtrl.dirty)"
+                [class.is-valid]="fromDateCtrl.valid() && (fromDateCtrl.touched() || fromDateCtrl.dirty())"
+                [class.is-invalid]="fromDateCtrl.invalid() && (fromDateCtrl.touched() || fromDateCtrl.dirty())"
               />
-              @if (fromDateCtrl.invalid && (fromDateCtrl.touched || fromDateCtrl.dirty)) {
+              @if (fromDateCtrl.invalid() && (fromDateCtrl.touched() || fromDateCtrl.dirty()) ) {
                 <div class="invalid-feedback small m-0">
-                  @if (fromDateCtrl.hasError('required')) { required field }
+                  @for (err of fromDateCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} } 
+                    @else if (err?.kind === 'minDate') { {{ err?.message }} } 
+                    @else if (err?.kind === 'maxDate') { {{ err?.message }} } 
+                    @else if (err.kind == 'parse') { invalid date }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">FROM TIME</label>
+              @let fromTimeCtrl = f.fromTime();
+              <label class="small fw-bold text-body-secondary text-nowrap">FROM TIME</label>
               <input
                 type="time"
+                [formField]="f.fromTime"
                 class="form-control form-control-sm"
-                formControlName="fromTime"
-                [class.is-invalid]="fromTimeCtrl.invalid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)"
-                [class.is-valid]="fromTimeCtrl.valid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)"
+                [class.is-valid]="fromTimeCtrl.valid() && (fromTimeCtrl.touched() || fromTimeCtrl.dirty())"
+                [class.is-invalid]="fromTimeCtrl.invalid() && (fromTimeCtrl.touched() || fromTimeCtrl.dirty())"
               />
-              @if (fromTimeCtrl.invalid && (fromTimeCtrl.touched || fromTimeCtrl.dirty)) {
+              @if (fromTimeCtrl.invalid() && (fromTimeCtrl.touched() || fromTimeCtrl.dirty()) ) {
                 <div class="invalid-feedback small m-0">
-                  @if (fromTimeCtrl.hasError('required')) { required field }
+                  @for (err of fromTimeCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} } 
+                    @else if (err?.kind === 'minTime') { {{ err?.message }} } 
+                    @else if (err?.kind === 'maxTime') { {{ err?.message }} } 
+                    @else if (err.kind == 'parse') { invalid date }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">TO DATE</label>
+              @let toDateCtrl = f.toDate();
+              <label class="small fw-bold text-body-secondary text-nowrap">TO DATE</label>
               <input
                 type="date"
+                [formField]="f.toDate"
                 class="form-control form-control-sm"
-                formControlName="toDate"
-                [class.is-invalid]="toDateCtrl.invalid && (toDateCtrl.touched || toDateCtrl.dirty)"
-                [class.is-valid]="toDateCtrl.valid && (toDateCtrl.touched || toDateCtrl.dirty)"
+                [class.is-valid]="toDateCtrl.valid() && (toDateCtrl.touched() || toDateCtrl.dirty())"
+                [class.is-invalid]="toDateCtrl.invalid() && (toDateCtrl.touched() || toDateCtrl.dirty())"
               />
-              @if (toDateCtrl.invalid && (toDateCtrl.touched || toDateCtrl.dirty)) {
+              @if (toDateCtrl.invalid() && (toDateCtrl.touched() || toDateCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (toDateCtrl.hasError('required')) { required field }
+                  @for (err of toDateCtrl.errors(); track err) {
+                    @if (err?.kind === 'required') { {{ err?.message }} } 
+                    @else if (err?.kind === 'minDate') { {{ err?.message }} } 
+                    @else if (err.kind == 'parse') { invalid date }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">TO TIME</label>
+              @let toTimeCtrl = f.toTime();
+              <label class="small fw-bold text-body-secondary text-nowrap">TO TIME</label>
               <input
                 type="time"
+                [formField]="f.toTime"
                 class="form-control form-control-sm"
-                formControlName="toTime"
-                [class.is-invalid]="toTimeCtrl.invalid && (toTimeCtrl.touched || toTimeCtrl.dirty)"
-                [class.is-valid]="toTimeCtrl.valid && (toTimeCtrl.touched || toTimeCtrl.dirty)"
+                [class.is-valid]="toTimeCtrl.valid() && (toTimeCtrl.touched() || toTimeCtrl.dirty())"
+                [class.is-invalid]="toTimeCtrl.invalid() && (toTimeCtrl.touched() || toTimeCtrl.dirty())"
               />
-              @if (toTimeCtrl.invalid && (toTimeCtrl.touched || toTimeCtrl.dirty)) {
+              @if (toTimeCtrl.invalid() && (toTimeCtrl.touched() || toTimeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (toTimeCtrl.hasError('required')) { required field }
+                  @for (err of toTimeCtrl.errors(); track err) {
+                    @if (err?.kind === 'required') { {{ err?.message }} } 
+                    @else if (err?.kind === 'minTime') { {{ err?.message }} } 
+                    @else if (err.kind == 'parse') { invalid date }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col-sm-6 col-md-3 col-lg-2 col-xxxl">
-              <label class="small fw-bold text-body-secondary">VIEW</label>
+              @let viewCtrl = f.view();
+              <label class="small fw-bold text-body-secondary text-nowrap">VIEW</label>
               <select
+                [formField]="f.view"
                 class="form-select form-select-sm"
-                formControlName="view"
-                [class.is-invalid]="viewCtrl.invalid && (viewCtrl.touched || viewCtrl.dirty)"
-                [class.is-valid]="viewCtrl.valid && (viewCtrl.touched || viewCtrl.dirty)"
+                [class.is-valid]="viewCtrl.valid() && (viewCtrl.touched() || viewCtrl.dirty())"
+                [class.is-invalid]="viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())"
               >
-                <option value="" disabled>Select</option>
-                <option value="Table">Table</option>
-                <option value="Bar">Bar</option>
-                <option value="Pie">Pie</option>
-                <option value="Graph">Graph</option>
+                <option value="" disabled selected>Select View Type</option>
+                @for (viw of viewsRes.value(); track viw) {
+                  <option [value]="viw">{{ viw }}</option>
+                }
               </select>
-              @if (viewCtrl.invalid && (viewCtrl.touched || viewCtrl.dirty)) {
+              @if (viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @if (viewCtrl.hasError('required')) { required field }
+                  @for (err of viewCtrl.errors(); track err.kind) {
+                    @if (err?.kind === 'required') { {{ err?.message }} }
+                    @else { {{ err.kind }} error }
+                  }
                 </div>
               }
             </div>
 
             <div class="col m-0">
               <label class="small invisible d-block">Search</label>
-              <button
-                type="submit"
-                class="btn btn-primary btn-sm w-100 fw-bold shadow-sm"
-                [disabled]="searchForm.disabled"
-              >
-                @if (searchForm.disabled) {
-                  <span class="spinner-border spinner-border-sm"></span> Searching...
-                } @else {
-                  <span class="bi bi-search"></span> Search
-                }
+              <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold text-nowrap" [disabled]="f().submitting()">
+                @if (f().submitting()) { <span class="spinner-border spinner-border-sm"></span> Searching... } 
+                @else { <span class="bi bi-search"></span> Search }
               </button>
             </div>
           </div>
@@ -282,13 +330,13 @@
     </div>
   </div>
 
-  @if (searchForm.value.view) {
+  @if (records().length) {
     <div class="row g-3 mb-4">
       <div class="col-12">
         <div class="card shadow-sm border-4 border-start border-0 border-primary bg-primary-subtle text-primary-emphasis fw-bold">
           <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center">
             <span>Reporting Period Summary</span>
-            @let sfValue = searchForm.value;
+            @let sfValue = f().value();
             <span
               >Start: {{ $safeNavigationMigration(sfValue?.fromDate) | date: 'dd-MM-yyyy' }} {{ sfValue?.fromTime }} 
               — End: {{ $safeNavigationMigration(sfValue?.toDate) | date: 'dd-MM-yyyy' }} {{ sfValue?.toTime }}
@@ -354,7 +402,7 @@
                 </tr>
               </thead>
               <tbody class="table-group-divider">
-                @for (row of records; track row) {
+                @for (row of records(); track row.sNo) {
                   <tr>
                     <td class="text-center">{{ row?.sNo }}</td>
                     <td>{{ row?.zone }}</td>

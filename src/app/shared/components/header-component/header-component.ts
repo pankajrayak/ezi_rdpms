@@ -5,8 +5,8 @@ import { BsThemeService } from '@rdpms/services';
   selector: 'header-component',
   imports: [],
   templateUrl: './header-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './header-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class HeaderComponent {
   themeService = inject(BsThemeService);

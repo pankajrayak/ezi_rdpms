@@ -8,8 +8,8 @@ import { InactivityService, LoadingService } from './core/services';
   selector: 'app-root',
   imports: [RouterOutlet, AsyncPipe, ToastComponent],
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class App {
   // Injecting services here starts the service constructor logic

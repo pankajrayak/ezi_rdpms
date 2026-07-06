@@ -1,120 +1,109 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, debounced } from '@angular/core';
+import { schema, required, form, apply, disabled, FormField, FormRoot } from '@angular/forms/signals';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { PageHeaderComponent } from '@rdpms/shared/components';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { DataService } from '@rdpms/shared/utility';
 import { NgxPrintDirective } from 'ngx-print';
-import { finalize } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+
+interface SearchFormModel {
+  zone: string;
+  division: string;
+  station: string;
+  assetType: string;
+  assetMake: string;
+  view: string;
+}
 
 @Component({
-  selector: 'app-asset-detail-report-component',
-  imports: [CommonModule, FormsModule, PageHeaderComponent, NgbPaginationModule, NgxPrintDirective],
+  selector: 'asset-detail-report-component',
+  imports: [CommonModule, FormField, FormRoot, PageHeaderComponent, NgbPaginationModule, NgxPrintDirective],
   templateUrl: './asset-detail-report-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './asset-detail-report-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class AssetDetailReportComponent implements OnInit, AfterViewInit {
+export class AssetDetailReportComponent {
   private dataService = inject(DataService);
-  @ViewChild('searchForm') searchForm!: NgForm;
-
-  results: any;
-
-  lists = {
-    zones: [] as any[],
-    divisions: [] as any[],
-    stations: [] as any[],
-    assetTypes: [] as any[],
-    assetMakes: ['1', '2'] as any[],
-    views: ['Table', 'Pie', 'Bar', 'Graph'] as any[],
-  };
-
-  form = { zone: '', division: '', station: '', assetType: '', assetMake: '', view: 'Table' };
-
-  get zoneCtrl() { return this.searchForm.controls['zone']; }
-  get divisionCtrl() { return this.searchForm.controls['division']; }
-  get stationCtrl() { return this.searchForm.controls['station']; }
-  get assetTypectrl() { return this.searchForm.controls['assetType']; }
-  get assetMakeCtrl() { return this.searchForm.controls['assetMake']; }
-  get viewCtrl() { return this.searchForm.controls['view']; }
-
-  ngOnInit() {
-    this.dataService.getZones().subscribe((res) => {
-      this.lists.zones = res;
-      this.zoneCtrl.enable();
-    });
-
-    this.dataService.getAssetTypes().subscribe((res) => {
-      this.lists.assetTypes = res;
-      this.assetTypectrl.enable();
-    });
+  
+  readonly formModel: SearchFormModel = {
+    zone: '',
+    division: '',
+    station: '',
+    assetMake: '',
+    assetType: '',
+    view: 'Table',
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.searchForm.setValue(this.form);
-      this.zoneCtrl?.disable();
-      this.divisionCtrl?.disable();
-      this.stationCtrl?.disable();
-      this.assetTypectrl?.disable();
-    }, 0);
-  }
+  readonly records = signal(<any>[]);
+  readonly model = signal(this.formModel);
+
+  readonly formSchema = schema<SearchFormModel>((fieldPath) => {
+    required(fieldPath.zone, { message: 'required field' });
+    required(fieldPath.division, { message: 'required field' });
+    required(fieldPath.station, { message: 'required field' });
+    required(fieldPath.assetType, { message: 'required field' });
+    required(fieldPath.assetMake, { message: 'required field' });
+    required(fieldPath.view, { message: 'required field' });
+  });
+
+  readonly f = form(this.model, (s) => {
+    apply(s, this.formSchema);
+    disabled(s, { when: () => this.f().submitting() });
+    disabled(s.division, { 
+      when: (ctx) => {
+        const currZone = ctx.valueOf(s.zone);
+        return !currZone || this.divisionsRes.isLoading() || this.debouncedZone.value() !== currZone;
+      } 
+    });
+    disabled(s.station, 
+      { when: (ctx) => {
+        const currDivision = ctx.valueOf(s.division);
+        return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
+      }
+    });
+  }, {
+    submission: {
+      action: async (formInstance) => {
+        const payload = formInstance().value();
+        try {
+          const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
+          console.log('Search complete:', response);
+          this.records.set(response.data);
+        } catch (error) {
+          console.log("Search failed:", error);
+        }
+      },
+    }
+  });
+
+  zonesRes = rxResource({ stream: () => this.dataService.getZones() ?? of([]) });
+  assetTypesRes = rxResource({ stream: () => this.dataService.getAssetTypes() ?? of([]) });
+  assetMakesRes = rxResource({ stream: () => of(['001', '002', '003', '004']) });
+  viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
+  
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
+  divisionsRes = rxResource({
+    params: () =>  this.debouncedZone.value(),
+    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
+  });
+
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
+  stationsRes = rxResource({
+    params: () => this.debouncedDivision.value(),
+    stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
+  });
 
   onZoneChange() {
-    this.lists.divisions = [];
-    this.lists.stations = [];
-    this.divisionCtrl?.reset({ value: '', disabled: true });
-    this.stationCtrl?.reset({ value: '', disabled: true });
-
-    if (this.zoneCtrl?.valid && this.zoneCtrl?.value) {
-      this.dataService.getDivisions(this.zoneCtrl?.value).subscribe((res) => {
-        this.lists.divisions = res;
-        this.divisionCtrl?.enable();
-      });
-    }
+    this.f.division().reset();
+    this.f.station().reset();
+    this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
-    this.lists.stations = [];
-    this.stationCtrl?.reset({ value: '', disabled: true });
-
-    if (this.divisionCtrl?.valid && this.divisionCtrl?.value) {
-      this.dataService.getStations(this.divisionCtrl?.value).subscribe((res) => {
-        this.lists.stations = res;
-        this.stationCtrl?.enable();
-      });
-    }
+    this.f.station().reset();
+    this.model.update((m) => ({ ...m, station: '' }));
   }
 
-  onSubmit() {
-    if (this.searchForm.invalid) {
-      this.searchForm.control.markAllAsTouched();
-      return;
-    }
-    this.searchForm.form.disable();
-    this.results = {};
-    // this.getData();
-  }
-
-  getData() {
-    this.dataService.getPagedRecord(1, 10, { station: 'CSMT' })
-      .pipe(finalize(() => this.searchForm.control.enable()))
-      .subscribe({
-        next: (results) => { this.results = results || {}; this.resetForm(); },
-        error: (err) => console.error('Search failed:', err),
-      });
-  }
-
-  resetForm() {
-    this.ngAfterViewInit();
-    this.resetFormStyles();
-  }
-
-  resetFormStyles() {
-    if (this.searchForm) {
-      this.searchForm.control.markAsPristine();
-      this.searchForm.control.markAsUntouched();
-      this.searchForm.control.updateValueAndValidity();
-    }
-  }
 }

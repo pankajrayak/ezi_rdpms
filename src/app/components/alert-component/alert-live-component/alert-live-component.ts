@@ -1,132 +1,116 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, TemplateRef, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
-import { NonNullableFormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { Component, inject, TemplateRef, ChangeDetectionStrategy, computed, debounced, signal } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { firstValueFrom, of } from 'rxjs';
 import { NgxPrintDirective } from 'ngx-print';
 import { NgbActiveModal, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { MultiSelectDirectiveModule, PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService } from '@rdpms/shared/utility';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { schema, required, form, apply, disabled, submit, FormField, FormRoot } from '@angular/forms/signals';
+
+interface SearchFormModel {
+  zone: string;
+  division: string;
+  station: string;
+  alertType: string;
+  assetType: string;
+}
 
 @Component({
   selector: 'alert-live-component',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    PageHeaderComponent,
-    NgxPrintDirective,
-    NgbModalModule,
-    MultiSelectDirectiveModule
-  ],
+  imports: [FormField, FormRoot, FormsModule, PageHeaderComponent, NgxPrintDirective, NgbModalModule, MultiSelectDirectiveModule ],
   templateUrl: './alert-live-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './alert-live-component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class AlertLiveComponent implements OnInit {
-  private fb = inject(NonNullableFormBuilder);
+export class AlertLiveComponent {
   private dataService = inject(DataService);
   private modalService = inject(NgbModal);
-  private destroyRef = inject(DestroyRef);
   
-  lists = {
-    zones: [] as any[],
-    divisions: [] as any[],
-    stations: [] as any[],
-    alertTypes: [] as any[],
-    assetTypes: [] as any[],
-    feedbackList: [] as any[],
-  };
+  readonly summary = signal<any>([{l:'Predictive', v:4, c:'warning'}, {l:'Failure', v:6, c:'danger'}, {l:'Total', v:10, c:'primary'}]);
 
-  searchForm: FormGroup = this.fb.group({
-    zone: [{ value: '', disabled: true }, Validators.required],
-    division: [{ value: '', disabled: true }, Validators.required],
-    station: [{ value: '', disabled: true }, Validators.required],
-    alertType: [{ value: 'All', disabled: true }, Validators.required],
-    assetType: [{ value: 'All', disabled: true }, Validators.required],
-  });
-
-  // Summary Metrics
-  summary = { predictive: 12, failure: 5, total: 17 };
-
-  get form() { return this.searchForm.controls; }
-  get zoneCtrl() { return this.form['zone']; }
-  get divisionCtrl() { return this.form['division']; }
-  get stationCtrl() { return this.form['station']; }
-  get alertTypeCtrl() { return this.form['alertType']; }
-  get assetTypeCtrl() { return this.form['assetType']; }
-
-  ngOnInit() {
-    this.dataService.getZones()
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe((data: any) => {
-      this.lists.zones = data;
-      this.zoneCtrl.enable();
-    });
-
-    this.dataService.getAlertTypes().subscribe((data: any) => {
-      this.lists.alertTypes = data;
-      this.alertTypeCtrl.enable();
-    });
-
-    this.dataService.getAssetTypes().subscribe((data: any) => {
-      this.lists.assetTypes = data;
-      this.assetTypeCtrl.enable();
-    });
-
-    this.lists.feedbackList = [
-      'Wrong Sensor Reading',
-      'Software Bug',
-      'Temporaray Bug',
-      'Other Reson',
-    ];
+  readonly formModel: SearchFormModel = {
+    zone: '',
+    division: '',
+    station: '',
+    alertType: 'All',
+    assetType: 'All',
   }
 
-  onZoneChange(): void {
-    this.lists.divisions = [];
-    this.lists.stations = [];
-    this.divisionCtrl?.reset({ value: '', disabled: true });
-    this.stationCtrl?.reset({ value: '', disabled: true });
+  readonly records = signal(<any>[]);
+  readonly model = signal(this.formModel);
 
-    if (this.zoneCtrl?.valid && this.zoneCtrl.value) {
-      this.dataService.getDivisions(this.zoneCtrl.value).subscribe((data: any) => {
-        this.lists.divisions = data;
-        this.divisionCtrl?.enable();
-      });
-    }
+  readonly formSchema = schema<SearchFormModel>((fieldPath) => {
+    required(fieldPath.zone, { message: 'required field' });
+    required(fieldPath.division, { message: 'required field' });
+    required(fieldPath.station, { message: 'required field' });
+    required(fieldPath.alertType, { message: 'required field' });
+    required(fieldPath.assetType, { message: 'required field' });
+  });
+
+  readonly f = form(this.model, (s) => {
+    apply(s, this.formSchema);
+    disabled(s, { when: () => this.f().submitting() });
+    disabled(s.division, { 
+      when: (ctx) => {
+        const currZone = ctx.valueOf(s.zone);
+        return !currZone || this.divisionsRes.isLoading() || this.debouncedZone.value() !== currZone;
+      } 
+    });
+    disabled(s.station, 
+      { when: (ctx) => {
+        const currDivision = ctx.valueOf(s.division);
+        return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
+      }
+    });
+  });
+  
+  zonesRes = rxResource({ stream: () => this.dataService.getZones() ?? of([]) });
+  alertTypesRes = rxResource({ stream: () => this.dataService.getAlertTypes() ?? of([]) });
+  assetTypesRes = rxResource({ stream: () => this.dataService.getAssetTypes() ?? of([]) });
+  
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
+  divisionsRes = rxResource({
+    params: () => {
+      const z = this.debouncedZone.value();
+      return z && z.trim() !== '' ? z : undefined; 
+      // return typeof z === 'string' && z.trim() !== '' ? z : z;
+    },
+    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
+  });
+
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
+  stationsRes = rxResource({
+    params: () => {
+      const d = this.debouncedDivision.value();
+      return d && d.trim() !== '' ? d : undefined;
+    },
+    stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
+  });
+
+  onZoneChange() {
+    this.f.division().reset();
+    this.f.station().reset();
+    this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
-    this.lists.stations = [];
-    this.stationCtrl?.reset({ value: '', disabled: true });
-
-    if (this.divisionCtrl?.valid && this.divisionCtrl.value) {
-      this.dataService.getStations(this.divisionCtrl.value).subscribe((data: any) => {
-        this.lists.stations = data;
-        this.stationCtrl?.enable();
-      });
-    }
+    this.f.station().reset();
+    this.model.update((m) => ({ ...m, station: '' }));
   }
 
-  onStationChange() {}
-
-  onAlertTypeChange() {}
-
-  onSubmit() {
-    if (!this.searchForm.valid) {
-      this.searchForm.markAllAsTouched();
-      return;
-    }
-
-    this.searchForm.disable();
-    const payload = this.searchForm.getRawValue();
-    this.dataService
-      .searchData(payload)
-      .pipe(finalize(() => this.searchForm.enable()))
-      .subscribe({
-        next: (res) => console.log('Search complete', res),
-        error: (err) => console.error('Search failed', err),
-      });
+  async onSubmit(event: SubmitEvent) {
+    event.preventDefault();
+    await submit(this.f, async (formInstance) => {
+      try {
+        const payload = formInstance().value();
+        const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
+        console.log('Search complete:', response);
+        this.records.set(data);
+      } catch (error) {
+        console.log("Search failed:", error);
+      }
+    });
   }
 
   openFeedbackModal(templateRef: TemplateRef<any>, record: any, feedbackType: string) {
@@ -146,9 +130,9 @@ export class AlertLiveComponent implements OnInit {
     console.log(form.value, activeModal);
     activeModal.close('success');
   }
+}
 
-  // Dummy Table Data
-  records = [
+export const data = [
     {
       sNo: 1,
       zone: 'Central',
@@ -710,4 +694,3 @@ export class AlertLiveComponent implements OnInit {
       feedback: 'M',
     },
   ];
-}
