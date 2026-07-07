@@ -410,8 +410,9 @@
                     <td>{{ row.division }}</td>
                     <td>{{ row.station }}</td>
                     <td>
-                      <span [class]=" 'badge ' + (row.alertType === 'Failure' ? 'text-bg-danger' : 'text-bg-warning')">
-                        {{ row.alertType }}
+                      @let type = $any({ 'Success': 'success', 'Predictive': 'warning', 'Failure': 'danger' })[row.alertType] || '';
+                      <span class="badge bg-{{type}}-subtle text-{{type}}-emphasis border border-{{type}}-subtle w-100" style="padding: 0.375rem;">
+                        {{row.alertType}}
                       </span>
                     </td>
                     <td>{{ row.assetType }}</td>
