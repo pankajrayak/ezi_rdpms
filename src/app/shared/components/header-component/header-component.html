@@ -3,7 +3,7 @@
     <div class="ms-auto d-flex gap-2">
         <div class="btn-group">
             @let isDarkTheme = currentTheme === 'dark';
-            <button type="button" class="btn btn-link nav-link px-0 px-lg-2 py-2 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+            <button type="button" class="btn btn-link nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                 <i class="bi" [class]="isDarkTheme ? 'bi-moon-stars-fill' : 'bi-brightness-high-fill'"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -21,13 +21,15 @@
                 </li>
             </ul>
         </div>
-        <button type="button" 
-            class="btn btn-primary d-xl-none" 
+        <button 
+            type="button" 
             data-bs-toggle="offcanvas" 
             data-bs-target="#sidebarMenu"
             aria-controls="sidebarMenu"
             aria-label="Toggle Navigation"
-        ><span>☰</span>
+            class="btn btn-outline-primary d-xl-none" 
+        >
+            <span>☰</span>
         </button>
     </div>
 </header>

@@ -8,7 +8,15 @@ import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
   templateUrl: './sidebar-component.html',
   styleUrl: './sidebar-component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styles: [``],
+  host: {
+    'style': "min-width: 240px;",
+    'id': "sidebarMenu",
+    'tabindex': "-1",
+    'data-bs-scroll': "true" ,
+    'data-bs-theme': "dark",
+    'aria-labelledby': "sidebarMenuLabel",
+    'class': "offcanvas-xl offcanvas-end h-100 border-end bg-body text-body",
+  }
 })
 export class SidebarComponent implements OnInit {
   parentRoute = input<string>();
