@@ -9,14 +9,12 @@ export interface RxResourceConfigOptions<T, P> {
   onError?: (err: unknown) => void;
 }
 
-export function debouncedResource<T>(source: Signal<T>, time: number = 400): Signal<T>{
-  return toSignal(
-    toObservable(source).pipe(
-      debounceTime(time),
-      distinctUntilChanged(),
-    ), 
-    { initialValue: source() }
-  ) as Signal<T>;
+export function debouncedSignal<T>(source: Signal<T>, delay: number = 400): Signal<T>{
+  const observable$ = toObservable(source).pipe(
+    debounceTime(delay),
+    distinctUntilChanged(),
+  );
+  return toSignal(observable$, { initialValue: source() }) as Signal<T>;
 }
 
 export function createRxResource<T, P>(options: RxResourceConfigOptions<T, P>): ResourceRef<T | undefined> {

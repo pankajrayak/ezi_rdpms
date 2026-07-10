@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectorRef, Component, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
 
 @Component({
   selector: 'sidebar-component',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
   templateUrl: './sidebar-component.html',
   styleUrl: './sidebar-component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,

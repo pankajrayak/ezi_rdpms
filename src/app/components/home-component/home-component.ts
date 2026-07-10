@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy, signal, computed, debounced } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, debounced, effect } from '@angular/core';
 import { firstValueFrom, of } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { HasUnsavedChanges } from '@rdpms/core/interfaces';
@@ -69,8 +69,8 @@ export class HomeComponent implements HasUnsavedChanges {
     }
   });
 
-  zonesRes = rxResource({ stream: () => this.dataService.getZones() ?? of([]) });
-  
+  zonesRes = this.dataService.getZonesResource();
+
   debouncedZone = debounced(computed(() => this.model().zone), 500);
   divisionsRes = rxResource({
     params: () =>  this.debouncedZone.value(),

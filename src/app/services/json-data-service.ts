@@ -1,16 +1,21 @@
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, httpResource } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { CACHE_TIME_MS, IS_CACHE_ENABLE } from '@rdpms/shared/utility';
 import { map, Observable } from 'rxjs';
 import { API_ENDPOINT } from '@rdpms/shared/utility';
-// import { CacheHttpService } from '@rdpms/core/services';
-
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
 
   private http = inject(HttpClient);
   private contextPath = API_ENDPOINT.BACKEND_PREFIX;
+
+  getZonesResource(){
+    return httpResource<any[]>(() => {
+      const params: Record<string, string> = { }
+      return  {url: 'json-data/zones.json',  method: 'GET', params: params }
+    });
+  }
 
   getZones(): Observable<any[]> {
     return this.http.get<any[]>('json-data/zones.json');
