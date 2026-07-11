@@ -1,4 +1,4 @@
-<div class="sidebar-wrapper d-flex flex-column h-100 bg-body text-body">
+<div class="d-flex flex-column h-100 bg-body text-body" [class.sidebar-wrapper]="isToggle()">
     <div class="bg-body-tertiary text-body-emphasis border-bottom sticky-top p-3">
         <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center overflow-hidden user-block">
@@ -11,7 +11,7 @@
                         class="bg-secondary rounded-circle flex-shrink-0"
                     />
                 </div>
-                <div class="small overflow-hidden ms-2 sidebar-text">
+                <div class="small overflow-hidden mx-2 sidebar-text">
                     <div class="fw-semibold text-truncate mb-0">Manish Kushwaha</div>
                     <div class="text-body-secondary text-truncate small">Administrator</div>
                 </div>
@@ -24,6 +24,13 @@
                 class="btn-close flex-shrink-0 d-xl-none ms-2" 
             >
             </button>
+            <span 
+                role="button"
+                (click)="toggleSidebar()"
+                class="sidebar-text d-none d-xl-flex justify-content-end" 
+            >
+                <i class="bi" [class]="isToggle() ? 'bi-pin-angle' : 'bi-pin-angle-fill' "></i>
+            </span>
         </div>
     </div>
 

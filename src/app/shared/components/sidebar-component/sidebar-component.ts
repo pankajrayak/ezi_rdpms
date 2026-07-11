@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectorRef, Component, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, input, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
 
 @Component({
@@ -19,6 +19,7 @@ import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
   }
 })
 export class SidebarComponent implements OnInit {
+  isToggle = signal<boolean>(true); 
   parentRoute = input<string>();
   routeConfig = input<Routes>();
   menus!: any[];
@@ -75,5 +76,9 @@ export class SidebarComponent implements OnInit {
       return childRoutes[0].children ? childRoutes[0].children : childRoutes;
     }
     return childRoutes;
+  }
+
+  toggleSidebar() {
+    this.isToggle.update(value => !value); 
   }
 }
