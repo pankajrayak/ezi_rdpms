@@ -9,7 +9,7 @@ import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
   styleUrl: './sidebar-component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   host: {
-    'style': "min-width: 240px;",
+    // 'style': "min-width: 240px;",
     'id': "sidebarMenu",
     'tabindex': "-1",
     'data-bs-scroll': "true" ,

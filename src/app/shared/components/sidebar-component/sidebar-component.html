@@ -1,15 +1,17 @@
-<div class="d-flex flex-column h-100">
+<div class="sidebar-wrapper d-flex flex-column h-100 bg-body text-body">
     <div class="bg-body-tertiary text-body-emphasis border-bottom sticky-top p-3">
         <div class="d-flex justify-content-between">
-            <div class="d-flex align-items-center overflow-hidden me-2">
-                <img 
-                    width="42" 
-                    height="42" 
-                    alt="Avtar" 
-                    ngSrc="/images/avtar.png" 
-                    class="bg-secondary rounded-circle flex-shrink-0"
-                />
-                <div class="small overflow-hidden ms-2">
+            <div class="d-flex align-items-center overflow-hidden user-block">
+                <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
+                    <img 
+                        width="42" 
+                        height="42" 
+                        alt="Avtar" 
+                        ngSrc="/images/avtar.png" 
+                        class="bg-secondary rounded-circle flex-shrink-0"
+                    />
+                </div>
+                <div class="small overflow-hidden ms-2 sidebar-text">
                     <div class="fw-semibold text-truncate mb-0">Manish Kushwaha</div>
                     <div class="text-body-secondary text-truncate small">Administrator</div>
                 </div>
@@ -19,7 +21,7 @@
                 aria-label="Close"
                 data-bs-dismiss="offcanvas" 
                 data-bs-target="#sidebarMenu" 
-                class="btn-close flex-shrink-0 d-xl-none" 
+                class="btn-close flex-shrink-0 d-xl-none ms-2" 
             >
             </button>
         </div>
@@ -43,9 +45,11 @@
                             routerLinkActive="text-primary fw-semibold" 
                             class="nav-link d-flex justify-content-between align-items-center p-2" 
                         >
-                            <span>
-                                <i class="bi {{menu.icon}} me-2"></i>
-                                <span>{{menu.title}}</span>
+                            <span class="d-flex align-items-center">
+                                <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                                    <i class="bi {{menu.icon}}"></i>
+                                </span>
+                                <span class="sidebar-text ms-2">{{menu.title}}</span>
                             </span>
                         </a>
                     }@else{
@@ -56,11 +60,13 @@
                             class="nav-link d-flex justify-content-between align-items-center p-2" 
                             [class]="{ 'text-primary': rla.isActive, 'fw-semibold': rla.isActive }"
                         >
-                            <span>
-                                <i class="bi {{menu.icon}} me-2"></i>
-                                <span>{{menu.title}}</span>
+                            <span class="d-flex align-items-center">
+                                <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                                    <i class="bi {{menu.icon}}"></i>
+                                </span>
+                                <span class="sidebar-text ms-2">{{menu.title}}</span>
                             </span>
-                            <i class="bi bi-chevron-down collapse-icon-animated"></i>
+                            <i class="bi bi-chevron-down collapse-icon-animated sidebar-text"></i>
                         </a>
 
                         <div 
@@ -77,9 +83,11 @@
                                         routerLinkActive="bg-primary text-white fw-semibold" 
                                         class="nav-link p-2 rounded-pill" 
                                     >
-                                        <span>
-                                            <i class="bi {{child.icon}} me-2"></i>
-                                            <span>{{child.title}}</span>
+                                        <span class="d-flex align-items-center">
+                                             <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                                                <i class="bi {{child.icon}}"></i>
+                                            </span>
+                                            <span class="sidebar-text ms-2">{{child.title}}</span>
                                         </span>
                                     </a>
                                 }
@@ -95,7 +103,10 @@
     <!-- Logout Block (Fixed at bottom) -->
     <div class="bg-body-tertiary text-body-emphasis border-top p-2 mt-auto">
         <a class="nav-link text-danger fw-semibold d-flex align-items-center p-2" routerLink="/login">
-            <i class="bi bi-box-arrow-right me-2"></i> <span>Logout</span>
+            <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                <i class="bi bi-box-arrow-right"></i> 
+            </span>
+            <span class="sidebar-text ms-2">Logout</span>
         </a>
     </div>
 </div>

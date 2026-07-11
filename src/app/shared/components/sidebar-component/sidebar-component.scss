@@ -1,10 +1,74 @@
-.sidebar {
-  &-scroll {
-    direction: rtl;
-    scrollbar-width: thin;
+$mini-width: 75px; 
+$expanded-width: 260px;
+
+.sidebar-scroll { direction: rtl; scrollbar-width: thin; }
+.sidebar-content { direction: ltr; }
+
+@media (min-width: 1200px) {
+  /* Default component layout behavior when .sidebar-wrapper is removed */
+  :host {
+    transform: none !important;
+    visibility: visible !important;
+    position: relative !important;
+    width: $expanded-width !important;
+    min-width: $expanded-width !important;
+    max-width: $expanded-width !important;
   }
 
-  &-content {
-    direction: ltr;
+  /* This host block triggers ONLY if .sidebar-wrapper is present in your HTML */
+  :host(:has(.sidebar-wrapper)) {
+    width: $mini-width !important;
+    min-width: $mini-width !important;
+    max-width: $mini-width !important;
+  }
+
+  .sidebar-wrapper {
+    /* Fixed Panel Core Layout */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: $mini-width;
+    overflow-x: hidden;
+    transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s ease;
+   
+    /* Scoped Children */
+    .sidebar-text, .collapse-icon-animated {
+      opacity: 0;
+      white-space: nowrap;
+      transition: opacity 0.15s ease-in-out;
+    }
+
+    .icon-wrapper {
+      width: 40px;
+      transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Scoped Hover Actions */
+    &:hover {
+      width: $expanded-width;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+
+      .sidebar-text, .collapse-icon-animated {
+        opacity: 1;
+      }
+
+      .icon-wrapper {
+        width: auto;
+      }
+
+      /* Dimming Backdrop Overlay */
+      &::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.2s ease forwards;
+      }
+    }
   }
 }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
