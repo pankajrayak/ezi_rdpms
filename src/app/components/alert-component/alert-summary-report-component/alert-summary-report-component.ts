@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy, AfterViewInit, signal, computed, debounced } from '@angular/core';
+import { Component, inject, AfterViewInit, signal, computed, debounced } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { apply, disabled, form, FormField, FormRoot, required, schema, submit } from '@angular/forms/signals';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -27,7 +27,6 @@ interface SearchFormModel {
   imports: [DatePipe, FormField, FormRoot, PageHeaderComponent, NgxPrintDirective],
   templateUrl: './alert-summary-report-component.html',
   styleUrl: './alert-summary-report-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AlertSummaryReportComponent implements AfterViewInit {
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, signal, ChangeDetectionStrategy, debounced, AfterViewInit } from '@angular/core';
+import { Component, computed, effect, inject, signal, debounced, AfterViewInit } from '@angular/core';
 import { finalize, of } from 'rxjs';
 import { apply, applyWhen, disabled, form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -22,7 +22,6 @@ interface SensorFormModel {
   imports: [CommonModule, FormField, PageHeaderComponent],
   templateUrl: './asset-utilization-component.html',
   styleUrl: './asset-utilization-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AssetUtilizationComponent implements AfterViewInit {
 

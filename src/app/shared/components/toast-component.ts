@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '@rdpms/core/services';
 
@@ -91,7 +91,6 @@ import { ToastService } from '@rdpms/core/services';
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     class: 'toast-container position-fixed top-0 end-0 p-3',
     style: 'z-index: 1200;', //if not worked use inside styles: host

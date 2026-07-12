@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { ToastComponent } from './shared/components';
@@ -9,7 +9,6 @@ import { InactivityService, LoadingService } from './core/services';
   imports: [RouterOutlet, AsyncPipe, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class App {
   // Injecting services here starts the service constructor logic

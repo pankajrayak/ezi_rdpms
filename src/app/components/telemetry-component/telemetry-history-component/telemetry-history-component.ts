@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, AfterViewInit, computed, debounced, signal } from '@angular/core';
+import { Component, inject, AfterViewInit, computed, debounced, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { schema, required, form, apply, disabled, submit, FormField, FormRoot } from '@angular/forms/signals';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -23,7 +23,6 @@ interface SearchFormModel {
   imports: [FormField, FormRoot, PageHeaderComponent],
   templateUrl: './telemetry-history-component.html',
   styleUrl: './telemetry-history-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class TelemetryHistoryComponent implements AfterViewInit {
 

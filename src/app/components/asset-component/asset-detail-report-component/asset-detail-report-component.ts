@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy, signal, computed, debounced } from '@angular/core';
+import { Component, inject, signal, computed, debounced } from '@angular/core';
 import { schema, required, form, apply, disabled, FormField, FormRoot } from '@angular/forms/signals';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -22,7 +22,6 @@ interface SearchFormModel {
   imports: [CommonModule, FormField, FormRoot, PageHeaderComponent, NgbPaginationModule, NgxPrintDirective],
   templateUrl: './asset-detail-report-component.html',
   styleUrl: './asset-detail-report-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AssetDetailReportComponent {
   private dataService = inject(DataService);

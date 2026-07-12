@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,6 @@ export type LoginFormModel = {
   imports: [CommonModule, FormRoot, FormField],
   templateUrl: './login-component.html',
   styleUrl: './login-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class LoginComponent {
   private router = inject(Router);

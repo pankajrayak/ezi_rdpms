@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, computed, debounced } from '@angular/core';
+import { Component, inject, signal, computed, debounced } from '@angular/core';
 import { schema, required, form, apply, disabled, submit, FormField, FormRoot } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -18,7 +18,6 @@ interface SearchFormModel {
   imports: [FormField, FormRoot, PageHeaderComponent],
   templateUrl: './sensor-live-component.html',
   styleUrl: './sensor-live-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class SensorLiveComponent {
   private dataService = inject(DataService);

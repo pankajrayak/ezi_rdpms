@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy, signal, computed, debounced, effect } from '@angular/core';
+import { Component, inject, signal, computed, debounced, effect } from '@angular/core';
 import { firstValueFrom, of } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { HasUnsavedChanges } from '@rdpms/core/interfaces';
@@ -25,7 +25,6 @@ interface Asset {
   imports: [CommonModule, FormField, FormRoot, PageHeaderComponent],
   templateUrl: './home-component.html',
   styleUrl: './home-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class HomeComponent implements HasUnsavedChanges {
   private dataService = inject(DataService);

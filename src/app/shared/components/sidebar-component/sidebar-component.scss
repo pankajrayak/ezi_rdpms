@@ -2,7 +2,7 @@ $mini-width: 75px;
 $expanded-width: 260px;
 $transition-speed: 0.25s;
 $transition-style: ease-in-out;
-$shadow-color: rgba(0, 0, 0, 0.5);
+$background-color: rgba(var(--root-body-color-rgb), 0.5);
 
 .sidebar-scroll { direction: rtl; scrollbar-width: thin; }
 .sidebar-content { direction: ltr; }
@@ -43,7 +43,7 @@ $shadow-color: rgba(0, 0, 0, 0.5);
     /* Scoped Hover Actions */
     &:hover {
       width: $expanded-width;
-      box-shadow: 0 0.5rem 1rem $shadow-color;
+      box-shadow: 0 0.5rem 1rem $background-color;
       
       .icon-wrapper { width: auto; }
 
@@ -60,7 +60,7 @@ $shadow-color: rgba(0, 0, 0, 0.5);
         inset: 0;
         z-index: -1;
         pointer-events: none;
-        background-color: $shadow-color;
+        background-color: $background-color;
         animation: fadeIn $transition-speed ease forwards;
       }
     }

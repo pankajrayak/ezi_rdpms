@@ -1,4 +1,4 @@
-import { Component, inject, TemplateRef, ChangeDetectionStrategy, computed, debounced, signal } from '@angular/core';
+import { Component, inject, TemplateRef, computed, debounced, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { firstValueFrom, of } from 'rxjs';
 import { NgxPrintDirective } from 'ngx-print';
@@ -21,7 +21,6 @@ interface SearchFormModel {
   imports: [FormField, FormRoot, FormsModule, PageHeaderComponent, NgxPrintDirective, NgbModalModule, MultiSelectDirectiveModule ],
   templateUrl: './alert-live-component.html',
   styleUrl: './alert-live-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class AlertLiveComponent {
   private dataService = inject(DataService);

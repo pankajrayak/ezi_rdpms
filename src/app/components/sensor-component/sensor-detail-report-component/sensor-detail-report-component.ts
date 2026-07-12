@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, computed, debounced, signal, AfterViewInit } from '@angular/core';
+import { Component, inject, computed, debounced, signal, AfterViewInit } from '@angular/core';
 import { firstValueFrom, of } from 'rxjs';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService } from '@rdpms/shared/utility';
@@ -22,7 +22,6 @@ interface SearchFormModel {
   imports: [FormField, FormRoot, PageHeaderComponent],
   templateUrl: './sensor-detail-report-component.html',
   styleUrl: './sensor-detail-report-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class SensorDetailReportComponent implements AfterViewInit {
 

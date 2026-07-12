@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'page-header',
   imports: [CommonModule],
   templateUrl: './page-header-component.html',
   styleUrl: './page-header-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class PageHeaderComponent {
   title = input.required<string>();

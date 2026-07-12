@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'access-denied-component',
   imports: [RouterLink],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="d-flex flex-column justify-content-center align-items-center h-100">
       <h1 class="text-center">Access Denied</h1>

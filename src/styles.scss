@@ -1,6 +1,11 @@
 @use '../public/css/bootstrap.scss';
 @use '../public/css/print.scss';
 
+:root {
+  --root-body-bg-rgb: var(--bs-body-bg-rgb);       
+  --root-body-color-rgb: var(--bs-body-color-rgb);
+}
+
 .text {
   &-vertical {
     writing-mode: vertical-rl;

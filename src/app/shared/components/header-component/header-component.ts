@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BsThemeService } from '@rdpms/services';
 
 @Component({
@@ -6,7 +6,6 @@ import { BsThemeService } from '@rdpms/services';
   imports: [],
   templateUrl: './header-component.html',
   styleUrl: './header-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class HeaderComponent {
   themeService = inject(BsThemeService);

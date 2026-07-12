@@ -21,5 +21,13 @@ $container-max-widths: (
 
 $enable-validation-icons: false;
 
+.bg-body-inverted {
+  background-color: var(--bs-body-color) !important;
+}
+
+.text-body-inverted {
+  color: var(--bs-body-bg) !important;
+}
+
 // 3. Import Bootstrap source files
 @import "../../node_modules/bootstrap/scss/bootstrap";

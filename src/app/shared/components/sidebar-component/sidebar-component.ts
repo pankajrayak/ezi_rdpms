@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectorRef, Component, input, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, input, OnInit, signal } from '@angular/core';
 import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
 
 @Component({
@@ -7,7 +7,6 @@ import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
   imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
   templateUrl: './sidebar-component.html',
   styleUrl: './sidebar-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     // 'style': "min-width: 240px;",
     'id': "sidebarMenu",
