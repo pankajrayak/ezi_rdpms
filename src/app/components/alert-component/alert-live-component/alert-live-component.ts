@@ -53,8 +53,8 @@ export class AlertLiveComponent {
     disabled(s, { when: () => this.f().submitting() });
     disabled(s.division, { 
       when: (ctx) => {
-        const currZone = ctx.valueOf(s.zone);
-        return !currZone || this.divisionsRes.isLoading() || this.debouncedZone.value() !== currZone;
+        const currZone = ctx.valueOf(s.zone) ?? [];
+        return !currZone?.length || this.divisionsRes.isLoading() || this.debouncedZone.value() !== currZone;
       } 
     });
     disabled(s.station, 
