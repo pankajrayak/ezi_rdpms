@@ -31,7 +31,7 @@
                 [class.is-valid]="zoneCtrl.valid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
                 [class.is-invalid]="zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
               >
-              <option value="" disabled selected>Select Zone</option>
+              <option value="" disabled selected>Select</option>
                 @for (zone of zonesRes.value(); track zone) {
                   <option [value]="zone.zone">{{ zone.zone }}</option>
                 }
@@ -54,7 +54,7 @@
                 [class.is-valid]="divisionCtrl.valid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
                 [class.is-invalid]="divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
               >
-                <option value="" disabled selected>Select Division</option>
+                <option value="" disabled selected>Select</option>
                 @for (division of divisionsRes.value(); track division) {
                   <option [value]="division">{{ division }}</option>
                 }
@@ -78,7 +78,7 @@
                 [class.is-valid]="stationCtrl.valid() && (stationCtrl.touched() || stationCtrl.dirty())"
                 [class.is-invalid]="stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())"
               >
-                <option value="" disabled selected>Select Station</option>
+                <option value="" disabled selected>Select</option>
                 @for (station of stationsRes.value(); track station) {
                   <option [value]="station">{{ station }}</option>
                 }

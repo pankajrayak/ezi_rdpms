@@ -1,7 +1,7 @@
 <div class="d-flex flex-column h-100 bg-body text-body" [class.sidebar-wrapper]="isToggle()">
-    <div class="bg-body-tertiary text-body-emphasis border-bottom sticky-top p-3">
+    <div class="bg-body-tertiary text-body-emphasis border-bottom sticky-top p-2">
         <div class="d-flex justify-content-between">
-            <div class="d-flex align-items-center overflow-hidden user-block">
+            <div class="d-flex flex-shrink-0 align-items-center overflow-hidden user-block">
                 <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
                     <img 
                         width="42" 
@@ -16,21 +16,23 @@
                     <div class="text-body-secondary text-truncate small">Administrator</div>
                 </div>
             </div>
-            <button 
-                type="button" 
-                aria-label="Close"
-                data-bs-dismiss="offcanvas" 
-                data-bs-target="#sidebarMenu" 
-                class="btn-close flex-shrink-0 d-xl-none ms-2" 
-            >
-            </button>
-            <span 
-                role="button"
-                (click)="toggleSidebar()"
-                class="sidebar-text d-none d-xl-flex justify-content-end" 
-            >
-                <i class="bi" [class]="isToggle() ? 'bi-pin-angle' : 'bi-pin-angle-fill' "></i>
-            </span>
+            <div class="d-flex">
+                <button 
+                    type="button" 
+                    aria-label="Close"
+                    data-bs-dismiss="offcanvas" 
+                    data-bs-target="#sidebarMenu" 
+                    class="btn-close d-xl-none ms-2" 
+                >
+                </button>
+                <span 
+                    role="button"
+                    (click)="toggleSidebar()"
+                    class="sidebar-text d-none d-xl-flex justify-content-end" 
+                >
+                    <i class="bi" [class]="isToggle() ? 'bi-pin-angle' : 'bi-pin-angle-fill' "></i>
+                </span>
+            </div>
         </div>
     </div>
 
@@ -88,7 +90,7 @@
                                         [routerLink]="child.path" 
                                         [routerLinkActiveOptions]="{ exact: true }"
                                         routerLinkActive="bg-primary text-white fw-semibold" 
-                                        class="nav-link p-2 rounded-pill" 
+                                        class="nav-link d-flex justify-content-between align-items-center p-2 rounded-pill" 
                                     >
                                         <span class="d-flex align-items-center">
                                              <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">

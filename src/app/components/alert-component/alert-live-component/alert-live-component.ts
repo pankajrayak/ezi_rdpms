@@ -6,10 +6,10 @@ import { NgbActiveModal, NgbModal, NgbModalModule } from '@ng-bootstrap/ng-boots
 import { MultiSelectDirectiveModule, PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService } from '@rdpms/shared/utility';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { schema, required, form, apply, disabled, submit, FormField, FormRoot } from '@angular/forms/signals';
+import { schema, required, form, apply, disabled, submit, FormField, FormRoot, minLength } from '@angular/forms/signals';
 
 interface SearchFormModel {
-  zone: string;
+  zone: string[];
   division: string;
   station: string;
   alertType: string;
@@ -29,7 +29,7 @@ export class AlertLiveComponent {
   readonly summary = signal<any>([{l:'Predictive', v:4, c:'warning'}, {l:'Failure', v:6, c:'danger'}, {l:'Total', v:10, c:'primary'}]);
 
   readonly formModel: SearchFormModel = {
-    zone: '',
+    zone: [],
     division: '',
     station: '',
     alertType: 'All',
@@ -41,6 +41,7 @@ export class AlertLiveComponent {
 
   readonly formSchema = schema<SearchFormModel>((fieldPath) => {
     required(fieldPath.zone, { message: 'required field' });
+    minLength(fieldPath.zone, 1, { message: 'required field' });
     required(fieldPath.division, { message: 'required field' });
     required(fieldPath.station, { message: 'required field' });
     required(fieldPath.alertType, { message: 'required field' });
@@ -72,10 +73,10 @@ export class AlertLiveComponent {
   divisionsRes = rxResource({
     params: () => {
       const z = this.debouncedZone.value();
-      return z && z.trim() !== '' ? z : undefined; 
+      return z && z.length && z[0].trim() !== '' ? z : undefined; 
       // return typeof z === 'string' && z.trim() !== '' ? z : z;
     },
-    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
+    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z[0]) : of([])),
   });
 
   debouncedDivision = debounced(computed(() => this.model().division), 500);

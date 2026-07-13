@@ -31,7 +31,7 @@
                 [class.is-valid]="zoneCtrl.valid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
                 [class.is-invalid]="zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
               >
-              <option value="" disabled selected>Select Zone</option>
+              <option value="" disabled selected>Select</option>
                 @for (zone of zonesRes.value(); track zone) {
                   <option [value]="zone.zone">{{ zone.zone }}</option>
                 }
@@ -56,7 +56,7 @@
                 [class.is-valid]="divisionCtrl.valid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
                 [class.is-invalid]="divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
               >
-                <option value="" disabled selected>Select Division</option>
+                <option value="" disabled selected>Select</option>
                 @for (division of divisionsRes.value(); track division) {
                   <option [value]="division">{{ division }}</option>
                 }
@@ -80,7 +80,7 @@
                 [class.is-valid]="stationCtrl.valid() && (stationCtrl.touched() || stationCtrl.dirty())"
                 [class.is-invalid]="stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())"
               >
-                <option value="" disabled selected>Select Station</option>
+                <option value="" disabled selected>Select</option>
                 @for (station of stationsRes.value(); track station) {
                   <option [value]="station">{{ station }}</option>
                 }
@@ -104,7 +104,7 @@
                 [class.is-valid]="assetTypeCtrl.valid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())"
                 [class.is-invalid]="assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())"
               >
-                <option value="" disabled selected>Select Asset Type</option>
+                <option value="" disabled selected>Select</option>
                 @for (assetType of assetTypesRes.value(); track assetType) {
                   <option [value]="assetType">{{ assetType }}</option>
                 }
@@ -128,7 +128,7 @@
                 [class.is-valid]="assetMakeCtrl.valid() && (assetMakeCtrl.touched() || assetMakeCtrl.dirty())"
                 [class.is-invalid]="assetMakeCtrl.invalid() && (assetMakeCtrl.touched() || assetMakeCtrl.dirty())"
               >
-                <option value="" disabled selected>Select Asset Make</option>
+                <option value="" disabled selected>Select</option>
                 <option value="All">All</option>
                 @for (assetMake of assetMakesRes.value(); track assetMake) {
                   <option [value]="assetMake">{{ assetMake }}</option>
@@ -153,7 +153,7 @@
                 [class.is-valid]="viewCtrl.valid() && (viewCtrl.touched() || viewCtrl.dirty())"
                 [class.is-invalid]="viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())"
               >
-                <option value="" disabled selected>Select View Type</option>
+                <option value="" disabled selected>Select</option>
                 @for (viw of viewsRes.value(); track viw) {
                   <option [value]="viw">{{ viw }}</option>
                 }

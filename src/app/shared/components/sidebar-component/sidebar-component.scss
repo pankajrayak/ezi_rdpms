@@ -1,4 +1,4 @@
-$mini-width: 75px; 
+$mini-width: 60px; 
 $expanded-width: 260px;
 $transition-speed: 0.25s;
 $transition-style: ease-in-out;
@@ -8,19 +8,16 @@ $background-color: rgba(var(--root-body-color-rgb), 0.5);
 .sidebar-content { direction: ltr; }
 
 @media (min-width: 1200px) {
-  /* Default component layout behavior when .sidebar-wrapper is removed */
   :host {
     position: relative !important;
     width: $expanded-width !important;
   }
 
-  /* This host block triggers ONLY if .sidebar-wrapper is present in your HTML */
   :host(:has(.sidebar-wrapper)) {
     width: $mini-width !important;
   }
 
   .sidebar-wrapper {
-    /* Fixed Panel Core Layout */
     position: fixed;
     top: 0;
     left: 0;
@@ -29,28 +26,34 @@ $background-color: rgba(var(--root-body-color-rgb), 0.5);
     overflow-x: hidden;
     transition: width $transition-speed $transition-style;
    
-    /* Scoped Children */
-    .icon-wrapper { width: 40px; }
-
     .sidebar-text, .collapse-icon-animated {
       width: 0;
       opacity: 0;
       white-space: nowrap;
       pointer-events: none;
+      margin: 0 !important;
       transition: width $transition-speed, opacity $transition-speed, transform $transition-speed;
     }
 
-    /* Scoped Hover Actions */
+    .nav-link {
+      justify-content: center !important; 
+    }
+
+     /* Scoped Hover Actions */
     &:hover {
       width: $expanded-width;
       box-shadow: 0 0.5rem 1rem $background-color;
       
-      .icon-wrapper { width: auto; }
-
       .sidebar-text, .collapse-icon-animated { 
         opacity: 1; 
         width: auto;
+        display: block;
         pointer-events: auto;
+        margin-left: 0.5rem !important;
+      }
+
+      .nav-link {
+        justify-content: space-between !important;
       }
 
       /* Dimming Backdrop Overlay */

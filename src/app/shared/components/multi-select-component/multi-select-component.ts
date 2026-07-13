@@ -1,4 +1,4 @@
-import { Component, ElementRef, Pipe, PipeTransform, HostBinding, Input, Optional, Self, ContentChildren, QueryList, AfterContentInit, Directive, NgModule, signal, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, Pipe, PipeTransform, HostBinding, Input, Optional, Self, ContentChildren, QueryList, AfterContentInit, Directive, NgModule, signal, AfterViewInit, ChangeDetectionStrategy, model } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -46,29 +46,24 @@ export class MultiSelectOptionDirective {
   selector: 'multi-select',
   templateUrl: './multi-select-component.html',
   styleUrl: './multi-select-component.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
-  // providers: [
-  //   {
-  //     provide: NG_VALUE_ACCESSOR,
-  //     useExisting: forwardRef(() => MultiSelectComponent),
-  //     multi: true
-  //   }
-  // ]
 })
 export class MultiSelectComponent implements ControlValueAccessor, AfterContentInit, AfterViewInit {
   @ContentChildren(MultiSelectOptionDirective, { descendants: true })
   options!: QueryList<MultiSelectOptionDirective>;
+
   @HostBinding('class.disabled') get isDisabled() {
     return this.disabled;
   }
+  
   @Input() placeholder = 'Select Options';
   @Input() enableSelectAll = false;
   @Input() enableSearch = false;
   @Input() showCheckbox = true;
 
   availableOptions: any[] = [];
-  value: any[] = [];
+  value = model<any[]>([]);
   disabled = false;
   searchText = signal('');
 
@@ -78,7 +73,11 @@ export class MultiSelectComponent implements ControlValueAccessor, AfterContentI
 
   onTouched = () => {};
   onChange = (v: any) => {};
-  writeValue(v: any[]) { this.value = v || []; }
+
+  writeValue(v: any[]) { 
+    this.value.set(Array.isArray(v) ? v : []); 
+  }
+
   registerOnChange(fn: any) { this.onChange = fn; }
   registerOnTouched(fn: any) { this.onTouched = fn; }
   setDisabledState(d: boolean) { this.disabled = d; }
@@ -110,16 +109,16 @@ export class MultiSelectComponent implements ControlValueAccessor, AfterContentI
   };
 
   isSelected(val: any): boolean {
-    return this.value?.some((v) => this.compareWith(v, val));
+    return this.value()?.some((v) => this.compareWith(v, val)) ?? false;
   }
 
   toggle(val: any) {
     if (this.isSelected(val)) {
-      this.value = this.value.filter((v) => !this.compareWith(v, val));
+      this.value.update((current) => current.filter((v) => !this.compareWith(v, val)));
     } else {
-      this.value = [...this.value, val];
+      this.value.update((current) => [...current, val]);
     }
-    this.onChange(this.value);
+    this.onChange(this.value());
     this.onTouched();
   }
 
@@ -130,11 +129,12 @@ export class MultiSelectComponent implements ControlValueAccessor, AfterContentI
 
   toggleAll(ev: any) {
     const checked = ev.target.checked;
-    this.value = checked
+    const nextValue = checked
       ? this.availableOptions.filter((o) => !o.disabled).map((o) => o.value)
       : [];
 
-    this.onChange(this.value);
+    this.value.set(nextValue);
+    this.onChange(nextValue);
     this.onTouched();
   }
 
@@ -146,16 +146,17 @@ export class MultiSelectComponent implements ControlValueAccessor, AfterContentI
   }
 
   getLabel() {
-    if (!this.value?.length) {
+    const currentValue = this.value();
+    if (!currentValue?.length) {
       return this.placeholder;
     }
 
-    if (this.value.length === 1) {
-      return this.getLabelByValue(this.value[0]);
+    if (currentValue.length === 1) {
+      return this.getLabelByValue(currentValue[0]);
     }
 
-    const first = this.getLabelByValue(this.value[0]);
-    return `${first} + ${this.value.length - 1} more`;
+    const first = this.getLabelByValue(currentValue[0]);
+    return `${first} + ${currentValue.length - 1} more`;
   }
 
   getLabelByValue(val: any): string {
