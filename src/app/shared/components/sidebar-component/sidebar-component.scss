@@ -32,7 +32,10 @@ $background-color: rgba(var(--root-body-color-rgb), 0.5);
       white-space: nowrap;
       pointer-events: none;
       margin: 0 !important;
-      transition: width $transition-speed, opacity $transition-speed, transform $transition-speed;
+      transition: 
+        width $transition-speed $transition-style, 
+        opacity $transition-speed $transition-style, 
+        transform $transition-speed $transition-style;
     }
 
     .nav-link {
