@@ -1,14 +1,14 @@
 <div class="d-flex flex-column h-100 bg-body text-body" [class.sidebar-wrapper]="isToggle()">
     <div class="bg-body-tertiary text-body-emphasis border-bottom sticky-top p-2">
         <div class="d-flex justify-content-between">
-            <div class="d-flex flex-shrink-0 align-items-center overflow-hidden user-block">
-                <div class="flex-shrink-0 d-flex align-items-center justify-content-center">
+            <div class="d-flex align-items-center overflow-hidden user-block">
+                <div class="d-flex flex-shrink-0 align-items-center justify-content-center">
                     <img 
                         width="42" 
                         height="42" 
                         alt="Avtar" 
                         ngSrc="/images/avtar.png" 
-                        class="bg-secondary rounded-circle flex-shrink-0"
+                        class="bg-secondary rounded-circle"
                     />
                 </div>
                 <div class="small overflow-hidden mx-2 sidebar-text">
@@ -54,8 +54,8 @@
                             routerLinkActive="text-info-emphasis fw-semibold" 
                             class="nav-link d-flex justify-content-between align-items-center p-2" 
                         >
-                            <span class="d-flex align-items-center">
-                                <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                            <span class="d-flex">
+                                <span class="icon-wrapper d-flex flex-shrink-0">
                                     <i class="bi {{menu.icon}}"></i>
                                 </span>
                                 <span class="sidebar-text ms-2">{{menu.title}}</span>
@@ -69,8 +69,8 @@
                             class="nav-link d-flex justify-content-between align-items-center p-2" 
                             [class]="{ 'text-info-emphasis': rla.isActive, 'fw-semibold': rla.isActive }"
                         >
-                            <span class="d-flex align-items-center">
-                                <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                            <span class="d-flex">
+                                <span class="icon-wrapper d-flex flex-shrink-0">
                                     <i class="bi {{menu.icon}}"></i>
                                 </span>
                                 <span class="sidebar-text ms-2">{{menu.title}}</span>
@@ -92,8 +92,8 @@
                                         routerLinkActive="bg-info-subtle text-info-emphasis" 
                                         class="nav-link d-flex justify-content-between align-items-center p-2 rounded-pill" 
                                     >
-                                        <span class="d-flex align-items-center">
-                                             <span class="icon-wrapper d-flex align-items-center justify-content-center flex-shrink-0">
+                                        <span class="d-flex">
+                                             <span class="icon-wrapper d-flex flex-shrink-0">
                                                 <i class="bi {{child.icon}}"></i>
                                             </span>
                                             <span class="sidebar-text ms-2">{{child.title}}</span>
@@ -111,10 +111,13 @@
 
     <!-- Logout Block (Fixed at bottom) -->
     <div class="bg-body-tertiary text-body-emphasis border-top p-2 mt-auto small">
-        <a class="btn bg-danger-subtle text-danger-emphasis border-1 border-danger-subtle rounded-pill d-flex justify-content-center align-items-center" routerLink="/login">
-            <span class="d-flex align-items-center">
-                <span class="icon-wrapper d-flex flex-shrink-0">
-                    <i class="bi bi-box-arrow-right"></i> 
+        <a 
+            routerLink="/logout" 
+            class="btn bg-danger-subtle text-danger-emphasis border-1 border-danger-subtle rounded-pill d-flex justify-content-center align-items-center" 
+        >
+            <span class="d-flex">
+                <span class="icon-wrapper flex-shrink-0">
+                    <i class="bi bi-box-arrow-right"></i>
                 </span>
                 <span class="sidebar-text ms-2">Logout</span>
             </span>

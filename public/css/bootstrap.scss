@@ -1,3 +1,36 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+$all-colors: map-merge-multiple($blues, $indigos, $purples, $pinks, $reds, $oranges, $yellows, $greens, $teals, $cyans);
+
+$utilities: map-merge(
+  $utilities,
+  (
+    "background-color": map-merge(
+      map-get($utilities, "background-color"),
+      (
+        values: map-merge(map-get(map-get($utilities, "background-color"), "values"), ( $all-colors ), )
+      )
+    ),
+    "color": map-merge(
+      map-get($utilities, "color"),
+      (
+        values: map-merge(map-get(map-get($utilities, "color"), "values"), ( $all-colors ), )
+      ),
+    ),
+    "border-color": map-merge(
+      map-get($utilities, "border-color"),
+      (
+        values: map-merge(map-get(map-get($utilities, "border-color"), "values"), ( $all-colors ), )
+      )
+    )
+  )
+);
+
 // 1. Define your custom breakpoint map (values must be in ascending order)
 $grid-breakpoints: (
   xs: 0,
@@ -30,4 +63,4 @@ $enable-validation-icons: false;
 }
 
 // 3. Import Bootstrap source files
-@import "../../node_modules/bootstrap/scss/bootstrap";
+@import "bootstrap/scss/bootstrap";
