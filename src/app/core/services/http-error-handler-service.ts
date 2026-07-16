@@ -1,10 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandler, inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { ErrorHandler, inject, NgZone, PLATFORM_ID, Service } from '@angular/core';
 import { ToastService } from '@rdpms/core/services';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class HttpErrorHandlerService implements ErrorHandler {
 
   private ngZone = inject(NgZone);

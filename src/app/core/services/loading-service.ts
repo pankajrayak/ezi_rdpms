@@ -1,18 +1,18 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { HttpCancelService } from '@rdpms/core/services';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LoadingService {
 
+  private router = inject(Router);
   private httpCancelService = inject(HttpCancelService);
   
   private loadingSubject = new BehaviorSubject<Record<string, boolean>>({"global": false});
   public readonly loadingStates$ = this.loadingSubject.asObservable();
 
-  constructor(private router: Router) {
-
+  constructor() {
     this.router.events.subscribe(event => {
       const isStarting = event instanceof NavigationStart;
       const isEnding = event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError;

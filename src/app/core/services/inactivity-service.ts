@@ -1,12 +1,10 @@
-import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { inject, NgZone, PLATFORM_ID, Service } from '@angular/core';
 import { Router } from '@angular/router';
 import { fromEvent, merge, startWith, Subscription, switchMap, throttleTime, timer } from 'rxjs';
 import { AuthService } from '@rdpms/services';
 import { isPlatformBrowser } from '@angular/common';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class InactivityService {
 
   private ngZone = inject(NgZone);

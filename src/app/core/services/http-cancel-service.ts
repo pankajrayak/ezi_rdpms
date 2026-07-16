@@ -1,10 +1,8 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { inject, OnDestroy, Service } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Subject, filter } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root' 
-})
+@Service()
 export class HttpCancelService implements OnDestroy {
   private router = inject(Router);
   private cancelRequests$ = new Subject<void>();

@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Service, signal } from '@angular/core';
 
 export interface Toast{
   text: string;
@@ -8,9 +8,7 @@ export interface Toast{
   showProgress?: boolean;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ToastService {
   toasts = signal<Toast[]>([]);
 

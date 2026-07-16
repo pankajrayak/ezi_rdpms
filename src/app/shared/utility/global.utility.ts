@@ -1,13 +1,12 @@
-import { DOCUMENT, Inject, Injectable } from '@angular/core';
+import { DOCUMENT, inject, Service } from '@angular/core';
 import { ToastService } from '@rdpms/core/services';
 import { ERROR_MESSAGES } from './constants/error-message.constant';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class GlobalUtility {
 
-  constructor(@Inject(DOCUMENT) private readonly document: Document, private toastService: ToastService) {}
+  private toastService = inject(ToastService);
+  private readonly document = inject(DOCUMENT);
 
   isDefined<T>(value: T | undefined | null | string): value is T {
     return value !== undefined && value !== null && value !== '';

@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, shareReplay, throwError } from 'rxjs';
-import { Injectable } from '@angular/core'; 
+import { inject, Service } from '@angular/core'; 
 
-@Injectable()
+@Service()
 export abstract class CacheHttpService {
 
+  private readonly http =  inject(HttpClient);
   private readonly cacheTime = 5 * 60 * 1000;
   private cacheMap = new Map<string, { data: Observable<any>; expiry: number }>();
-
-  constructor(protected http: HttpClient){}
 
   protected getCached<T>(url: string, params: any = {}, observeResponse: boolean = false, cacheTime = this.cacheTime): Observable<T>{
 

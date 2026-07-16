@@ -1,10 +1,10 @@
 import { HttpClient, HttpContext, httpResource } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { CACHE_TIME_MS, IS_CACHE_ENABLE } from '@rdpms/shared/utility';
 import { map, Observable } from 'rxjs';
 import { API_ENDPOINT } from '@rdpms/shared/utility';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DataService {
 
   private http = inject(HttpClient);
