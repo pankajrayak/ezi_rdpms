@@ -1,26 +1,28 @@
-import { Service, inject } from '@angular/core';
+import { Service, inject, injectAsync } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
-import { HttpCancelService } from '@rdpms/core/services';
 
 @Service()
 export class LoadingService {
 
   private router = inject(Router);
-  private httpCancelService = inject(HttpCancelService);
+  private lazyHttpCancelService = injectAsync(() => import('./http-cancel-service').then(s => s.HttpCancelService));
   
   private loadingSubject = new BehaviorSubject<Record<string, boolean>>({"global": false});
   public readonly loadingStates$ = this.loadingSubject.asObservable();
 
   constructor() {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe(async event => {
       const isStarting = event instanceof NavigationStart;
       const isEnding = event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError;
       
       if(isEnding) { this.updateState('global', false); }
       if(isStarting) { this.updateState('global', true); }
 
-      if(isStarting) { this.httpCancelService.cancelPendingRequests(); }
+      if(isStarting) { 
+        const cancelService = await this.lazyHttpCancelService();
+        cancelService.cancelPendingRequests(); 
+      }
     });
   }
 
