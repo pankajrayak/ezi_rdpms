@@ -1,13 +1,13 @@
 {
-  "/rdpms/backend/api/": {
-    "target": "http://xx.xx.xx.xxx:8080",
-    "secure": false,
+  "/api/": {
+    "target": "http://63.250.52.107:8080",
     "logLevel": "debug"
   },
   "/rdpms/mis/api/": {
-    "target": "http://xx.xx.xx.xxx:8080",
-    "secure": false,
-    "logLevel": "debug"
-    
+    "target": "http://63.250.52.107:8080",
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/rdpms/mis/api" : "/api"
+    }
   }  
 }

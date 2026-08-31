@@ -6,6 +6,13 @@
   --root-body-color-rgb: var(--bs-body-color-rgb);
 }
 
+router-outlet + * {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
 .text {
   &-vertical {
     writing-mode: vertical-rl;
@@ -23,11 +30,16 @@
 }
 
 body {
-  scrollbar-width: thin;
   // -webkit-user-select: none; /* Safari */
   // -moz-user-select: none; /* Firefox */
   // -ms-user-select: none; /* IE 10+ */
   // user-select: none; /* Standard */  
+}
+
+.overflow-auto,
+.overflow-x-auto,
+.overflow-y-auto {
+  scrollbar-width: thin;
 }
 
 .collapse-icon-animated {

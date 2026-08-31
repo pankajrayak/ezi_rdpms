@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                 <i class="bi" [class]="isDarkTheme ? 'bi-moon-stars-fill' : 'bi-brightness-high-fill'"></i>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end" style="z-index: 1175;">
                 <li class="mx-2 my-1">
                     <a class="dropdown-item d-flex justify-content-between align-items-center rounded-2" [class.active]="!isDarkTheme" href="javascript:void(0)" (click)="toggleTheme()">
                         <div>Light <i class="bi bi-brightness-high-fill ms-2"></i></div>

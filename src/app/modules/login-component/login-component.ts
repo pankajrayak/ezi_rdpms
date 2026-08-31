@@ -6,7 +6,7 @@ import { AuthService } from '@rdpms/services';
 import { schema, required, form, apply, disabled, FormField, FormRoot } from '@angular/forms/signals';
 
 export type LoginFormModel = {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -21,18 +21,14 @@ export class LoginComponent {
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
 
-  readonly formModel: LoginFormModel = {
-    username: '',
-    password: '',
-  };
+  readonly formModel: LoginFormModel = { email: '', password: '' };
+  readonly model = signal(this.formModel);
 
   readonly formSchema = schema<LoginFormModel>((fieldPath) => {
-    required(fieldPath.username, { message: 'required field' });
+    required(fieldPath.email, { message: 'required field' });
     required(fieldPath.password, { message: 'required field' });
   });
 
-  readonly model = signal(this.formModel);
-  
   readonly f = form(this.model, (s) => {
     apply(s, this.formSchema);
     disabled(s, { when: () => this.f().submitting() });
@@ -41,8 +37,7 @@ export class LoginComponent {
       action: async (formInstance) => {
         const payload = formInstance().value();
         try {
-          const response = await firstValueFrom(this.authService.login(payload));
-          console.log('Login successful! User details:', response);
+          await firstValueFrom(this.authService.login(payload));
           this.navigateToReturnUrl();
         } catch (error) {
           this.navigateToReturnUrl();
@@ -55,6 +50,22 @@ export class LoginComponent {
   readonly isSessionExpired = computed(() => 
     this.route.snapshot.queryParams['reason'] === 'session-expired'
   );
+
+  constructor(){
+    this.checkAndLogout();
+  }
+
+  async checkAndLogout() {
+    if(this.authService.isLoggedIn()) {
+      const user = this.authService.user();
+      const payload = { email: user.email };
+      try {
+        await firstValueFrom(this.authService.logout(payload));
+      }catch(error) {
+        console.error("Logout API failed:", error);
+      }
+    }
+  }
 
   navigateToReturnUrl() {
     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';

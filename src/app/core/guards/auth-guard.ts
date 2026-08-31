@@ -7,7 +7,7 @@ export const authGuard = (route: any, params: any): boolean | UrlTree => {
   const router = inject(Router);
   const authService = inject(AuthService);
   
-  const user = authService.currentUser() as any;
+  const user = authService.user();
   
   if(user){ return true; }
 

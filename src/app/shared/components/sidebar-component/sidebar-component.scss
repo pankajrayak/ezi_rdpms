@@ -1,10 +1,10 @@
 $mini-width: 60px; 
 $expanded-width: 260px;
-$transition-speed: 0.25s;
+$transition-speed: 0.4s;
 $transition-style: ease-in-out;
 $background-color: rgba(var(--root-body-color-rgb), 0.5);
 
-.sidebar-scroll { direction: rtl; scrollbar-width: thin; }
+.sidebar-scroll { direction: rtl; }
 .sidebar-content { direction: ltr; }
 
 @media (min-width: 1200px) {

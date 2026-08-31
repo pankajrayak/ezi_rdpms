@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
-import { ToastService } from '@rdpms/core/services';
+import { Toast, ToastService } from '@rdpms/core/services';
 
 @Component({
   selector: 'toasts-component',
@@ -10,17 +10,19 @@ import { ToastService } from '@rdpms/core/services';
       <ngb-toast
         class="mb-2 custom-toast"
         [class]="toast.classname"
-        [autohide]="true"
-        [delay]="toast.delay || 3000"
+        [class.paused]="toast.isPaused"
+        [autohide]="!toast.isPaused"
+        [delay]="toast.delay || 1000"
+        (mouseenter)="toast.isPaused = true"
+        (mouseleave)="toast.isPaused = false"
         (hidden)="toastService.remove(toast)"
       >
-        <!-- {{toast.text}} -->
         <div
           class="d-flex justify-content-between align-items-start p-2"
           [class.text-white]="isDarkBg(toast.classname)"
           [class.text-dark]="!isDarkBg(toast.classname)"
         >
-          <span>{{ toast.text }}</span>
+          <span class="text-wrap text-break">{{ toast.text }}</span>
 
           @if (toast.showClose !== false) {
             <button
@@ -50,17 +52,12 @@ import { ToastService } from '@rdpms/core/services';
       :host {
         display: block;
         /* top: 56px !important; 
-      right: 15px !important; */
+        right: 2rem !important; */
         z-index: 1200;
-        max-height: calc(100vh - 50px);
+        max-height: calc(100vh - 10px);
         overflow-y: auto;
-        &::-webkit-scrollbar {
-          width: 6px;
-        }
-        &::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 0, 0, 0.2);
-          border-radius: 4px;
-        }
+        scrollbar-width: thin;
+        scrollbar-gutter: stable; 
       }
       .custom-toast {
         position: relative;
@@ -74,6 +71,11 @@ import { ToastService } from '@rdpms/core/services';
         width: 100%;
         height: 4px;
       }
+
+      .custom-toast.paused .progress-fill { 
+        animation-play-state: paused; 
+      }
+        
       .progress-fill {
         width: 100%;
         height: 100%;
@@ -92,13 +94,14 @@ import { ToastService } from '@rdpms/core/services';
     `,
   ],
   host: {
-    class: 'toast-container position-fixed top-0 end-0 p-3',
+    class: 'toast-container position-fixed top-0 end-0 p-2 pe-1',
     style: 'z-index: 1200;', //if not worked use inside styles: host
   },
 })
 export class ToastComponent {
-  toastService = inject(ToastService);
 
+  protected toastService = inject(ToastService);
+  
   isDarkBg(classname: string | undefined): boolean {
     if (!classname) return false;
     // These backgrounds require light (white) text/buttons

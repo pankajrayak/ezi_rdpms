@@ -1,6 +1,6 @@
 import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withInMemoryScrolling, withPreloading } from '@angular/router';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { APP_ROUTES } from './app.routes';
 import { authInterceptor, httpErrorInterceptor, httpCancelInterceptor, cachingInterceptor } from './core/interceptors';
@@ -11,7 +11,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     { provide: ErrorHandler, useClass: HttpErrorHandlerService },
     provideHttpClient( 
-      withFetch(), 
       withInterceptors([
         authInterceptor, 
         cachingInterceptor,

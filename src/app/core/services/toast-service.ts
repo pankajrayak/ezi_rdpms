@@ -4,6 +4,7 @@ export interface Toast{
   text: string;
   classname?: string;
   delay?: number;
+  isPaused?: boolean;
   showClose?: boolean;
   showProgress?: boolean;
 }

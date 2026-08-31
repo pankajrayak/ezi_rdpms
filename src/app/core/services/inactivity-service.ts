@@ -1,6 +1,5 @@
 import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
-import { fromEvent, merge, startWith, switchMap, throttleTime, timer } from 'rxjs';
 import { AuthService } from '@rdpms/services';
 
 @Service()
@@ -9,9 +8,8 @@ export class InactivityService {
   private router = inject(Router);
   private authService = inject(AuthService);
   
-  
   private timerId: any = null;
-  private readonly TIMEOUT_MS = 15 * 60 * 1000; // 15 Minutes in ms
+  private readonly TIMEOUT_MS = 30 * 60 * 1000; // 30 Minutes in ms
   
   constructor(){
     this.startTracking();
@@ -38,7 +36,7 @@ export class InactivityService {
 
   private logoutUser() {
     this.stopTracking();
-    this.authService.logout();
+    this.authService.logout(null);
     
     this.router.navigate(['/login'], { queryParams: { reason: 'session-expired' } });
   }

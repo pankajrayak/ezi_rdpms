@@ -4,7 +4,7 @@ import { roleGuard, unsavedChangesGuard } from '@rdpms/core/guards';
 export const USER_ROUTES: Routes = [
     {
         path: '',
-        canActivateChild: [roleGuard],
+        // canActivateChild: [roleGuard],
         loadComponent: () => import('../modules/user-component/user-component').then(c => c.UserComponent),
         children: [
             {

@@ -6,7 +6,7 @@
     [isLive]="true"
   />
   
-  <div class="card border mb-4">
+  <div class="card border mb-2">
     <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-2" role="button" 
       data-bs-toggle="collapse" data-bs-target="#searchFiltersCollapse" aria-expanded="true" aria-controls="searchFiltersCollapse">
       <div class="d-flex align-items-center gap-2">
@@ -16,7 +16,7 @@
       <i class="bi bi-chevron-down collapse-icon-animated fs-6 text-muted"></i>
     </div>
 
-    <div class="collapse show" id="searchFiltersCollapse">
+    <div class="collapse" id="searchFiltersCollapse">
       <div class="card-body p-3 pt-1">
         <form [formRoot]="f" autocomplete="none" novalidate>
           <div class="row g-2 align-items-baseline">
@@ -32,12 +32,13 @@
                 [class.is-invalid]="zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())"
               >
               <option value="" disabled selected>Select</option>
-                @for (zone of zonesRes.value(); track zone) {
-                  <option [value]="zone.zone">{{ zone.zone }}</option>
+              <option value="All">All</option>
+                @for (zone of zonesRes?.value(); track zone.zoneId) {
+                  <option [value]="zone.zoneId">{{ zone.zoneCode }} - {{ zone.zoneName }}</option>
                 }
               </select>
               @if (zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())) {
-                @for (err of divisionCtrl.errors(); track err.kind) {
+                @for (err of divisionCtrl.errors(); track $index) {
                   @if (err?.kind === 'required') { {{ err?.message }} }
                   @else { {{ err.kind }} error }
                 }
@@ -55,13 +56,14 @@
                 [class.is-invalid]="divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())"
               >
                 <option value="" disabled selected>Select</option>
-                @for (division of divisionsRes.value(); track division) {
-                  <option [value]="division">{{ division }}</option>
+                <option value="All">All</option>
+                @for (division of divisionsRes?.value(); track division.divisionId) {
+                  <option [value]="division.divisionId">{{ division.divisionCode }} - {{ division.divisionName }}</option>
                 }
               </select>
               @if (divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of divisionCtrl.errors(); track err.kind) {
+                  @for (err of divisionCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -74,18 +76,20 @@
               <label class="small fw-bold text-body-secondary text-nowrap">STATION</label>
               <select
                 [formField]="f.station"
+                (change)="onStationChanged()"
                 class="form-select form-select-sm"
                 [class.is-valid]="stationCtrl.valid() && (stationCtrl.touched() || stationCtrl.dirty())"
                 [class.is-invalid]="stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())"
               >
                 <option value="" disabled selected>Select</option>
-                @for (station of stationsRes.value(); track station) {
-                  <option [value]="station">{{ station }}</option>
+                <option value="All">All</option>
+                @for (station of stationsRes?.value(); track station.stationId) {
+                  <option [value]="station.stationCode">{{ station.stationCode }} - {{station.stationName }}</option>
                 }
               </select>
               @if (stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of stationCtrl.errors(); track err.kind) {
+                  @for (err of stationCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -114,11 +118,11 @@
       <div class="col-12 order-1">
           <div class="row g-3 top-card-row">
               @for (card of topCards(); track $index) {
-              <div class="col-12 col-md-6 top-card-item">
-                  <div class="card data-card shadow-sm h-100 border-0 border-start border-5 border-primary" [class.border-success]="card.name === 'Total Assets'">
-                      <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
-                  </div>
-              </div>
+                <div class="col-12 col-md-6 top-card-item">
+                    <div class="card data-card shadow-sm h-100 border-0 border-start border-5 border-primary" [class.border-success]="card.assetType === 'TOTAL ASSETS'">
+                        <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
+                    </div>
+                </div>
               }
           </div>
       </div>
@@ -128,11 +132,11 @@
           <div class="col-12 col-lg-3 order-2 order-lg-3 d-flex flex-column">
               <div class="row g-3 flex-grow-1">
                   @for (card of sideCards(); track $index; let last = $last) {
-                  <div class="col-12 col-lg-12" [class.col-md-6]="!last" [class.col-md-12]="last"> 
-                      <div class="card data-card shadow-sm bg-body h-100 border-0 border-start border-5 border-primary" [class.border-success]="card.name === 'Total Assets'">
-                          <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
-                      </div>
-                  </div>
+                    <div class="col-12 col-lg-12" [class.col-md-6]="!last" [class.col-md-12]="last"> 
+                        <div class="card data-card shadow-sm bg-body h-100 border-0 border-start border-5 border-primary" [class.border-success]="card.assetType === 'TOTAL ASSETS'">
+                            <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
+                        </div>
+                    </div>
                   }
               </div>
           </div>
@@ -156,32 +160,23 @@
 <ng-template #cardBody let-asset>
   <div class="card-body p-2 d-flex flex-column">
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <h6 class="m-0 small fw-bold text-body-secondary text-uppercase">{{asset.name}}</h6>
+      <h6 class="m-0 small fw-bold text-body-secondary text-uppercase">{{asset.assetType}}</h6>
       <i class="bi bi-layers text-primary fs-5"></i>
     </div>
     
     <div class="row g-2 text-center flex-grow-1">
-      <!-- Healthy Row -->
-      <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-success-subtle text-success-emphasis border border-success-subtle h-100">
-          <span class="small fw-medium mb-1"><i class="bi bi-check-circle-fill px-1"></i>Healthy</span>
-          <h4 class="m-0 fw-extrabold">{{asset.healthy}}</h4>
+      @for(item of asset.statusList; track item.status;) {
+        @let type = $any({ 'Healthy': 'success', 'Predictive': 'warning', 'Failure': 'danger' })[item.status] || '';
+        @let icon = $any({ 'Healthy': 'bi-check-circle-fill', 'bi-exclamation-triangle-fill': 'warning', 'Failure': 'bi-x-circle-fill' })[item.status] || '';
+        <div class="col">
+          <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-{{type}}-subtle text-{{type}}-emphasis border border-{{type}}-subtle h-100">
+            <span class="small fw-medium mb-1">
+              <i class="bi {{ icon }} px-1"></i>{{ item.status }}
+            </span>
+            <h4 class="m-0 fw-extrabold">{{ item.count }}</h4>
+          </div>
         </div>
-      </div>
-      <!-- Predictive Row -->
-      <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-warning-subtle text-warning-emphasis border border-warning-subtle h-100">
-          <span class="small fw-medium mb-1"><i class="bi bi-exclamation-triangle-fill px-1"></i>Warning</span>
-          <h4 class="m-0 fw-extrabold">{{asset.predictive}}</h4>
-        </div>
-      </div>
-      <!-- Failure Row -->
-      <div class="col">
-        <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-danger-subtle text-danger-emphasis text-center border border-danger-subtle h-100">
-          <span class="small fw-medium mb-1"><i class="bi bi-x-circle-fill px-1"></i>Failure</span>
-          <h4 class="m-0 fw-extrabold">{{asset.failure}}</h4>
-        </div>
-      </div>
+      }
     </div>
   </div>
 </ng-template>

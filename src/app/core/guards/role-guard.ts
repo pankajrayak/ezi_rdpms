@@ -7,7 +7,7 @@ export const roleGuard = (route: any, params: any): boolean | UrlTree => {
   const router = inject(Router);
   const authService = inject(AuthService);
   
-  const user = authService.currentUser() as any;
+  const user = authService.user();
   
   const roles: string[] = route.data['roles'] || [];
   const hasRole = roles?.includes(user?.role);

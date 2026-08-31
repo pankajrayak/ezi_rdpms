@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal, computed, debounced, effect } from '@angular/core';
-import { firstValueFrom, of } from 'rxjs';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 import { HasUnsavedChanges } from '@rdpms/core/interfaces';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService, GlobalUtility } from '@rdpms/shared/utility';
+import { GlobalUtility } from '@rdpms/shared/utility';
 import { apply, disabled, form, FormField, FormRoot, required, schema } from '@angular/forms/signals';
+import { InputService } from '../../services/input-service';
+import { ToastService } from '@rdpms/core/services';
 
 interface SearchFormModel {
   zone: string;
@@ -13,11 +14,17 @@ interface SearchFormModel {
   station: string;
 }
 
+interface Status {
+  status: string;
+  alertTypeId: string;
+  sequenceNo: string;
+  count: number;
+}
+
 interface Asset {
-  name: string;
-  healthy: number;
-  predictive: number;
-  failure: number;
+  assetTypeId: string;
+  assetType: string;
+  statusList: Status[];
 }
 
 @Component({
@@ -27,11 +34,21 @@ interface Asset {
   styleUrl: './home-component.scss',
 })
 export class HomeComponent implements HasUnsavedChanges {
-  private dataService = inject(DataService);
+
+  public toastService = inject(ToastService);
   public globalUtility = inject(GlobalUtility);
+  private inputService = inject(InputService);
   
-  readonly formModel: SearchFormModel = { zone: '', division: '', station: '' }
+  readonly formModel: SearchFormModel = { zone: 'All', division: 'All', station: 'All' }
   readonly model = signal(this.formModel);
+  assets = signal<Asset[] | null>(null);
+
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
+  
+  zonesRes = this.inputService.getZoneListResource();
+  divisionsRes = this.inputService.getDivisionListResource(this.debouncedZone.value);
+  stationsRes = this.inputService.getStationListResource(this.debouncedZone.value, this.debouncedDivision.value);
 
   readonly formSchema = schema<SearchFormModel>((fieldPath) => {
     required(fieldPath.zone, { message: 'required field' });
@@ -57,55 +74,68 @@ export class HomeComponent implements HasUnsavedChanges {
   }, {
     submission: {
       action: async (formInstance) => {
-        const payload = formInstance().value();
-        try {
-          const response = await firstValueFrom(this.dataService.searchData(payload));
-          console.log('Search complete:', response);
-        } catch (error) {
-          console.log("Search failed:", error);
-        }
+        this.resetAssets();
+        const formValue = formInstance().value();
+        await this.getDashboardStatusCount(formValue);
       },
     }
   });
 
-  zonesRes = this.dataService.getZonesResource();
+  constructor() {
+    const toastOptions = { classname: 'bg-danger text-white', delay: 5000 };
+    effect(() => {
+      const zoneError = this.zonesRes.error();
+      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions) }
 
-  debouncedZone = debounced(computed(() => this.model().zone), 500);
-  divisionsRes = rxResource({
-    params: () =>  this.debouncedZone.value(),
-    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
-  });
+      const divisionError = this.divisionsRes.error();
+      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions) }
 
-  debouncedDivision = debounced(computed(() => this.model().division), 500);
-  stationsRes = rxResource({
-    params: () => this.debouncedDivision.value(),
-    stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
-  });
+      const stationError = this.stationsRes.error();
+      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions) }
+    });
+  }
+
+  ngOnInit(): void {
+    this.getDashboardStatusCount(this.f().value());
+  }
+
+  resetAssets() {
+    // this.assets.set([]);
+  }
 
   onZoneChange() {
-    this.f.division().reset();
+    this.resetAssets();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, division: '', station: '' }));
+    this.f.division().reset();
+    this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
   }
 
   onDivisionChange() {
+    this.resetAssets();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, station: '' }));
+    this.model.update((m) => ({ ...m, station: 'All' }));
   }
 
-  // Dummy Data for the 7 specific assets requested
-  assets = signal<Asset[]>([
-    { name: 'DC Track Circuit', healthy: 85, predictive: 10, failure: 5 },
-    { name: 'Main Signal', healthy: 92, predictive: 5, failure: 3 },
-    { name: 'Axle Counter', healthy: 78, predictive: 12, failure: 10 },
-    { name: 'LC Gate', healthy: 60, predictive: 25, failure: 15 },
-    { name: 'Point Machine', healthy: 88, predictive: 8, failure: 4 },
-    { name: 'Sensor/IOT', healthy: 98, predictive: 2, failure: 0 },
-    { name: 'Total Assets', healthy: 403, predictive: 60, failure: 37 },
-  ]);
+  onStationChanged() {
+    this.resetAssets();
+  }
+
+  async getDashboardStatusCount(payload: Partial<SearchFormModel>) {
+    try {
+      // this.records.set(null);
+      const response = await firstValueFrom(this.inputService.getDashboardStatusCount(payload));
+      this.assets.set(response ?? []);
+    } catch (error: any) {
+      this.assets.set([]);
+      this.toastService.show(
+        this.globalUtility.getErrorMessage(error),
+        { classname: 'bg-danger text-white', delay: 10000, showProgress: true }
+      );
+    }
+  }
 
   private readonly layoutCounts = computed(() =>  {
-    const n: number = this.assets().length;
+    const n: number = this.assets()?.length ?? 0;
     
     if (n === 0) return { topCount: 0, remaining: 0 };
 
@@ -122,12 +152,12 @@ export class HomeComponent implements HasUnsavedChanges {
 
   readonly topCards = computed(() => {
     const { topCount } = this.layoutCounts();
-    return this.assets().slice(0, topCount); 
+    return this.assets()?.slice(0, topCount); 
   });
 
   readonly sideCards = computed(() => {
     const { topCount } = this.layoutCounts();
-    return this.assets().slice(topCount);
+    return this.assets()?.slice(topCount);
   });
 
   hasUnsavedChanges(): boolean { return false; }

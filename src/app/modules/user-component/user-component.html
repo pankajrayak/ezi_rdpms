@@ -1,4 +1,4 @@
-<div class="container-fluid p-0 vh-100 overflow-hidden bg-body-secondary text-body-emphasis">
+<div id="rdpmsContainer" class="container-fluid p-0 vh-100 overflow-hidden bg-body-secondary text-body-emphasis">
     <div class="d-flex h-100"> <!--add row g-0 and remove d-flex and remove width from sidebar compoennt host  -->
 
         <sidebar-component 
@@ -11,7 +11,7 @@
             
             <header-component></header-component>
 
-            <div class="flex-grow-1 overflow-auto p-2">
+            <div class="flex-grow-1 overflow-auto">
                 <router-outlet></router-outlet>
             </div>
         </main>

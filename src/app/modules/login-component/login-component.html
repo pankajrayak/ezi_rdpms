@@ -15,16 +15,16 @@
             
             <form [formRoot]="f" autocomplete="none" novalidate>
               <div class="mb-4">
-                @let userCtrl = f.username();
-                <label class="form-label text-info small fw-bold">User / Employee ID</label>
+                @let userCtrl = f.email();
+                <label class="form-label text-info small fw-bold">Email</label>
                 <div class="input-group border-bottom border-secondary bg-transparent">
                   <span class="input-group-text bg-transparent border-0 text-info"><i class="bi bi-person-badge"></i></span>
-                  <input type="text" [formField]="f.username" class="form-control bg-transparent border-0 shadow-none"
+                  <input type="text" [formField]="f.email" class="form-control bg-transparent border-0 shadow-none"
                     placeholder="EMP-XXXX" (cut)="false" (copy)="false" (paste)="false" autocomplete="none">
                 </div>
                 @if (userCtrl.invalid() && (userCtrl.touched() || userCtrl.dirty())) {
                   <div class="text-danger-emphasis small m-0">
-                    @for (err of userCtrl.errors(); track err.kind) {
+                    @for (err of userCtrl.errors(); track $index) {
                       @if (err?.kind === 'required') { {{ err?.message }} }
                       @else { {{err?.kind }} error }
                     }
@@ -42,7 +42,7 @@
                 </div>
                 @if (passCtrl.invalid() && (passCtrl.touched() || passCtrl.dirty())) {
                   <div class="text-danger-emphasis small m-0">
-                    @for (err of passCtrl.errors(); track err.kind) {
+                    @for (err of passCtrl.errors(); track $index) {
                       @if (err?.kind === 'required') { {{ err?.message }} }
                       @else { {{err?.kind }} error }
                     }

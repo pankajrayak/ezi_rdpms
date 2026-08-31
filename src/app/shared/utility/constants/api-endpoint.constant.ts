@@ -1,3 +1,3 @@
 export const API_ENDPOINT = {
-    BACKEND_PREFIX:  '/backend/api/v1',
+    BACKEND_PREFIX:  '/api',
 } as const;

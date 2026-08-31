@@ -1,6 +1,7 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectorRef, Component, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, signal } from '@angular/core';
 import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
+import { AuthService } from '@rdpms/services';
 
 @Component({
   selector: 'sidebar-component',
@@ -18,7 +19,10 @@ import { Route, RouterLink, RouterLinkActive, Routes } from '@angular/router';
   }
 })
 export class SidebarComponent implements OnInit {
-  isToggle = signal<boolean>(true); 
+
+  public authService = inject(AuthService);
+
+  isToggle = signal<boolean>(false); 
   parentRoute = input<string>();
   routeConfig = input<Routes>();
   menus!: any[];

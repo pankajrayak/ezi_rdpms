@@ -6,7 +6,7 @@
     [isLive]="false"
   />
   
-  <div class="card shadow-sm mb-4">
+  <div class="card shadow-sm mb-2">
     <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-2" role="button" 
       data-bs-toggle="collapse" data-bs-target="#searchFiltersCollapse" aria-expanded="true" aria-controls="searchFiltersCollapse">
       <div class="d-flex align-items-center gap-2">
@@ -16,7 +16,7 @@
       <i class="bi bi-chevron-down collapse-icon-animated fs-6 text-muted"></i>
     </div>
 
-    <div class="collapse show" id="searchFiltersCollapse">
+    <div class="collapse" id="searchFiltersCollapse">
       <div class="card-body p-3 pt-1">
         <form [formRoot]="f" autocomplete="none" novalidate>
           <div class="row g-2 align-items-baseline flex-xxxl-wrap">
@@ -38,7 +38,7 @@
               </select>
               @if (zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of zoneCtrl.errors(); track err.kind) {
+                  @for (err of zoneCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -63,7 +63,7 @@
               </select>
               @if (divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of divisionCtrl.errors(); track err.kind) {
+                  @for (err of divisionCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -87,7 +87,7 @@
               </select>
               @if (stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of stationCtrl.errors(); track err.kind) {
+                  @for (err of stationCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -111,7 +111,7 @@
               </select>
               @if (assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of assetTypeCtrl.errors(); track err.kind) {
+                  @for (err of assetTypeCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -136,7 +136,7 @@
               </select>
               @if (assetMakeCtrl.invalid() && (assetMakeCtrl.touched() || assetMakeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of assetMakeCtrl.errors(); track err.kind) {
+                  @for (err of assetMakeCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -160,7 +160,7 @@
               </select>
               @if (viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of viewCtrl.errors(); track err.kind) {
+                  @for (err of viewCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -221,45 +221,46 @@
               </div>
             </div>
           }
-          
-          <div id="print-section" class="table-responsive">
-            <table class="table table-hover align-middle mb-0 small">
-              <thead class="table-active text-uppercase small sticky-top">
-                <tr>
-                  <th>S.No</th>
-                  <th>Zone</th>
-                  <th>Division</th>
-                  <th>Station</th>
-                  <th>Alert</th>
-                  <th>Asset Type</th>
-                  <th>Asset Number</th>
-                  <th>Inc. Date & Time</th>
-                  <th>Rect. Date & Time</th>
-                  <th>Duration</th>
-                  <th>Cause</th>
-                  <th>Feedback</th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-                @for(row of records(); track row.sNo) {
+          <div class="position-relative border rounded">
+            <div id="print-section" class="table-responsive">
+              <table class="table table-hover align-middle mb-0 small">
+                <thead class="table-active text-uppercase small sticky-top">
                   <tr>
-                    <td>{{row.sNo}}</td>
-                    <td>{{row.zone}}</td>
-                    <td>{{row.div}}</td>
-                    <td>{{row.stn}}</td>
-                    <td><span [class]="'badge ' + (row.alert === 'Failure' ? 'text-bg-danger' : 'text-bg-warning')">{{row.alert}}</span></td>
-                    <td>{{row.assetType}}</td><td class="fw-bold">{{row.assetNo}}</td>
-                    <td>{{row.incTime}}</td>
-                    <td>{{row.rectTime}}</td>
-                    <td>{{row.duration}}</td>
-                    <td>{{row.cause}}</td>
-                    <td><span class="badge border">{{row.feedback}}</span></td>
+                    <th>S.No</th>
+                    <th>Zone</th>
+                    <th>Division</th>
+                    <th>Station</th>
+                    <th>Alert</th>
+                    <th>Asset Type</th>
+                    <th>Asset Number</th>
+                    <th>Inc. Date & Time</th>
+                    <th>Rect. Date & Time</th>
+                    <th>Duration</th>
+                    <th>Cause</th>
+                    <th>Feedback</th>
                   </tr>
-                }@empty {
-                  <tr><td colspan="100" class="text-center">No records found.</td></tr>
-                }
-              </tbody>
-            </table>
+                </thead>
+                <tbody class="table-group-divider">
+                  @for(row of records(); track row.sNo) {
+                    <tr>
+                      <td>{{row.sNo}}</td>
+                      <td>{{row.zone}}</td>
+                      <td>{{row.div}}</td>
+                      <td>{{row.stn}}</td>
+                      <td><span [class]="'badge ' + (row.alert === 'Failure' ? 'text-bg-danger' : 'text-bg-warning')">{{row.alert}}</span></td>
+                      <td>{{row.assetType}}</td><td class="fw-bold">{{row.assetNo}}</td>
+                      <td>{{row.incTime}}</td>
+                      <td>{{row.rectTime}}</td>
+                      <td>{{row.duration}}</td>
+                      <td>{{row.cause}}</td>
+                      <td><span class="badge border">{{row.feedback}}</span></td>
+                    </tr>
+                  }@empty {
+                    <tr><td colspan="100" class="text-center">No records found.</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
           </div>
           
           <!-- <ngb-pagination class="d-flex justify-content-end p-2" size="md" [collectionSize]="result?.total" [pageSize]="size()" [maxSize]="4" 

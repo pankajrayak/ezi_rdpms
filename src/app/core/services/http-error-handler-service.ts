@@ -1,17 +1,17 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandler, inject, NgZone, PLATFORM_ID, Service } from '@angular/core';
+import { ErrorHandler, inject, Service } from '@angular/core';
 import { ToastService } from '@rdpms/core/services';
 
 @Service()
 export class HttpErrorHandlerService implements ErrorHandler {
 
-  private ngZone = inject(NgZone);
-  private platformId = inject(PLATFORM_ID); // Inject Platform ID
   private toastService = inject(ToastService);
 
-  handleError(error: any): void {
-    let message = error.message ?? error.toString();
+  handleError(err: any): void {
+    const error = err?.cause ? err.cause : err;
 
+    let message = error.message ?? error.toString();
+    
     if(error instanceof HttpErrorResponse){
       if(typeof error.error === 'string'){
         message = error.error;
@@ -23,12 +23,5 @@ export class HttpErrorHandlerService implements ErrorHandler {
     }
 
     this.toastService.show(message, { classname: 'bg-danger text-light', delay: 5000 })
-
-    // if(isPlatformBrowser(this.platformId)) {
-    //   this.ngZone.run(() => {
-    //     this.toastService.show(message, { classname: 'bg-danger text-light', delay: 5000 })
-    //   });
-    // }
-
   }
 }

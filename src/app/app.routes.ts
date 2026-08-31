@@ -11,7 +11,7 @@ export const APP_ROUTES: Routes = [
     },
     {
         path: 'user',
-        canMatch: [authGuard, roleGuard],
+        // canMatch: [authGuard], //roleGuard
         data: { roles: ['admin', 'master'] },
         loadChildren: () => import('./routes/user.routes').then(r => r.USER_ROUTES)
     }, 

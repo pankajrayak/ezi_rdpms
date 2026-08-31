@@ -1,21 +1,23 @@
 <div class="d-flex flex-column h-100 bg-body text-body" [class.sidebar-wrapper]="isToggle()">
     <div class="bg-body-tertiary text-body-emphasis border-bottom sticky-top p-2">
         <div class="d-flex justify-content-between">
-            <div class="d-flex align-items-center overflow-hidden user-block">
-                <div class="d-flex flex-shrink-0 align-items-center justify-content-center">
-                    <img 
-                        width="42" 
-                        height="42" 
-                        alt="Avtar" 
-                        ngSrc="/images/avtar.png" 
-                        class="bg-secondary rounded-circle"
-                    />
+            @if(authService.isLoggedIn()) {
+                <div class="d-flex align-items-center overflow-hidden user-block">
+                    <div class="d-flex flex-shrink-0 align-items-center justify-content-center">
+                        <img 
+                            width="42" 
+                            height="42" 
+                            alt="Avtar" 
+                            ngSrc="/images/avtar.png" 
+                            class="bg-secondary rounded-circle"
+                        />
+                    </div>
+                    <div class="small overflow-hidden mx-2 sidebar-text">
+                        <div class="fw-semibold text-truncate mb-0">{{ authService.user().sub }}</div>
+                        <!-- <div class="text-body-secondary text-truncate small">{{ authService.user()?.role }}</div> -->
+                    </div>
                 </div>
-                <div class="small overflow-hidden mx-2 sidebar-text">
-                    <div class="fw-semibold text-truncate mb-0">Manish Kushwaha</div>
-                    <div class="text-body-secondary text-truncate small">Administrator</div>
-                </div>
-            </div>
+            }
             <div class="d-flex">
                 <button 
                     type="button" 

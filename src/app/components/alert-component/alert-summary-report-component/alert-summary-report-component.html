@@ -6,7 +6,7 @@
     [isLive]="false"
   />
   
-  <div class="card shadow-sm mb-4">
+  <div class="card shadow-sm mb-2">
     <div
       class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-2"
       role="button"
@@ -22,7 +22,7 @@
       <i class="bi bi-chevron-down collapse-icon-animated fs-6 text-muted"></i>
     </div>
 
-    <div class="collapse show" id="searchFiltersCollapse">
+    <div class="collapse" id="searchFiltersCollapse">
       <div class="card-body p-3 pt-1">
         <form [formRoot]="f" autocomplete="none" novalidate (submit)="onSubmit($event)">
           <div class="row g-2 align-items-baseline flex-xxxl-wrap">
@@ -44,7 +44,7 @@
               </select>
               @if (zoneCtrl.invalid() && (zoneCtrl.touched() || zoneCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of zoneCtrl.errors(); track err.kind) {
+                  @for (err of zoneCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -70,7 +70,7 @@
               </select>
               @if (divisionCtrl.invalid() && (divisionCtrl.touched() || divisionCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of divisionCtrl.errors(); track err.kind) {
+                  @for (err of divisionCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -95,7 +95,7 @@
               </select>
               @if (stationCtrl.invalid() && (stationCtrl.touched() || stationCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of stationCtrl.errors(); track err.kind) {
+                  @for (err of stationCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -120,7 +120,7 @@
               </select>
               @if (alertTypeCtrl.invalid() && (alertTypeCtrl.touched() || alertTypeCtrl.dirty())) {
               <div class="invalid-feedback small m-0">
-                @for (err of alertTypeCtrl.errors(); track err.kind) {
+                @for (err of alertTypeCtrl.errors(); track $index) {
                   @if (err?.kind === 'required') { {{ err?.message }} }
                   @else { {{ err.kind }} error }
                 }
@@ -145,7 +145,7 @@
               </select>
               @if (assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of assetTypeCtrl.errors(); track err.kind) {
+                  @for (err of assetTypeCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -170,7 +170,7 @@
               </select>
               @if (assetNumberCtrl.invalid() && (assetNumberCtrl.touched() || assetNumberCtrl.dirty())) {
               <div class="invalid-feedback small m-0">
-                @for (err of assetNumberCtrl.errors(); track err.kind) {
+                @for (err of assetNumberCtrl.errors(); track $index) {
                   @if (err?.kind === 'required') { {{ err?.message }} }
                   @else { {{ err.kind }} error }
                 }
@@ -195,7 +195,7 @@
               </select>
               @if (causeCtrl.invalid() && (causeCtrl.touched() || causeCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of causeCtrl.errors(); track err.kind) {
+                  @for (err of causeCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
@@ -215,7 +215,7 @@
               />
               @if (fromDateCtrl.invalid() && (fromDateCtrl.touched() || fromDateCtrl.dirty()) ) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of fromDateCtrl.errors(); track err.kind) {
+                  @for (err of fromDateCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
                     @else if (err?.kind === 'minDate') { {{ err?.message }} } 
                     @else if (err?.kind === 'maxDate') { {{ err?.message }} } 
@@ -238,7 +238,7 @@
               />
               @if (fromTimeCtrl.invalid() && (fromTimeCtrl.touched() || fromTimeCtrl.dirty()) ) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of fromTimeCtrl.errors(); track err.kind) {
+                  @for (err of fromTimeCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
                     @else if (err?.kind === 'minTime') { {{ err?.message }} } 
                     @else if (err?.kind === 'maxTime') { {{ err?.message }} } 
@@ -309,7 +309,7 @@
               </select>
               @if (viewCtrl.invalid() && (viewCtrl.touched() || viewCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of viewCtrl.errors(); track err.kind) {
+                  @for (err of viewCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} }
                     @else { {{ err.kind }} error }
                   }
