@@ -16,6 +16,7 @@ export interface AlertDetail {
   fromTime?: string;
   toDate?: string;
   toTime?: string;
+  view?: string;
 }
 
 @Service()

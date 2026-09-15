@@ -245,7 +245,6 @@
                   @for (err of fromDateCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
                     @else if (err.kind == 'parse') { invalid date }
-                    @else if (err?.kind === 'dateAfterTo') { {{ err?.message }} } 
                     @else { {{ err.kind }} error }
                   }
                 </div>
@@ -268,7 +267,6 @@
                    @for (err of fromTimeCtrl.errors(); track $index) {
                       @if (err?.kind === 'required') { {{ err?.message }} } 
                       @else if (err.kind == 'parse') { invalid time }
-                      @else if (err?.kind === 'timeAfterTo') { {{ err?.message }} } 
                       @else { {{ err.kind }} error }
                     }
                 </div>

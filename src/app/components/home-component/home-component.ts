@@ -58,7 +58,14 @@ export class HomeComponent implements HasUnsavedChanges {
 
   readonly f = form(this.model, (s) => {
     apply(s, this.formSchema);
-    disabled(s, { when: () => this.f().submitting() });
+    disabled(s, { 
+      when: () => this.f().submitting()
+    });
+    disabled(s.zone, {
+      when: (ctx) =>{
+        return this.zonesRes.isLoading();
+      }
+    });
     disabled(s.division, { 
       when: (ctx) => {
         const currZone = ctx.valueOf(s.zone);
@@ -107,13 +114,13 @@ export class HomeComponent implements HasUnsavedChanges {
     this.resetAssets();
     this.f.station().reset();
     this.f.division().reset();
-    this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
+    // this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
   }
 
   onDivisionChange() {
     this.resetAssets();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, station: 'All' }));
+    // this.model.update((m) => ({ ...m, station: 'All' }));
   }
 
   onStationChanged() {

@@ -12,7 +12,7 @@ export class InputService {
   getZoneListResource() {
     return httpResource<any[]>(() => {
       const context = new HttpContext().set(IS_CACHE_ENABLE, true);
-
+      // return undefined;
       return { url: `${this.contextPath}/zones`, method: 'GET' }
       // return { url: `${this.contextPath}/zones`, method: 'GET', context: context }
     });
@@ -37,12 +37,14 @@ export class InputService {
 
   getAlertTypeListResource(){
     return httpResource<any[]>(() => {
+      // return undefined;
       return { url: `${this.contextPath}/master/view_alert_type`,  method: 'GET' }
     });
   }
 
   getAssetTypeListResource(){
     return httpResource<any[]>(() => {
+      // return undefined;
       return { url: `${this.contextPath}/view_asset_type`,  method: 'GET' }
     });
   }

@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, AfterViewInit, computed, debounced, signal, effect, OnInit, Signal } from '@angular/core';
+import { Component, inject, AfterViewInit, computed, debounced, signal, effect, OnInit } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { apply, disabled, FieldTree, form, FormField, FormRoot, required, schema, submit, validate } from '@angular/forms/signals';
+import { apply, disabled, FieldTree, form, FormField, FormRoot, required, schema, submit, validateTree } from '@angular/forms/signals';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { NgxPrintDirective } from 'ngx-print';
 import { firstValueFrom, of } from 'rxjs';
@@ -21,7 +21,7 @@ export class AlertDetailReportComponent implements OnInit, AfterViewInit {
   private toastService = inject(ToastService);
   private alertService = inject(AlertService);
   private inputService = inject(InputService);
-  private globalUtility = inject(GlobalUtility)
+  private globalUtility = inject(GlobalUtility);
   
   readonly formModel: AlertDetail = {
     zone: 'All',
@@ -70,7 +70,14 @@ export class AlertDetailReportComponent implements OnInit, AfterViewInit {
 
   readonly f = form<Required<AlertDetail>>(this.model as any, (s) => {
     apply(s, this.formSchema);
-    disabled(s, { when: () => this.f().submitting() });
+    disabled(s, { 
+      when: () => this.f().submitting() 
+    });
+    disabled(s.zone, {
+      when: (ctx) =>{
+        return this.zonesRes.isLoading();
+      }
+    });
     disabled(s.division, { 
       when: (ctx) => {
         const currZone = ctx.valueOf(s.zone);
@@ -83,47 +90,22 @@ export class AlertDetailReportComponent implements OnInit, AfterViewInit {
         return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
       }
     });
-    validate(s.fromDate, (ctx) => {
-      const fromDate = ctx.value();
-      const toDate = ctx.valueOf(s.toDate);
-      if(fromDate && toDate && fromDate > toDate) {
-        return { kind: 'dateAfterTo', message: `Date must be on or before ${toDate}`, }
-      }
-      return;
-    });
-    validate(s.toDate, (ctx) => {
-      const toDate = ctx.value();
-      const fromDate = ctx.valueOf(s.fromDate);
+    validateTree(s, (ctx) => {
+      const { fromDate, fromTime, toDate, toTime } = ctx.valueOf(s);
 
-      if(fromDate && toDate && toDate < fromDate) {
-        return { kind: 'dateBeforeFrom', message: `Date must be on or after ${fromDate}`, }
+      if(fromTime && toTime && toDate < fromDate){
+        return { kind: 'dateBeforeFrom', message: `Date must be on or after ${fromDate}`, fieldTree: ctx.fieldTree.toDate }
       }
-      return;
-    });
-    validate(s.fromTime, (ctx) => {
-      const modal = this.model();
-      if(modal.fromDate && modal.toDate && modal.fromTime && modal.toTime && modal.fromDate === modal.toDate) {
-        const fromMins = this.timeTOMinutes(modal.fromTime);
-        const toMins = this.timeTOMinutes(modal.toTime);
+
+      if(fromTime && toTime && fromDate === toDate) {
+        const fromMins = this.timeTOMinutes(fromTime);
+        const toMins = this.timeTOMinutes(toTime);
 
         if(fromMins > toMins) {
-          return { kind: 'timeAfterTo', message: `Time must be on or before ${modal.toTime}`, }
+          return { kind: 'timeBeforeFrom', message: `Time must be on or after ${fromTime}`, fieldTree: ctx.fieldTree.toTime }
         }
       }
-      return;
-    });
-    validate(s.toTime, (ctx) => {
-      const modal = this.model();
-      
-      if(modal.fromDate && modal.toDate && modal.fromTime && modal.toTime && modal.fromDate === modal.toDate) {
-        const fromMins = this.timeTOMinutes(modal.fromTime);
-        const toMins = this.timeTOMinutes(modal.toTime);
-
-        if(toMins < fromMins) {
-          return { kind: 'timeBeforeFrom', message: `Time must be on or after ${modal.fromTime}`, }
-        }
-      }
-      return;
+      return null;
     });
   });
 

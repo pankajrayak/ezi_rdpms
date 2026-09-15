@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal, debounced, AfterViewInit } from '@angular/core';
 import { finalize, of } from 'rxjs';
-import { apply, applyWhen, disabled, form, FormField, required, schema, SchemaPath, validate } from '@angular/forms/signals';
+import { apply, disabled, form, FormField, required, schema, validateTree } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService, GlobalUtility } from '@rdpms/shared/utility';
+import { ToastService } from '@rdpms/core/services';
+import { InputService } from '../../../services/input-service';
 
 interface SensorFormModel {
   zone: string;
@@ -25,11 +27,9 @@ interface SensorFormModel {
 })
 export class AssetUtilizationComponent implements AfterViewInit {
 
-  ngAfterViewInit(): void {
-    setTimeout(() => { this.f().reset(); }, 100);
-  }
-
   private dataService = inject(DataService);
+  private toastService = inject(ToastService);
+  private inputService = inject(InputService);
   public globalUtility = inject(GlobalUtility);
 
   readonly formModel: SensorFormModel = {
@@ -38,8 +38,8 @@ export class AssetUtilizationComponent implements AfterViewInit {
     station: '',
     assetType: 'All',
     assetNumber: '',
-    fromDate: null,
-    toDate: null,
+    fromDate: '',
+    toDate: '',
     view: 'Table',
   };
 
@@ -47,6 +47,17 @@ export class AssetUtilizationComponent implements AfterViewInit {
   readonly isSubmitting = signal(false);
   readonly model = signal(this.formModel);
 
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
+  
+  zonesRes = this.inputService.getZoneListResource();
+  assetTypesRes = this.inputService.getAssetTypeListResource();
+  divisionsRes = this.inputService.getDivisionListResource(this.debouncedZone.value);
+  stationsRes = this.inputService.getStationListResource(this.debouncedZone.value, this.debouncedDivision.value);
+
+  viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
+  assetNumbersRes = rxResource({ stream: () => of(['PT-01', 'PT-02', 'PT-03', 'PT-04']) });
+  
   readonly formSchema = schema<SensorFormModel>((fieldPath) => {
     required(fieldPath.zone, { message: 'required field' });
     required(fieldPath.division, { message: 'required field' });
@@ -55,12 +66,18 @@ export class AssetUtilizationComponent implements AfterViewInit {
     required(fieldPath.assetNumber, { message: 'required field' });
     required(fieldPath.fromDate, { message: 'required field' });
     required(fieldPath.view, { message: 'required field' });
-    // required(fieldPath.toDate, { message: 'required field', when: (ctx) => !!ctx.valueOf(fieldPath.fromDate) });
   });
 
   readonly f = form(this.model, (s) => {
     apply(s, this.formSchema);
-    disabled(s, { when: () => this.isSubmitting() });
+    disabled(s, { 
+      when: () => this.isSubmitting() 
+    });
+    disabled(s.zone, {
+      when: (ctx) => {
+        return this.zonesRes.isLoading();
+      }
+    });
     disabled(s.division, { 
       when: (ctx) => {
         const currZone = ctx.valueOf(s.zone);
@@ -73,84 +90,46 @@ export class AssetUtilizationComponent implements AfterViewInit {
         return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
       }
     });
-
-    // applyWhen(s.toDate, () => !!this.model().fromDate,
-    //   schema((ss) => { required(ss, { message: 'required field' }); })
-    // );
-
-    // validate(s.fromDate, (ctx) => {
-    //   const fromVal = ctx.value(), toVal = ctx.valueOf(s.toDate);
-    //   return new Date(fromVal)?.getTime() > new Date(toVal)?.getTime()
-    //     ? { kind: 'maxDate', message: `date can not be more than ${toVal}` }
-    //     : null;
-    // });
-
-    // validate(s.toDate, (ctx) => {
-    //   const toVal = ctx.value(), fromVal = ctx.valueOf(s.fromDate);
-    //   return new Date(toVal)?.getTime() < new Date(fromVal)?.getTime()
-    //     ? { kind: 'minDate', message: `date can not be less than ${fromVal}` }
-    //     : null;
-    // });
-
-    // validate(s.fromDate, this.maxDateValidation(s.toDate));
-    // validate(s.toDate, this.minDateValidation(s.fromDate));
+    validateTree(s, (ctx) => {
+      const { fromDate, toDate } = ctx.valueOf(s);
+      
+      if(fromDate && toDate && toDate < fromDate){
+        return { kind: 'dateBeforeFrom', message: `Date must be on or after ${fromDate}`, fieldTree: ctx.fieldTree.toDate }
+      }
+      return null;
+    });
   });
 
-  minDateValidation(minValuePath: SchemaPath<string>) {
-    return (ctx: any) => {
-      const maxVal = ctx.value(), minVal = ctx.valueOf(minValuePath);
+  constructor() {
+    const toastOptions = { classname: 'bg-danger text-white', delay: 5000 };
+    effect(() => {
+      const zoneError = this.zonesRes.error();
+      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions); }
 
-      if (!minVal || !maxVal) return null;
+      const divisionError = this.divisionsRes.error();
+      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions); }
 
-      return new Date(maxVal).getTime() < new Date(minVal).getTime()
-        ? { kind: 'minDate', message: 'to date cannot be earlier than start date' }
-        : null;
-    };
+      const stationError = this.stationsRes.error();
+      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions); }
+
+      const assetTypeError = this.assetTypesRes.error();
+      if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions); }
+    });
   }
 
-  maxDateValidation(maxValuePath: SchemaPath<string>) {
-    return (ctx: any) => {
-      const minVal = ctx.value(), maxVal = ctx.valueOf(maxValuePath);
-
-      if (!minVal || !maxVal) return null;
-
-      return new Date(minVal).getTime() > new Date(maxVal).getTime()
-        ? { kind: 'maxDate', message: 'from date cannot be later than end date' }
-        : null;
-    };
+  ngAfterViewInit(): void {
+    setTimeout(() => { this.f().reset(); }, 100);
   }
-
-  zonesRes = rxResource({ stream: () => this.dataService.getZones() ?? of([]) });
-  assetTypesRes = rxResource({ stream: () => this.dataService.getAssetTypes() ?? of([]) });
-  assetNumbersRes = rxResource({ stream: () => of(['001', '002', '003', '004']) });
-  viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
-
-  debouncedZone = debounced(computed(() => this.model().zone), 500);
-  divisionsRes = rxResource({
-    params: () =>  this.debouncedZone.value(),
-    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
-  });
-
-  debouncedDivision = debounced(computed(() => this.model().division), 500);
-  stationsRes = rxResource({
-    params: () => this.debouncedDivision.value(),
-    stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
-  });
-
-  stationEffect = effect(() => {
-    const error = this.stationsRes.error();
-    if (error) { console.error('station not found', error); }
-  });
 
   onZoneChange() {
     this.f.division().reset();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, division: '', station: '' }));
+    // this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, station: '' }));
+    // this.model.update((m) => ({ ...m, station: '' }));
   }
 
   onDateTimeChange(event: Event) {

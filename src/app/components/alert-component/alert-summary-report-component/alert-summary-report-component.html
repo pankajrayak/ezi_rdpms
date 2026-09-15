@@ -217,8 +217,6 @@
                 <div class="invalid-feedback small m-0">
                   @for (err of fromDateCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
-                    @else if (err?.kind === 'minDate') { {{ err?.message }} } 
-                    @else if (err?.kind === 'maxDate') { {{ err?.message }} } 
                     @else if (err.kind == 'parse') { invalid date }
                     @else { {{ err.kind }} error }
                   }
@@ -240,8 +238,6 @@
                 <div class="invalid-feedback small m-0">
                   @for (err of fromTimeCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
-                    @else if (err?.kind === 'minTime') { {{ err?.message }} } 
-                    @else if (err?.kind === 'maxTime') { {{ err?.message }} } 
                     @else if (err.kind == 'parse') { invalid date }
                     @else { {{ err.kind }} error }
                   }
@@ -263,7 +259,7 @@
                 <div class="invalid-feedback small m-0">
                   @for (err of toDateCtrl.errors(); track err) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
-                    @else if (err?.kind === 'minDate') { {{ err?.message }} } 
+                    @else if (err?.kind === 'dateBeforeFrom') { {{ err?.message }} } 
                     @else if (err.kind == 'parse') { invalid date }
                     @else { {{ err.kind }} error }
                   }
@@ -285,7 +281,7 @@
                 <div class="invalid-feedback small m-0">
                   @for (err of toTimeCtrl.errors(); track err) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
-                    @else if (err?.kind === 'minTime') { {{ err?.message }} } 
+                    @else if (err?.kind === 'timeBeforeFrom') { {{ err?.message }} } 
                     @else if (err.kind == 'parse') { invalid date }
                     @else { {{ err.kind }} error }
                   }
