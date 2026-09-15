@@ -22,6 +22,6 @@ export class HttpErrorHandlerService implements ErrorHandler {
       }
     }
 
-    this.toastService.show(message, { classname: 'bg-danger text-light', delay: 5000 })
+    // this.toastService.show(message, { classname: 'bg-danger text-light', delay: 5000 })
   }
 }

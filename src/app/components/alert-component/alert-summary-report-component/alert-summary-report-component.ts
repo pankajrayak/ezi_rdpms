@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, AfterViewInit, signal, computed, debounced, effect } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { apply, disabled, form, FormField, FormRoot, required, schema, submit, validateTree } from '@angular/forms/signals';
+import { apply, disabled, FieldTree, form, FormField, FormRoot, required, schema, submit, validateTree } from '@angular/forms/signals';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService, GlobalUtility } from '@rdpms/shared/utility';
 import { NgxPrintDirective } from 'ngx-print';
@@ -92,7 +92,7 @@ export class AlertSummaryReportComponent implements AfterViewInit {
     validateTree(s, (ctx) => {
       const { fromDate, fromTime, toDate, toTime } = ctx.valueOf(s);
 
-      if(fromTime && toTime && toDate < fromDate){
+      if(fromDate && toDate && toDate < fromDate){
         return { kind: 'dateBeforeFrom', message: `Date must be on or after ${fromDate}`, fieldTree: ctx.fieldTree.toDate }
       }
 
@@ -112,19 +112,19 @@ export class AlertSummaryReportComponent implements AfterViewInit {
     const toastOptions = { classname: 'bg-danger text-white', delay: 5000 };
     effect(() => {
       const zoneError = this.zonesRes.error();
-      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions) }
+      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions); }
 
       const divisionError = this.divisionsRes.error();
-      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions) }
+      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions); }
 
       const stationError = this.stationsRes.error();
-      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions) }
+      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions); }
 
       const alertTypeError = this.alertTypesRes.error();
-      if(alertTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(alertTypeError), toastOptions) }
+      if(alertTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(alertTypeError), toastOptions); }
 
       const assetTypeError = this.assetTypesRes.error();
-      if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions) }
+      if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions); }
     });
   }
 
@@ -147,6 +147,14 @@ export class AlertSummaryReportComponent implements AfterViewInit {
   onDivisionChange() {
     this.f.station().reset();
     // this.model.update((m) => ({ ...m, station: '' }));
+  }
+
+  onDateTimeChanged(event: Event, formCtrl: FieldTree<string | null>){
+    const input = event.target as HTMLInputElement;
+    if(!input.value) {
+      formCtrl().value.set('');
+      input.blur(); input.focus();
+    }
   }
 
   async onSubmit(event: SubmitEvent) {

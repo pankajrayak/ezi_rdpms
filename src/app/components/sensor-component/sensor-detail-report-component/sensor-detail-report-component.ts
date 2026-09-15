@@ -1,9 +1,11 @@
-import { Component, inject, computed, debounced, signal, AfterViewInit } from '@angular/core';
+import { Component, inject, computed, debounced, signal, AfterViewInit, effect } from '@angular/core';
 import { firstValueFrom, of } from 'rxjs';
 import { PageHeaderComponent } from '@rdpms/shared/components';
-import { DataService } from '@rdpms/shared/utility';
+import { DataService, GlobalUtility } from '@rdpms/shared/utility';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { schema, required, form, apply, disabled, submit, FormField, FormRoot } from '@angular/forms/signals';
+import { schema, required, form, apply, disabled, submit, FormField, FormRoot, validateTree, FieldTree } from '@angular/forms/signals';
+import { ToastService } from '@rdpms/core/services';
+import { InputService } from '../../../services/input-service';
 
 interface SearchFormModel {
   zone: string;
@@ -25,10 +27,9 @@ interface SearchFormModel {
 })
 export class SensorDetailReportComponent implements AfterViewInit {
 
-  ngAfterViewInit(): void {
-    setTimeout(() => { this.f().reset(); }, 100);
-  }
-
+  public toastService = inject(ToastService);
+  private inputService = inject(InputService);
+  public globalUtility = inject(GlobalUtility);
   private dataService = inject(DataService);
 
   readonly formModel: SearchFormModel = {
@@ -46,6 +47,16 @@ export class SensorDetailReportComponent implements AfterViewInit {
   readonly records = signal(<any>[]);
   readonly model = signal(this.formModel);
 
+  debouncedZone = debounced(computed(() => this.model().zone), 500);
+  debouncedDivision = debounced(computed(() => this.model().division), 500);
+  
+  zonesRes = this.inputService.getZoneListResource();
+  assetTypesRes = this.inputService.getAssetTypeListResource();
+  divisionsRes = this.inputService.getDivisionListResource(this.debouncedZone.value);
+  stationsRes = this.inputService.getStationListResource(this.debouncedZone.value, this.debouncedDivision.value);
+
+  viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
+  
   readonly formSchema = schema<SearchFormModel>((fieldPath) => {
     required(fieldPath.zone, { message: 'required field' });
     required(fieldPath.division, { message: 'required field' });
@@ -58,7 +69,14 @@ export class SensorDetailReportComponent implements AfterViewInit {
 
   readonly f = form(this.model, (s) => {
     apply(s, this.formSchema);
-    disabled(s, { when: () => this.f().submitting() });
+    disabled(s, { 
+      when: () => this.f().submitting()
+    });
+    disabled(s.zone, {
+      when: (ctx) => {
+        return this.zonesRes.isLoading();
+      }
+    });
     disabled(s.division, { 
       when: (ctx) => {
         const currZone = ctx.valueOf(s.zone);
@@ -71,33 +89,69 @@ export class SensorDetailReportComponent implements AfterViewInit {
         return !currDivision || this.stationsRes.isLoading() || this.debouncedDivision.value() !== currDivision;
       }
     });
-  });
-  
-  zonesRes = rxResource({ stream: () => this.dataService.getZones() ?? of([]) });
-  assetTypesRes = rxResource({ stream: () => this.dataService.getAssetTypes() ?? of([]) });
-  viewsRes = rxResource({ stream: () => of(['Table', 'Pie', 'Bar', 'Graph']) });
-  
-  debouncedZone = debounced(computed(() => this.model().zone), 500);
-  divisionsRes = rxResource({
-    params: () =>  this.debouncedZone.value(),
-    stream: ({ params: z }) => (z ? this.dataService.getDivisions(z) : of([])),
+    validateTree(s, (ctx) => {
+      const { fromDate, fromTime, toDate, toTime } = ctx.valueOf(s);
+
+      if(fromDate && toDate && toDate < fromDate){
+        return { kind: 'dateBeforeFrom', message: `Date must be on or after ${fromDate}`, fieldTree: ctx.fieldTree.toDate }
+      }
+
+      if(fromTime && toTime && fromDate === toDate) {
+        const fromMins = this.timeTOMinutes(fromTime);
+        const toMins = this.timeTOMinutes(toTime);
+
+        if(fromMins > toMins) {
+          return { kind: 'timeBeforeFrom', message: `Time must be on or after ${fromTime}`, fieldTree: ctx.fieldTree.toTime }
+        }
+      }
+      return null;
+    });
   });
 
-  debouncedDivision = debounced(computed(() => this.model().division), 500);
-  stationsRes = rxResource({
-    params: () => this.debouncedDivision.value(),
-    stream: ({ params: d }) => (d ? this.dataService.getStations(d) : of([])),
-  });
+  constructor() {
+    const toastOptions = { classname: 'bg-danger text-white', delay: 5000 };
+    effect(() => {
+      const zoneError = this.zonesRes.error();
+      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions); }
+
+      const divisionError = this.divisionsRes.error();
+      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions); }
+
+      const stationError = this.stationsRes.error();
+      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions); }
+      
+      const assetTypeError = this.assetTypesRes.error();
+      if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions); }
+    });
+  }
+ 
+  timeTOMinutes(timeStr: string): number {
+    if(!timeStr) return 0;
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return (hours * 60) + minutes;
+  }
+  
+  ngAfterViewInit(): void {
+    setTimeout(() => { this.f().reset(); }, 100);
+  }
 
   onZoneChange() {
     this.f.division().reset();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, division: '', station: '' }));
+    // this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, station: '' }));
+    // this.model.update((m) => ({ ...m, station: '' }));
+  }
+
+  onDateTimeChanged(event: Event, formCtrl: FieldTree<string | null>){
+    const input = event.target as HTMLInputElement;
+    if(!input.value) {
+      formCtrl().value.set('');
+      input.blur(); input.focus();
+    }
   }
 
   async onSubmit(event: SubmitEvent) {

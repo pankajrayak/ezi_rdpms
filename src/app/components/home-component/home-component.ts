@@ -92,13 +92,13 @@ export class HomeComponent implements HasUnsavedChanges {
     const toastOptions = { classname: 'bg-danger text-white', delay: 5000 };
     effect(() => {
       const zoneError = this.zonesRes.error();
-      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions) }
+      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions); }
 
       const divisionError = this.divisionsRes.error();
-      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions) }
+      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions); }
 
       const stationError = this.stationsRes.error();
-      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions) }
+      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions); }
     });
   }
 

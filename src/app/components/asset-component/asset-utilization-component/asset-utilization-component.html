@@ -154,6 +154,7 @@
               <input
                 type="date"
                 [formField]="f.fromDate"
+                (input)="onDateTimeChanged($event, f.fromDate)"
                 class="form-control form-control-sm"
                 [class.is-valid]="fromDtCtrl.valid() && (fromDtCtrl.touched() || fromDtCtrl.dirty())"
                 [class.is-invalid]="fromDtCtrl.invalid() && (fromDtCtrl.touched() || fromDtCtrl.dirty())"
@@ -175,13 +176,14 @@
               <input
                 type="date"
                 [formField]="f.toDate"
+                (input)="onDateTimeChanged($event, f.toDate)"
                 class="form-control form-control-sm"
                 [class.is-valid]="toDtCtrl.valid() && (toDtCtrl.touched() || toDtCtrl.dirty())"
                 [class.is-invalid]="toDtCtrl.invalid() && (toDtCtrl.touched() || toDtCtrl.dirty())"
               />
               @if (toDtCtrl.invalid() && (toDtCtrl.touched() || toDtCtrl.dirty())) {
                 <div class="invalid-feedback small m-0">
-                  @for (err of toDtCtrl.errors(); track err) {
+                  @for (err of toDtCtrl.errors(); track $index) {
                     @if (err?.kind === 'required') { {{ err?.message }} } 
                     @else if (err.kind == 'parse') { invalid date }
                     @else if (err?.kind === 'dateBeforeFrom') { {{ err?.message }} } 

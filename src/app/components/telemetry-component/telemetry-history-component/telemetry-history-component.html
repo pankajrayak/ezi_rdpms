@@ -149,6 +149,7 @@
                             <input
                                 type="date"
                                 [formField]="f.fromDate"
+                                (input)="onDateTimeChanged($event, f.fromDate)"
                                 class="form-control form-control-sm"
                                 [class.is-valid]="fromDateCtrl.valid() && (fromDateCtrl.touched() || fromDateCtrl.dirty())"
                                 [class.is-invalid]="fromDateCtrl.invalid() && (fromDateCtrl.touched() || fromDateCtrl.dirty())"
@@ -157,8 +158,6 @@
                                 <div class="invalid-feedback small m-0">
                                     @for (err of fromDateCtrl.errors(); track $index) {
                                         @if (err?.kind === 'required') { {{ err?.message }} } 
-                                        @else if (err?.kind === 'minDate') { {{ err?.message }} } 
-                                        @else if (err?.kind === 'maxDate') { {{ err?.message }} } 
                                         @else if (err.kind == 'parse') { invalid date }
                                         @else { {{ err.kind }} error }
                                     }
@@ -172,6 +171,7 @@
                             <input
                                 type="time"
                                 [formField]="f.fromTime"
+                                (input)="onDateTimeChanged($event, f.fromTime)"
                                 class="form-control form-control-sm"
                                 [class.is-valid]="fromTimeCtrl.valid() && (fromTimeCtrl.touched() || fromTimeCtrl.dirty())"
                                 [class.is-invalid]="fromTimeCtrl.invalid() && (fromTimeCtrl.touched() || fromTimeCtrl.dirty())"
@@ -180,8 +180,6 @@
                                 <div class="invalid-feedback small m-0">
                                     @for (err of fromTimeCtrl.errors(); track $index) {
                                         @if (err?.kind === 'required') { {{ err?.message }} } 
-                                        @else if (err?.kind === 'minTime') { {{ err?.message }} } 
-                                        @else if (err?.kind === 'maxTime') { {{ err?.message }} } 
                                         @else if (err.kind == 'parse') { invalid date }
                                         @else { {{ err.kind }} error }
                                     }
@@ -195,16 +193,17 @@
                             <input
                                 type="date"
                                 [formField]="f.toDate"
+                                (input)="onDateTimeChanged($event, f.toDate)"
                                 class="form-control form-control-sm"
                                 [class.is-valid]="toDateCtrl.valid() && (toDateCtrl.touched() || toDateCtrl.dirty())"
                                 [class.is-invalid]="toDateCtrl.invalid() && (toDateCtrl.touched() || toDateCtrl.dirty())"
                             />
                             @if (toDateCtrl.invalid() && (toDateCtrl.touched() || toDateCtrl.dirty())) {
                                 <div class="invalid-feedback small m-0">
-                                    @for (err of toDateCtrl.errors(); track err) {
+                                    @for (err of toDateCtrl.errors(); track $index) {
                                         @if (err?.kind === 'required') { {{ err?.message }} } 
-                                        @else if (err?.kind === 'minDate') { {{ err?.message }} } 
                                         @else if (err.kind == 'parse') { invalid date }
+                                        @else if (err?.kind === 'dateBeforeFrom') { {{ err?.message }} } 
                                         @else { {{ err.kind }} error }
                                     }
                                 </div>
@@ -217,16 +216,17 @@
                             <input
                                 type="time"
                                 [formField]="f.toTime"
+                                (input)="onDateTimeChanged($event, f.toTime)"
                                 class="form-control form-control-sm"
                                 [class.is-valid]="toTimeCtrl.valid() && (toTimeCtrl.touched() || toTimeCtrl.dirty())"
                                 [class.is-invalid]="toTimeCtrl.invalid() && (toTimeCtrl.touched() || toTimeCtrl.dirty())"
                             />
                             @if (toTimeCtrl.invalid() && (toTimeCtrl.touched() || toTimeCtrl.dirty())) {
                                 <div class="invalid-feedback small m-0">
-                                    @for (err of toTimeCtrl.errors(); track err) {
+                                    @for (err of toTimeCtrl.errors(); track $index) {
                                         @if (err?.kind === 'required') { {{ err?.message }} } 
-                                        @else if (err?.kind === 'minTime') { {{ err?.message }} } 
                                         @else if (err.kind == 'parse') { invalid date }
+                                        @else if (err?.kind === 'timeBeforeFrom') { {{ err?.message }} } 
                                         @else { {{ err.kind }} error }
                                     }
                                 </div>

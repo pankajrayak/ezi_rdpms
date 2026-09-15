@@ -91,19 +91,19 @@ export class AlertLiveComponent implements OnInit {
     const toastOptions = { classname: 'bg-danger text-white', delay: 5000 };
     effect(() => {
       const zoneError = this.zonesRes.error();
-      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions) }
+      if(zoneError) { this.toastService.show(this.globalUtility.getErrorMessage(zoneError), toastOptions); }
 
       const divisionError = this.divisionsRes.error();
-      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions) }
+      if(divisionError) { this.toastService.show(this.globalUtility.getErrorMessage(divisionError), toastOptions); }
 
       const stationError = this.stationsRes.error();
-      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions) }
+      if(stationError) { this.toastService.show(this.globalUtility.getErrorMessage(stationError), toastOptions); }
 
       const alertTypeError = this.alertTypesRes.error();
-      if(alertTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(alertTypeError), toastOptions) }
+      if(alertTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(alertTypeError), toastOptions); }
 
       const assetTypeError = this.assetTypesRes.error();
-      if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions) }
+      if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions); }
     });
   }
 

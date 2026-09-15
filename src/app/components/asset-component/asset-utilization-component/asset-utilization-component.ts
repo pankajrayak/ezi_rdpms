@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal, debounced, AfterViewInit } from '@angular/core';
 import { finalize, of } from 'rxjs';
-import { apply, disabled, form, FormField, required, schema, validateTree } from '@angular/forms/signals';
+import { apply, disabled, FieldTree, form, FormField, required, schema, validateTree } from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { PageHeaderComponent } from '@rdpms/shared/components';
 import { DataService, GlobalUtility } from '@rdpms/shared/utility';
@@ -132,12 +132,11 @@ export class AssetUtilizationComponent implements AfterViewInit {
     // this.model.update((m) => ({ ...m, station: '' }));
   }
 
-  onDateTimeChange(event: Event) {
+ onDateTimeChanged(event: Event, formCtrl: FieldTree<string | null>){
     const input = event.target as HTMLInputElement;
-    if (!input.value) {
-      input.value = '';
-      input.blur();
-      input.focus();
+    if(!input.value) {
+      formCtrl().value.set('');
+      input.blur(); input.focus();
     }
   }
 
