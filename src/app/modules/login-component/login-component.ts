@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '@rdpms/services';
 import { schema, required, form, apply, disabled, FormField, FormRoot } from '@angular/forms/signals';
+import { GlobalUtility } from '@rdpms/shared/utility';
 
 export type LoginFormModel = {
   email: string;
@@ -20,9 +21,11 @@ export class LoginComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
-
+  private globalUtility = inject(GlobalUtility);
+  
   readonly formModel: LoginFormModel = { email: '', password: '' };
   readonly model = signal(this.formModel);
+  readonly loginError = signal<string | null>(null);
 
   readonly formSchema = schema<LoginFormModel>((fieldPath) => {
     required(fieldPath.email, { message: 'required field' });
@@ -35,13 +38,14 @@ export class LoginComponent {
   }, {
     submission: {
       action: async (formInstance) => {
+        this.loginError.set(null);
         const payload = formInstance().value();
         try {
           await firstValueFrom(this.authService.login(payload));
           this.navigateToReturnUrl();
         } catch (error) {
-          this.navigateToReturnUrl();
           console.log("failed:", error);
+          this.loginError.set(this.globalUtility.getErrorMessage(error));
         }
       },
     }

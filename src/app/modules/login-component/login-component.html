@@ -14,6 +14,10 @@
             <h4 class="mb-4 text-center">System Authentication</h4>
             
             <form [formRoot]="f" autocomplete="none" novalidate>
+              @if(loginError()) {
+                <div class="alert alert-danger text-center" role="alert">{{ loginError() }}</div>
+              }
+              
               <div class="mb-4">
                 @let userCtrl = f.email();
                 <label class="form-label text-info small fw-bold">Email</label>
@@ -51,13 +55,13 @@
               </div>
 
               <!-- Security Options -->
-              <div class="d-flex flex-row-reverse justify-content-between mb-4 small">
+              <!-- <div class="d-flex flex-row-reverse justify-content-between mb-4 small">
                 <a href="javascript:void(0)" class="text-info text-decoration-none">Reset Access</a>
-                <!-- <div class="form-check">
+                <div class="form-check">
                   <input class="form-check-input bg-body-tertiary text-body-emphasis border-secondary" type="checkbox" id="remember">
                   <label class="form-check-label" for="remember">Keep Logged In</label>
-                </div> -->
-              </div>
+                </div>
+              </div> -->
 
               <!-- Action Button -->
               <div class="d-grid">

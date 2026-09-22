@@ -1,13 +1,13 @@
 {
-  "/api/": {
-    "target": "http://63.250.52.107:8080",
+  "/rdpms-gateway/api/": {
+    "target": "http://192.168.1.16:8082",
     "logLevel": "debug"
   },
-  "/rdpms/mis/api/": {
-    "target": "http://63.250.52.107:8080",
+  "/rdpms-gateway/mis/api/": {
+    "target": "http://192.168.1.16:8082",
     "logLevel": "debug",
     "pathRewrite": {
-      "^/rdpms/mis/api" : "/api"
+      "^/rdpms-gateway/mis/api" : "/api"
     }
   }  
 }
