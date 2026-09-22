@@ -106,12 +106,12 @@ export class TelemetryLiveComponent {
   onZoneChange() {
     this.f.division().reset();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, division: '', station: '' }));
+    // this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, station: '' }));
+    // this.model.update((m) => ({ ...m, station: '' }));
   }
 
   async onSubmit(event: SubmitEvent) {
@@ -119,9 +119,9 @@ export class TelemetryLiveComponent {
     await submit(this.f, async (formInstance) => {
       try {
         const payload = formInstance().value();
-        const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
-        console.log('Search complete:', response);
-        this.records.set(response.data);
+        // const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
+        // console.log('Search complete:', response);
+        // this.records.set(response.data);
       } catch (error) {
         console.log("Search failed:", error);
       }

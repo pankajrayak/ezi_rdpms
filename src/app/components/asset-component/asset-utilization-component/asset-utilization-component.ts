@@ -147,13 +147,13 @@ export class AssetUtilizationComponent implements AfterViewInit {
     }
 
     console.log(this.f().value(), this.model());
-    this.isSubmitting.set(true);
-    this.dataService.searchData(this.model())
-      .pipe(finalize(() => { this.isSubmitting.set(false); }))
-      .subscribe({
-        next: (res) => console.log('Search complete', res),
-        error: (err) => { this.resetForm(); },
-      });
+    // this.isSubmitting.set(true);
+    // this.dataService.searchData(this.model())
+    //   .pipe(finalize(() => { this.isSubmitting.set(false); }))
+    //   .subscribe({
+    //     next: (res) => console.log('Search complete', res),
+    //     error: (err) => { this.resetForm(); },
+    //   });
   }
 
   resetForm() {

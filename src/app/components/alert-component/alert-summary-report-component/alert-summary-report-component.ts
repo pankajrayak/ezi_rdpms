@@ -162,9 +162,9 @@ export class AlertSummaryReportComponent implements AfterViewInit {
     await submit(this.f, async (formInstance) => {
       try {
         const payload = formInstance().value();
-        const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
-        console.log('Search complete:', response);
-        this.records.set(response.data);
+        // const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
+        // console.log('Search complete:', response);
+        // this.records.set(response.data);
       } catch (error) {
         console.log("Search failed:", error);
       }

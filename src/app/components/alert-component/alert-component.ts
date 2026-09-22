@@ -21,7 +21,7 @@ export class AlertComponent {
   alertRes = this.alertService.getAlertListResource();
 
   constructor(){
-    this.addNotification();
+    // this.addNotification();
     // effect(() => {
     //    const notifications = this.notifications(); 
     //   const container = this.scrollContainer();

@@ -15,7 +15,7 @@
             
             <form [formRoot]="f" autocomplete="none" novalidate>
               @if(loginError()) {
-                <div class="alert alert-danger text-center" role="alert">{{ loginError() }}</div>
+                <div class="alert alert-danger text-center small" role="alert">{{ loginError() }}</div>
               }
               
               <div class="mb-4">

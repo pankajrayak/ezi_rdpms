@@ -168,12 +168,12 @@ export class AlertDetailReportComponent implements OnInit, AfterViewInit {
   onZoneChange() {
     this.f.division().reset();
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
+    // this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
   }
 
   onDivisionChange() {
     this.f.station().reset();
-    this.model.update((m) => ({ ...m, station: 'All' }));
+    // this.model.update((m) => ({ ...m, station: 'All' }));
   }
 
   async onSubmit(event: SubmitEvent) {

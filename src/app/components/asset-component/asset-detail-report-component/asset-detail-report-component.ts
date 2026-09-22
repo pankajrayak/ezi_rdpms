@@ -91,9 +91,9 @@ export class AssetDetailReportComponent {
       action: async (formInstance) => {
         const payload = formInstance().value();
         try {
-          const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
-          console.log('Search complete:', response);
-          this.records.set(response.data);
+          // const response = await firstValueFrom(this.dataService.getPagedRecord(1, 10, { station: 'CSMT' }));
+          // console.log('Search complete:', response);
+          // this.records.set(response.data);
         } catch (error) {
           console.log("Search failed:", error);
         }
