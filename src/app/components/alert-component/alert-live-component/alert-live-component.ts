@@ -1,4 +1,4 @@
-import { Component, inject, TemplateRef, computed, debounced, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, TemplateRef, computed, debounced, signal, OnInit, effect, OnDestroy } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { NgxPrintDirective } from 'ngx-print';
@@ -25,7 +25,7 @@ interface SearchFormModel {
   templateUrl: './alert-live-component.html',
   styleUrl: './alert-live-component.scss',
 })
-export class AlertLiveComponent implements OnInit {
+export class AlertLiveComponent implements OnInit, OnDestroy {
 
   private modalService = inject(NgbModal);
   private toastService = inject(ToastService);
@@ -42,8 +42,10 @@ export class AlertLiveComponent implements OnInit {
   }
 
   readonly model = signal(this.formModel);
-  readonly records = signal<any[] | null>(null);
+  readonly records = signal<any[]>([]);
   readonly summary = signal<any[] | null>(null);
+  private intervalId = signal<number | null>(null);
+  private lastRecordTimeStamp = signal<any>(null);
   
   debouncedZone = debounced(computed(() => this.model().zone), 500);
   debouncedDivision = debounced(computed(() => this.model().division), 500);
@@ -104,12 +106,25 @@ export class AlertLiveComponent implements OnInit {
 
       const assetTypeError = this.assetTypesRes.error();
       if(assetTypeError) { this.toastService.show(this.globalUtility.getErrorMessage(assetTypeError), toastOptions); }
-    });
+    });  
   }
 
   ngOnInit(): void {
+    const jsonString = sessionStorage.getItem('alertRouteData');
+    if(jsonString){ var data = JSON.parse(jsonString); }
+    if(data) { this.model.set(data); }
+
     this.getAlertLiveStatusSummary(this.f().value());
     this.loadAlertLiveStatusList(this.f().value());
+    this.reloadStatusCount();
+  }
+
+  reloadStatusCount(){
+    const id = setInterval(() => {
+      this.getAlertLiveStatusSummary(this.f().value());
+      this.loadAlertLiveStatusList(this.f().value());
+    }, 5 * 1000);
+    this.intervalId.set(id);
   }
 
   async getAlertLiveStatusSummary(payload: Partial<SearchFormModel>) {
@@ -119,36 +134,32 @@ export class AlertLiveComponent implements OnInit {
       this.summary.set(response ?? []);
     } catch (error: any) {
       this.summary.set([]);
-      this.toastService.show(
-        this.globalUtility.getErrorMessage(error),
-        { classname: 'bg-danger text-white', delay: 5000 }
-      );
+      this.toastService.show( this.globalUtility.getErrorMessage(error), { classname: 'bg-danger text-white', delay: 5000 });
     }
   }
 
   async loadAlertLiveStatusList(payload: Partial<SearchFormModel>) {
     try {
       // this.records.set(null);
-      const response = await firstValueFrom(this.alertService.getAlertLiveStatusList(payload));
-      this.records.set(response ?? []);
+      const timeStamp = this.lastRecordTimeStamp();
+      const response = await firstValueFrom(this.alertService.getAlertLiveStatusList(payload, timeStamp));
+      this.records.set([...response, ...this.records()]);
+      this.lastRecordTimeStamp.set(this.records()?.[0]?.receivedDateTime ?? null);
     } catch (error: any) {
       this.records.set([]);
-      this.toastService.show(
-        this.globalUtility.getErrorMessage(error),
-        { classname: 'bg-danger text-white', delay: 5000 }
-      );
+      this.toastService.show(this.globalUtility.getErrorMessage(error), { classname: 'bg-danger text-white', delay: 5000 });
     }
   }
 
   onZoneChange() {
     this.f.division().reset();
     this.f.station().reset();
-    // this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
+    this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
   }
 
   onDivisionChange() {
     this.f.station().reset();
-    // this.model.update((m) => ({ ...m, station: 'All' }));
+    this.model.update((m) => ({ ...m, station: 'All' }));
   }
 
   async onSubmit(event: SubmitEvent) {
@@ -178,17 +189,22 @@ export class AlertLiveComponent implements OnInit {
     this.alertService.postAlertFeedback(data.record.alertId, payload).subscribe({
       next: (response: any) => {
         activeModal.close('success');
-        this.toastService.show(
-          this.globalUtility.getErrorMessage(response.message), 
-          { classname: 'bg-success text-white', delay: 5000 } 
+        this.records.update(currentRecords => 
+          currentRecords ? currentRecords.filter(item => item.alertId !== data.record.alertId) : []
         );
+
+        this.getAlertLiveStatusSummary(this.f().value());
+        // this.loadAlertLiveStatusList(this.f().value());
+        this.toastService.show(this.globalUtility.getErrorMessage(response.message), { classname: 'bg-success text-white', delay: 5000 });
       },
       error: (error: any) => {
-        this.toastService.show(
-          this.globalUtility.getErrorMessage(error),
-          { classname: 'bg-danger text-white', delay: 5000 }
-        );
+        this.toastService.show(this.globalUtility.getErrorMessage(error), { classname: 'bg-danger text-white', delay: 5000 });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    const id = this.intervalId()
+    if(id) { clearInterval(id); }
   }
 }

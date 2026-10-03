@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, computed, debounced, effect } from '@angular/core';
+import { Component, inject, signal, computed, debounced, effect, OnDestroy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { HasUnsavedChanges } from '@rdpms/core/interfaces';
 import { PageHeaderComponent } from '@rdpms/shared/components';
@@ -7,6 +7,7 @@ import { GlobalUtility } from '@rdpms/shared/utility';
 import { apply, disabled, form, FormField, FormRoot, required, schema } from '@angular/forms/signals';
 import { InputService } from '../../services/input-service';
 import { ToastService } from '@rdpms/core/services';
+import { Router } from '@angular/router';
 
 interface SearchFormModel {
   zone: string;
@@ -33,15 +34,17 @@ interface Asset {
   templateUrl: './home-component.html',
   styleUrl: './home-component.scss',
 })
-export class HomeComponent implements HasUnsavedChanges {
+export class HomeComponent implements OnDestroy, HasUnsavedChanges {
 
+  private router = inject(Router);
   public toastService = inject(ToastService);
   public globalUtility = inject(GlobalUtility);
   private inputService = inject(InputService);
   
   readonly formModel: SearchFormModel = { zone: 'All', division: 'All', station: 'All' }
   readonly model = signal(this.formModel);
-  assets = signal<Asset[] | null>(null);
+  public assets = signal<Asset[] | null>(null);
+  private intervalId = signal<number | null>(null);
 
   debouncedZone = debounced(computed(() => this.model().zone), 500);
   debouncedDivision = debounced(computed(() => this.model().division), 500);
@@ -104,6 +107,14 @@ export class HomeComponent implements HasUnsavedChanges {
 
   ngOnInit(): void {
     this.getDashboardStatusCount(this.f().value());
+    this.reloadStatusCount();
+  }
+
+  reloadStatusCount(){
+    const id = setInterval(() => {
+      this.getDashboardStatusCount(this.f().value());
+    }, 5 * 1000);
+    this.intervalId.set(id);
   }
 
   resetAssets() {
@@ -114,13 +125,13 @@ export class HomeComponent implements HasUnsavedChanges {
     this.resetAssets();
     this.f.station().reset();
     this.f.division().reset();
-    // this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
+    this.model.update((m) => ({ ...m, division: 'All', station: 'All' }));
   }
 
   onDivisionChange() {
     this.resetAssets();
     this.f.station().reset();
-    // this.model.update((m) => ({ ...m, station: 'All' }));
+    this.model.update((m) => ({ ...m, station: 'All' }));
   }
 
   onStationChanged() {
@@ -167,6 +178,20 @@ export class HomeComponent implements HasUnsavedChanges {
     return this.assets()?.slice(topCount);
   });
 
+  routeToAlertLive(asset: any, status: any){
+
+    const formValue = this.f().value();
+    const data = {...formValue, assetType: asset.assetType, alertType: status };
+    console.log(asset);
+    sessionStorage.setItem("alertRouteData", JSON.stringify(data));
+    this.router.navigate(['/user/alert/live']);
+  }
+
   hasUnsavedChanges(): boolean { return false; }
+
+  ngOnDestroy(): void {
+    const id = this.intervalId()
+    if(id) { clearInterval(id); }
+  }
 
 }

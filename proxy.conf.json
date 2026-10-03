@@ -2,12 +2,5 @@
   "/rdpms-gateway/api/": {
     "target": "http://192.168.1.16:8082",
     "logLevel": "debug"
-  },
-  "/rdpms-gateway/mis/api/": {
-    "target": "http://192.168.1.16:8082",
-    "logLevel": "debug",
-    "pathRewrite": {
-      "^/rdpms-gateway/mis/api" : "/api"
-    }
   }  
 }

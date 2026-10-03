@@ -1,5 +1,6 @@
 export * from "./toast-service";
 export * from "./loading-service";
+export * from "./bs-theme-service";
 export * from "./inactivity-service"
 export * from "./cache-http-service";
 export * from "./http-cancel-service";

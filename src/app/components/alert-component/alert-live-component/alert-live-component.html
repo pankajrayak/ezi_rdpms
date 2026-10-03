@@ -124,7 +124,7 @@
               >
                 <option value="" disabled selected>Select</option>
                 <option value="All">All</option>
-                @for (alertType of alertTypesRes.value(); track alertType.alertTypeId) {
+                @for (alertType of alertTypesRes.value(); track alertType.alertTypeName) {
                   <option [value]="alertType.alertTypeName">{{ alertType.alertTypeName }}</option>
                 }
               </select>
@@ -149,8 +149,8 @@
               >
                 <option value="" disabled selected>Select</option>
                 <option value="All">All</option>
-                @for (assetType of assetTypesRes.value(); track assetType.assetTypeId) {
-                  <option [value]="assetType.assetTypeName">{{ assetType.assetTypeCode }} - {{ assetType.assetTypeName }}</option>
+                @for (assetType of assetTypesRes.value(); track assetType.assetTypeName) {
+                  <option [value]="assetType.assetTypeName">{{ assetType.assetTypeName }}</option> <!--{{ assetType.assetTypeCode }} - -->
                 }
               </select>
               @if (assetTypeCtrl.invalid() && (assetTypeCtrl.touched() || assetTypeCtrl.dirty())) {
@@ -224,7 +224,7 @@
             <table class="table table-hover align-top mb-0 small">
               <thead class="table-active text-uppercase small align-top sticky-top" style="z-index: 900 !important;">
                 <tr>
-                  <th>S.No</th>
+                  <!-- <th>S.No</th> -->
                   <th>Zone</th>
                   <th>Division</th>
                   <th>Station</th>
@@ -241,7 +241,7 @@
               <tbody class="table-group-divider small">
                 @for(row of records(); track row.sNo){
                   <tr>
-                    <td>{{row.sNo}}</td>
+                    <!-- <td>{{row.sNo}}</td> -->
                     <td>{{row.zone}}</td>
                     <td>{{row.division}}</td>
                     <td>{{row.station}}</td>

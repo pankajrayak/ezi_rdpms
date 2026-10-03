@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, roleGuard } from './core/guards';
+import { authGuard } from './core/guards';
 
 export const APP_ROUTES: Routes = [
     { 
@@ -11,7 +11,7 @@ export const APP_ROUTES: Routes = [
     },
     {
         path: 'user',
-        // canMatch: [authGuard], //roleGuard
+        canMatch: [authGuard],
         data: { roles: ['admin', 'master'] },
         loadChildren: () => import('./routes/user.routes').then(r => r.USER_ROUTES)
     }, 

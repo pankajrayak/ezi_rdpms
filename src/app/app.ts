@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { ToastComponent } from './shared/components';
-import { InactivityService, LoadingService } from './core/services';
+import { LoadingService } from './core/services';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +12,6 @@ import { InactivityService, LoadingService } from './core/services';
 })
 export class App {
   // Injecting services here starts the service constructor logic
-  protected incativityService = inject(InactivityService);
+  // protected incativityService = inject(InactivityService);
   protected loadingService = inject(LoadingService);
 }

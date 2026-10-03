@@ -141,12 +141,12 @@ export class AlertSummaryReportComponent implements AfterViewInit {
   onZoneChange() {
     this.f.division().reset();
     this.f.station().reset();
-    // this.model.update((m) => ({ ...m, division: '', station: '' }));
+    this.model.update((m) => ({ ...m, division: '', station: '' }));
   }
 
   onDivisionChange() {
     this.f.station().reset();
-    // this.model.update((m) => ({ ...m, station: '' }));
+    this.model.update((m) => ({ ...m, station: '' }));
   }
 
   onDateTimeChanged(event: Event, formCtrl: FieldTree<string | null>){

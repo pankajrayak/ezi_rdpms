@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { BsThemeService } from '@rdpms/services';
+import { BsThemeService } from '@rdpms/core/services';
 
 @Component({
   selector: 'header-component',

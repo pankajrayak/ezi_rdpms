@@ -168,7 +168,7 @@
       @for(item of asset.statusList; track item.status;) {
         @let type = $any({ 'Healthy': 'success', 'Predictive': 'warning', 'Failure': 'danger' })[item.status] || '';
         @let icon = $any({ 'Healthy': 'bi-check-circle-fill', 'bi-exclamation-triangle-fill': 'warning', 'Failure': 'bi-x-circle-fill' })[item.status] || '';
-        <div class="col">
+        <div class="col" role="button" (click)="routeToAlertLive(asset, item.status)">
           <div class="d-flex flex-column justify-content-center p-2 rounded-3 bg-{{type}}-subtle text-{{type}}-emphasis border border-{{type}}-subtle h-100">
             <span class="small fw-medium mb-1">
               <i class="bi {{ icon }} px-1"></i>{{ item.status }}

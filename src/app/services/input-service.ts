@@ -1,4 +1,4 @@
-import { HttpClient, HttpContext, httpResource } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams, httpResource } from '@angular/common/http';
 import { inject, Service, Signal } from '@angular/core';
 import { API_ENDPOINT, IS_CACHE_ENABLE } from '@rdpms/shared/utility';
 import { Observable } from 'rxjs';
@@ -20,8 +20,10 @@ export class InputService {
   getDivisionListResource(zoneIdSignal: Signal<string | undefined>) {
     return httpResource<any[]>(() => {
       const zoneId = zoneIdSignal();
-      if(!zoneId || zoneId === 'All') return undefined; 
-      return { url: `${this.contextPath}/zones/${zoneId}/divisions`, method: 'GET' };
+      const params: Record<string, string> = {};
+      if(zoneId && zoneId !== 'All'){ params['zoneId'] = zoneId; }
+
+      return { url: `${this.contextPath}/divisions`, method: 'GET', params };
     });
   }
 
@@ -29,8 +31,12 @@ export class InputService {
     return httpResource<any[]>(() => {
       const zoneId = zoneIdSignal();
       const divisionId = divisionIdSignal();
-      if(!zoneId || !divisionId || zoneId === 'All' || divisionId === 'All') return undefined;
-      return { url: `${this.contextPath}/zones/${zoneId}/divisions/${divisionId}/stations`, method: 'GET' };
+      
+      const params: Record<string, string> = {};
+      if(zoneId && zoneId !== 'All'){ params['zoneId'] = zoneId; }
+      if(divisionId && divisionId !== 'All'){ params['divisionId'] = divisionId; }
+
+      return { url: `${this.contextPath}/stations`, method: 'GET', params };
     });
   }
 
@@ -51,14 +57,13 @@ export class InputService {
   }
 
   getDashboardStatusCount(param: any): Observable<any> {
-    let url = `${this.contextPath}/dashboard/rdpms_dashboard_status_count`;
-    if(param.zone) { url += `/${param.zone}` }
-    if(param.division) { url += `/${param.division}` }
-    if(param.station) { url += `/${param.station}` }
-    if(param.alertType) { url += `/${param.alertType}` }
-    if(param.assetType) { url += `/${param.assetType}` }
+    let httpParams = new HttpParams();
+    if(param.zone && param.zone !== 'All'){ httpParams = httpParams.append('zone', param.zone); }
+    if(param.division && param.division !== 'All'){ httpParams = httpParams.append('division', param.division);}
+    if(param.station && param.station !== 'All'){ httpParams = httpParams.append('station', param.station);}
 
-    return this.http.get(url);
+    let options: any = {params: httpParams};
+    return this.http.get(`${this.contextPath}/dashboard/rdpms_dashboard_status_count`, options);
   }
 
 }
